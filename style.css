@@ -1,0 +1,56 @@
+/* Reset default margins/padding and make box-sizing easier to reason about */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body fills viewport and uses flex layout */
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      padding: 10px;
+    }
+
+    /* Wrapper around scrollable container and overlay canvas */
+    #container-wrapper {
+      flex: 1;
+      /* take available space */
+      height: 100%;
+      /* fixed height */
+      width: 100%;
+      /* full width */
+      background-color: lightblue;
+      position: relative;
+      /* allows absolute positioning of canvas */
+      margin: 0 auto;
+    }
+
+    /* Canvas overlay (ruler) pinned to top of wrapper */
+    #rulerCanvas {
+      height: 100%;
+      /* CSS display height */
+      background-color: #f1f1f1;
+      position: absolute;
+      /* overlay pinned to wrapper */
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      /* stretch across wrapper */
+    }
+
+    /* Scrollable container that defines scrollbars */
+    #container {
+      position: relative;
+      overflow: auto;
+      /* enable scrollbars */
+      height: 100%;
+      /* fill wrapper height */
+    }
+
+    /* Spacer element sized programmatically to set scrollable area */
+    #logicalSize {
+      display: block;
+    }
