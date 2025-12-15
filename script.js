@@ -32,7 +32,7 @@ function initializeApp() {
   // Configuration for logical distances
   const config = {
     totalYards: route.length_yards,
-    yardsPerPixel: 1,
+    yardsPerPixel: 2,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
     showFromYards: 0,
@@ -51,7 +51,7 @@ function initializeApp() {
   logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
 
   // Track scroll position
-  let scrollPosX = ((1760 * 3) + 0) / config.yardsPerPixel;
+  let scrollPosX = ((1760 * 3) + 880) / config.yardsPerPixel;
   let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
 
   // Initialize scroll position
@@ -97,7 +97,10 @@ function initializeApp() {
     }
 
     if (!connectedTrack) {
-      connectedTrack = route.tracks.find(t => t.tid === trackId);
+      connectedTrack = route.tracks.find(t => t.tid === trackId && !t.altRoute);
+      if (!connectedTrack) {
+        connectedTrack = route.tracks.find(t => t.tid === trackId);
+      }
     }
 
     if (!connectedTrack) return null;
@@ -840,11 +843,88 @@ function initializeApp() {
     });
   }
 
+  // Draw buffers
+  function drawBuffers() {
+    const visibleLeftLimitYards = scrollPosX * config.yardsPerPixel;
+    const visibleRightLimitYards = (scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel;
+    const bufferLength = config.horizontalGridSpacing * 0.1;
+
+    route.tracks.forEach(track => {
+      // Check fromConnection
+      if (track.fromConnection && (track.fromConnection.type === 'buffer' || track.fromConnection.type === 'buffer_stop')) {
+        const segment = track.shape[0];
+        const at = track.fromConnection.at !== undefined ? track.fromConnection.at : segment.from;
+
+        if (at >= visibleLeftLimitYards && at <= visibleRightLimitYards) {
+          const startYGrid = resolveTrackY(track, 0, 'from');
+          const endYGrid = resolveTrackY(track, 0, 'to');
+
+          if (startYGrid !== null && endYGrid !== null) {
+            const x1 = getX(segment.from);
+            const y1 = getY(startYGrid, true);
+            const x2 = getX(segment.to);
+            const y2 = getY(endYGrid, true);
+
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const perpAngle = angle + Math.PI / 2;
+
+            const bx = getX(at);
+            let by = y1;
+            if (at !== segment.from && (segment.to - segment.from) !== 0) {
+              const ratio = (at - segment.from) / (segment.to - segment.from);
+              by = y1 + ratio * (y2 - y1);
+            }
+
+            const dx = (bufferLength / 2) * Math.cos(perpAngle);
+            const dy = (bufferLength / 2) * Math.sin(perpAngle);
+
+            drawLine(bx - dx, by - dy, bx + dx, by + dy, 6, 'black');
+          }
+        }
+      }
+
+      // Check toConnection
+      if (track.toConnection && (track.toConnection.type === 'buffer' || track.toConnection.type === 'buffer_stop')) {
+        const lastIdx = track.shape.length - 1;
+        const segment = track.shape[lastIdx];
+        const at = track.toConnection.at !== undefined ? track.toConnection.at : segment.to;
+
+        if (at >= visibleLeftLimitYards && at <= visibleRightLimitYards) {
+          const startYGrid = resolveTrackY(track, lastIdx, 'from');
+          const endYGrid = resolveTrackY(track, lastIdx, 'to');
+
+          if (startYGrid !== null && endYGrid !== null) {
+            const x1 = getX(segment.from);
+            const y1 = getY(startYGrid, true);
+            const x2 = getX(segment.to);
+            const y2 = getY(endYGrid, true);
+
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const perpAngle = angle + Math.PI / 2;
+
+            const bx = getX(at);
+            let by = y2;
+            if (at !== segment.to && (segment.to - segment.from) !== 0) {
+              const ratio = (at - segment.from) / (segment.to - segment.from);
+              by = y1 + ratio * (y2 - y1);
+            }
+
+            const dx = (bufferLength / 2) * Math.cos(perpAngle);
+            const dy = (bufferLength / 2) * Math.sin(perpAngle);
+
+            drawLine(bx - dx, by - dy, bx + dx, by + dy, 6, 'black');
+          }
+        }
+      }
+    });
+  }
+
   function drawAll() {
     drawRuler();
     drawHorizontalGridLines();
     drawTracks();
     drawConnections();
+    drawBuffers();
     drawStations();
     drawStructures();
   }

@@ -414,7 +414,11 @@ const routes = [
                 shape: [
                     { from: 4787, to: 5060, yFrom: 46, yTo: 46 },
                     { from: 5060, to: 5100, yFrom: 46, yTo: 47 },
-                    { from: 5100, to: 5923, yFrom: 47, yTo: 47 }
+                    { from: 5100, to: 6358, yFrom: 47, yTo: 47 },
+                    { from: 6358, to: 6420, yFrom: 47, yTo: 45 },
+                    { from: 6420, to: 7216, yFrom: 45, yTo: 45 },
+                    { from: 7216, to: 7260, yFrom: 45, yTo: 47 },
+                    { from: 7260, to: 8640, yFrom: 47, yTo: 47 }
                 ]
             },
             {
@@ -539,7 +543,7 @@ const routes = [
             },
             {
                 tid: 3802,
-                fromConnection: { type: "buffer", at: 4821, track: 2252 },
+                fromConnection: { type: "buffer", at: 5362},
                 shape: [
                     { from: 5362, to: 6312, yFrom: 53, yTo: 53 }
                 ]
@@ -601,7 +605,9 @@ const routes = [
                     { from: 5969, to: 6050, yFrom: null, yTo: 56 },
                     { from: 6050, to: 6192, yFrom: 56, yTo: 56 },
                     { from: 6192, to: 6406, yFrom: 56, yTo: 47 },
-                    { from: 6406, to: 6790, yFrom: 47, yTo: 47 },
+                    { from: 6406, to: 6620, yFrom: 47, yTo: 47 },
+                    { from: 6620, to: 6660, yFrom: 47, yTo: 46 },
+                    { from: 6660, to: 6790, yFrom: 46, yTo: 46 },
                    
                 ]
             },
@@ -612,6 +618,71 @@ const routes = [
                     { from: 6312, to: 8216, yFrom: 53, yTo: 53 }
                 ]
             },
+            {
+                tid: 3701,
+                fromConnection: { type: "junction", at: 6661, track: 2252, sc_name: "2119A" },
+                toConnection: { type: "junction", at: 6731, track: 3800, sc_name: "2119B" },
+                shape: [
+                    { from: 6661, to: 6731, yFrom: 53, yTo: 53 }
+                ]
+            },
+            {
+                tid: 3701,
+                fromConnection: { type: "junction", at: 6734, track: 3800, sc_name: "2121A" },
+                toConnection: { type: "junction", at: 6812, track: 2252, sc_name: "2121B" },
+                shape: [
+                    { from: 6734, to: 6812, yFrom: 53, yTo: 53 }
+                ]
+            },
+            {
+                tid: 3901,
+                fromConnection: { type: "junction", at: 6620, track: 3800, sc_name: "2117" },
+                toConnection: { type: "buffer" },
+                shape: [
+                    { from: 6620, to: 7027, yFrom: null, yTo: 47 }
+                ]
+            },
+            {
+                tid: 3718,
+                fromConnection: { type: "junction", at: 6626, track: 2200, sc_name: "2118A" },
+                toConnection: { type: "junction", at: 6728, track: 3901, sc_name: "2118B" },
+                shape: [
+                    { from: 6626, to: 6728, yFrom: null, yTo: null }
+                ]
+            },
+            {
+                tid: 3722,
+                fromConnection: { type: "junction", at: 6765, track: 3901, sc_name: "2122A" },
+                toConnection: { type: "junction", at: 6846, track: 2200, sc_name: "2122B" },
+                shape: [
+                    { from: 6765, to: 6846, yFrom: null, yTo: null }
+                ]
+            },
+            {
+                tid: 3900,
+                fromConnection: { type: "junction", at: 6790, track: 3800, sc_name: "2117" },
+                toConnection: { type: "buffer" },
+                shape: [
+                    { from: 6790, to: 7163, yFrom: null, yTo: 46 }
+                ]
+            },
+            {
+                tid: 3700,
+                fromConnection: { type: "junction", at: 6790, track: 3900, sc_name: "2123A" },
+                toConnection: { type: "junction", at: 6842, track: 3901, sc_name: "2123B" },
+                shape: [
+                    { from: 6790, to: 6842, yFrom: null, yTo: null }
+                ]
+            },
+            {
+                tid: 3700,
+                fromConnection: { type: "junction", at: 6731, track: 3901, sc_name: "2120A" },
+                toConnection: { type: "junction", at: 6778, track: 3800, sc_name: "2120B" },
+                shape: [
+                    { from: 6731, to: 6778, yFrom: null, yTo: null }
+                ]
+            },
+            
 
         ],
         stations: [
@@ -634,7 +705,7 @@ const routes = [
             },
             {
                 name: "Finsbury Park",
-                at: 4400,
+                at: 4444,
                 platforms: [
                     { track: 1202, platformNo: 1, from: 4356, to: 4598, position: "above" },
                     { track: 1200, platformNo: 2, from: 4334, to: 4598, position: "below" },
@@ -652,6 +723,14 @@ const routes = [
                 platforms: [
                     { track: 1200, platformNo: 1, from: 5918, to: 6072, position: "below" },
                     { track: 2200, platformNo: 2, from: 5918, to: 6072, position: "below" }
+                ]
+            },
+            {
+                name: "Hornsey",
+                at: 7128,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 7070, to: 7194, position: "above" },
+                    { track: 2200, platformNo: 2, from: 7040, to: 7194, position: "above" }
                 ]
             }
         ],
