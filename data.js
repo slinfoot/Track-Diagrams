@@ -411,6 +411,7 @@ const routes = [
             },
             {
                 tid: 2252,
+                toConnection: { type: "junction", at: 8640, track: 2200, sc_name: "2142B" },
                 shape: [
                     { from: 4787, to: 5060, yFrom: 46, yTo: 46 },
                     { from: 5060, to: 5100, yFrom: 46, yTo: 47 },
@@ -418,7 +419,16 @@ const routes = [
                     { from: 6358, to: 6420, yFrom: 47, yTo: 45 },
                     { from: 6420, to: 7216, yFrom: 45, yTo: 45 },
                     { from: 7216, to: 7260, yFrom: 45, yTo: 47 },
-                    { from: 7260, to: 8640, yFrom: 47, yTo: 47 }
+                    { from: 7260, to: 8529, yFrom: 47, yTo: 47 },
+                    { from: 8529, to: 8640, yFrom: 47, yTo: null }
+                ]
+            },
+            {
+                tid: 2100,
+                altRoute: { elr: "HDB" },
+                fromConnection: { type: "junction", at: 8529, track: 2252, sc_name: "2142A", elr: "ECM1" },
+                shape: [
+                    { from: 8529, to: 9130, yFrom: null, yTo: 47 }
                 ]
             },
             {
@@ -615,7 +625,7 @@ const routes = [
                 tid: 3901,
                 altRoute: { elr: "HDS" },
                 shape: [
-                    { from: 6312, to: 8216, yFrom: 53, yTo: 53 }
+                    { from: 6312, to: 8199, yFrom: 53, yTo: 53 }
                 ]
             },
             {
@@ -682,6 +692,36 @@ const routes = [
                     { from: 6731, to: 6778, yFrom: null, yTo: null }
                 ]
             },
+            {
+                tid: 3901,
+                toConnection: { type: "junction", at: 8269, track: 1152, sc_name: "2148" },
+                shape: [
+                    { from: 8199, to: 8269, yFrom: 53, yTo: 53 }
+                ]
+            },
+            {
+                tid: 3902,
+                toConnection: { type: "junction", at: 8269, track: 1152, sc_name: "2148" },
+                shape: [
+                    { from: 8199, to: 8225, yFrom: 54, yTo: 54 },
+                    { from: 8225, to: 8269, yFrom: 54, yTo: null }
+                ]
+            },
+            {
+                tid: 3902,
+                altRoute: { elr: "HDS" },
+                fromConnection: { type: "buffer"},
+                shape: [
+                    { from: 6020, to: 8199, yFrom: 54, yTo: 54 }
+                ]
+            },
+            {
+                tid: 1152,
+                fromConnection: { type: "junction", at: 8269, track: 3901, sc_name: "2148" },
+                shape: [
+                    { from: 8269, to: 8794, yFrom: 53, yTo: 53 }
+                ]
+            },
             
 
         ],
@@ -739,7 +779,28 @@ const routes = [
                 platforms: [
                     { track: 1202, platformNo: 1, from: 8690, to: 8844, position: "below" },
                     { track: 1200, platformNo: 2, from: 8690, to: 8844, position: "above" },
-                    { track: 2200, platformNo: 3, from: 8646, to: 8844, position: "above" }
+                    { track: 2200, platformNo: 3, from: 8646, to: 8844, position: "above" },
+                    { track: 2100, platformNo: 4, from: 8646, to: 8844, position: "below", elr: "HDB"},
+                ]
+            },
+            {
+                name: "New Southgate",
+                at: 11330,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 11242, to: 11440, position: "above" },
+                    { track: 1100, platformNo: 2, from: 11242, to: 11440, position: "below" },
+                    { track: 2100, platformNo: 3, from: 11242, to: 11440, position: "above" },
+                    { track: 2200, platformNo: 4, from: 11242, to: 11440, position: "below"},
+                ]
+            },
+            {
+                name: "Oakleigh Park",
+                at: 14740,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 14652, to: 14828, position: "above" },
+                    { track: 1100, platformNo: 2, from: 14652, to: 14828, position: "below" },
+                    { track: 2100, platformNo: 3, from: 14652, to: 14828, position: "above" },
+                    { track: 2200, platformNo: 4, from: 14652, to: 14828, position: "below"},
                 ]
             }
         ],
@@ -821,6 +882,71 @@ const routes = [
                 structureNo: "ECM1-23",
                 trackLocation: [
                     { from: 6195, to: 6402, tid: 3800 }
+                ]
+            },
+            {
+                name: "Intersection Bridge",
+                type: "overbridge",
+                structureNo: "ECM1-31",
+                trackLocation: [
+                    { from: 9240, to: 9262, tid: 2200 },
+                    { from: 9328, to: 9350, tid: 1200 }
+                ]
+            },
+            {
+            
+                name: "Wood Green Tunnel West Bore",
+                type: "tunnel",
+                structureNo: "ECM1-31T",
+                trackLocation: [
+                    { from: 9702, to: 10406, tid: 2200 }
+                ]
+            },
+            {
+            
+                name: "Wood Green Tunnel Center Bore",
+                type: "tunnel",
+                structureNo: "ECM1-31T",
+                trackLocation: [
+                    { from: 9702, to: 10406, tid: 2100 },
+                    { from: 9702, to: 10406, tid: 1100 }
+                ]
+            },
+            {
+            
+                name: "Wood Green Tunnel East Bore",
+                type: "tunnel",
+                structureNo: "ECM1-31T",
+                trackLocation: [
+                    { from: 9702, to: 10406, tid: 1200 }
+                ]
+            },
+            {
+            
+                name: "Barnet Tunnel West Bore",
+                type: "tunnel",
+                structureNo: "ECM1-37TW",
+                trackLocation: [
+                    { from: 13244, to: 13860, tid: 2200 }
+                ]
+            },
+            {
+            
+                name: "Barnet Tunnel Center Bore",
+                type: "tunnel",
+                structureNo: "ECM1-37TC",
+                trackLocation: [
+                    { from: 13244, to: 13860, tid: 2100 },
+                    { from: 13244, to: 13860, tid: 1100 }
+                ]
+            },
+            {
+            
+                name: "Barnet Tunnel East Bore",
+                type: "tunnel",
+                structureNo: "ECM1-37TE",
+                trackLocation: [
+                    { from: 13244, to: 13860, tid: 1200 }
                 ]
             },
         ]

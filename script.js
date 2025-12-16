@@ -32,7 +32,7 @@ function initializeApp() {
   // Configuration for logical distances
   const config = {
     totalYards: route.length_yards,
-    yardsPerPixel: 2,
+    yardsPerPixel: 1,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
     showFromYards: 0,
@@ -51,7 +51,7 @@ function initializeApp() {
   logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
 
   // Track scroll position
-  let scrollPosX = ((1760 * 3) + 880) / config.yardsPerPixel;
+  let scrollPosX = ((1760 * 8) + 440) / config.yardsPerPixel;
   let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
 
   // Initialize scroll position
@@ -521,7 +521,7 @@ function initializeApp() {
         const track = route.tracks.find(t => t.tid === platform.track);
         if (!track) return;
         // Get the tracks vertical grid number
-        const trackY = getYAtJunction(platform.track, station.at);
+        const trackY = getYAtJunction(platform.track, station.at, platform.elr);
         if (trackY === null) return;
 
         // Check if platform is within vertical viewport bounds
