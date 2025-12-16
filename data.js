@@ -732,6 +732,15 @@ const routes = [
                     { track: 1200, platformNo: 1, from: 7070, to: 7194, position: "above" },
                     { track: 2200, platformNo: 2, from: 7040, to: 7194, position: "above" }
                 ]
+            },
+            {
+                name: "Alexandra Palace",
+                at: 8778,
+                platforms: [
+                    { track: 1202, platformNo: 1, from: 8690, to: 8844, position: "below" },
+                    { track: 1200, platformNo: 2, from: 8690, to: 8844, position: "above" },
+                    { track: 2200, platformNo: 3, from: 8646, to: 8844, position: "above" }
+                ]
             }
         ],
         structures: [
