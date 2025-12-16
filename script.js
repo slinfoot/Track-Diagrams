@@ -99,6 +99,10 @@ function initializeApp() {
         if (!connectedTrack.altRoute || connectedTrack.altRoute.elr !== elr) {
           continue;
         }
+      } else {
+        if (connectedTrack.altRoute) {
+          continue;
+        }
       }
 
       for (let i = 0; i < connectedTrack.shape.length; i++) {
