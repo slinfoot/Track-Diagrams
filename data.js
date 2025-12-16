@@ -251,10 +251,12 @@ const routes = [
             },
             {
                 tid: 1200,
+                toConnection: { type: "junction", at: 37748, track: 1100, sc_name: "5562" },
                 shape: [
                     { from: 1285, to: 2030, yFrom: 48, yTo: 48 },
                     { from: 2030, to: 2245, yFrom: 48, yTo: 51 },
-                    { from: 2245, to: 104262, yFrom: 51, yTo: 51 }
+                    { from: 2245, to: 37704, yFrom: 51, yTo: 51 },
+                    { from: 37704, to: 37748, yFrom: 51, yTo: null }
                 ]
             },
             {
@@ -267,10 +269,12 @@ const routes = [
             },
             {
                 tid: 2200,
+                toConnection: { type: "junction", at: 37351, track: 2100, sc_name: "5561B" },
                 shape: [
                     { from: 1456, to: 2200, yFrom: 47, yTo: 47 },
                     { from: 2200, to: 2290, yFrom: 47, yTo: 48 },
-                    { from: 2290, to: 134187, yFrom: 48, yTo: 48 }
+                    { from: 2290, to: 37307, yFrom: 48, yTo: 48 },
+                    { from: 37307, to: 37351, yFrom: 48, yTo: null }
                 ]
             },
             {
@@ -733,6 +737,7 @@ const routes = [
             {
                 tid: 3800,
                 fromConnection: { type: "junction", at: 34710, track: 1200, sc_name: "5506A" },
+                toConnection: { type: "junction", at: 35535, track: 2500, sc_name: "5511B" },
                 shape: [
                     { from: 34710, to: 34810, yFrom: null, yTo: 52 },
                     { from: 34810, to: 34929, yFrom: 52, yTo: 52 },
@@ -758,6 +763,46 @@ const routes = [
                     { from: 35488, to: 35559, yFrom: null, yTo: 52 },
                     { from: 35559, to: 35958, yFrom: 52, yTo: 52 },
                     { from: 35958, to: 36002, yFrom: 52, yTo: null }
+                ]
+            },
+            {
+                tid: 2500,
+                fromConnection: { type: "junction", at: 35459, track: 2200, sc_name: "5517A" },
+                toConnection: { type: "junction", at: 35998, track: 2200, sc_name: "5525" },
+                shape: [
+                    { from: 35459, to: 35535, yFrom: null, yTo: 47 },
+                    { from: 35535, to: 35954, yFrom: 47, yTo: 47 },
+                    { from: 35954, to: 35998, yFrom: 47, yTo: null }
+                ]
+            },
+            {
+                tid: 2200,
+                fromConnection: { type: "junction", at: 41963, track: 2100, sc_name: "5568" },
+                toConnection: { type: "junction", at: 121689, track: 2100, sc_name: "1166" },
+                shape: [
+                    { from: 41963, to: 42007, yFrom: null, yTo: 48 },
+                    { from: 42007, to: 121645, yFrom: 48, yTo: 48 },
+                    { from: 121645, to: 121689, yFrom: 48, yTo: null }
+                ]
+            },
+            {
+                tid: 1200,
+                fromConnection: { type: "junction", at: 41963, track: 1100, sc_name: "5569" },
+                toConnection: { type: "junction", at: 104262, track: 1100, sc_name: "1146" },
+                shape: [
+                    { from: 41963, to: 42007, yFrom: null, yTo: 51 },
+                    { from: 42007, to: 104218, yFrom: 51, yTo: 51 },
+                    { from: 104218, to: 104262, yFrom: 51, yTo: null }
+                ]
+            },
+            {
+                tid: 1200,
+                fromConnection: { type: "junction", at: 115346, track: 1100, sc_name: "1158" },
+                toConnection: { type: "junction", at: 118369, track: 1100, sc_name: "1161" },
+                shape: [
+                    { from: 115346, to: 115388, yFrom: null, yTo: 51 },
+                    { from: 115388, to: 118325, yFrom: 51, yTo: 51 },
+                    { from: 118325, to: 118369, yFrom: 51, yTo: null }
                 ]
             },
             
@@ -897,7 +942,97 @@ const routes = [
                     { track: 2100, platformNo: 2, from: 31174, to: 31350, position: "above"},
                     { track: 2200, platformNo: 3, from: 31174, to: 31350, position: "below"},
                 ]
-            }
+            },
+            {
+                name: "Welwyn Garden City",
+                at: 35772,
+                platforms: [
+                    { track: 1500, platformNo: 1, from: 35662, to: 35860, position: "above" },
+                    { track: 1200, platformNo: 2, from: 35662, to: 35860, position: "below" },
+                    { track: 2200, platformNo: 3, from: 35662, to: 35860, position: "above" },
+                    { track: 2500, platformNo: 4, from: 35662, to: 35860, position: "below"},
+                ]
+            },
+            {
+                name: "Welham North",
+                at: 38764,
+                platforms: [
+                    { track: 1100, platformNo: 1, from: 38654, to: 38830, position: "below" },
+                    { track: 2100, platformNo: 2, from: 38654, to: 38830, position: "above"},
+                ]
+            },
+            {
+                name: "Knebworth",
+                at: 44088,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 44022, to: 44198, position: "above" },
+                    { track: 1100, platformNo: 2, from: 44022, to: 44198, position: "below" },
+                    { track: 2100, platformNo: 3, from: 44022, to: 44198, position: "above" },
+                    { track: 2200, platformNo: 4, from: 44022, to: 44198, position: "below"},
+                ]
+            },
+            {
+                name: "Stevenage",
+                at: 48576,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 48432, to: 48686, position: "above" },
+                    { track: 1100, platformNo: 2, from: 48432, to: 48686, position: "below" },
+                    { track: 2100, platformNo: 3, from: 48432, to: 48686, position: "above" },
+                    { track: 2200, platformNo: 4, from: 48432, to: 48686, position: "below"},
+                ]
+            },
+            {
+                name: "Hitchin",
+                at: 56144,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 56012, to: 56254, position: "below" },
+                    { track: 2200, platformNo: 2, from: 56012, to: 56254, position: "above"},
+                ]
+            },
+            {
+                name: "Arlesey",
+                at: 65252,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 65095, to: 65384, position: "below" },
+                    { track: 2200, platformNo: 2, from: 65098, to: 65384, position: "above"},
+                ]
+            },
+            {
+                name: "Biggleswade",
+                at: 72380,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 72314, to: 72578, position: "above" },
+                    { track: 1100, platformNo: 2, from: 72270, to: 72534, position: "below" },
+                    { track: 2100, platformNo: 3, from: 72270, to: 72534, position: "above" },
+                    { track: 2200, platformNo: 4, from: 72248, to: 72512, position: "below"},
+                ]
+            },
+            {
+                name: "Sandy",
+                at: 77638,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 77462, to: 77726, position: "below" },
+                    { track: 2200, platformNo: 2, from: 77506, to: 77726, position: "above"},
+                ]
+            },
+            {
+                name: "St Neots",
+                at: 91080,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 90970, to: 91234, position: "above" },
+                    { track: 1100, platformNo: 2, from: 90970, to: 91234, position: "below" },
+                    { track: 2100, platformNo: 3, from: 90926, to: 91190, position: "above" },
+                    { track: 2200, platformNo: 4, from: 90926, to: 91190, position: "below"},
+                ]
+            },
+            {
+                name: "Huntingdon",
+                at: 103510,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 103378, to: 103664, position: "below" },
+                    { track: 2200, platformNo: 2, from: 103356, to: 103642, position: "above"},
+                ]
+            },
         ],
         structures: [
             {
@@ -1111,6 +1246,36 @@ const routes = [
                 structureNo: "ECM1-67D",
                 trackLocation: [
                     { from: 35090, to: 35310, tid: 3800 }
+                ]
+            },
+            {
+            
+                name: "Welwyn / Digswell Viaduct",
+                type: "viaduct",
+                structureNo: "ECM1-69",
+                trackLocation: [
+                    { from: 37774, to: 38302, tid: 2100 },
+                    { from: 37774, to: 38302, tid: 1100 }
+                ]
+            },
+            {
+            
+                name: "Welwyn South Tunnel",
+                type: "tunnel",
+                structureNo: "ECM1-71T",
+                trackLocation: [
+                    { from: 38962, to: 39402, tid: 2100 },
+                    { from: 38962, to: 39402, tid: 1100 }
+                ]
+            },
+            {
+            
+                name: "Welwyn North Tunnel",
+                type: "tunnel",
+                structureNo: "ECM1-71TT",
+                trackLocation: [
+                    { from: 39688, to: 40744, tid: 2100 },
+                    { from: 39688, to: 40744, tid: 1100 }
                 ]
             }
         ]

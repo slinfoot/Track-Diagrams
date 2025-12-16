@@ -35,8 +35,8 @@ function initializeApp() {
     yardsPerPixel: 1,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
-    showFromYards: 0 * 1760,
-    showToYards: 25 * 1760
+    showFromYards: 20 * 1760,
+    showToYards: 70 * 1760
 
   };
 
@@ -51,7 +51,7 @@ function initializeApp() {
   logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
 
   // Track scroll position
-  let scrollPosX = (((1760 * 19) + 440) - config.showFromYards) / config.yardsPerPixel;
+  let scrollPosX = (((1760 * 65) + 880) - config.showFromYards) / config.yardsPerPixel;
   let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
 
   // Initialize scroll position
