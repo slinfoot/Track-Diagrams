@@ -35,8 +35,8 @@ function initializeApp() {
     yardsPerPixel: 1,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
-    showFromYards: 0,
-    showToYards: 10 * 1760
+    showFromYards: 7 * 1760,
+    showToYards: 17 * 1760
 
   };
 
@@ -51,7 +51,7 @@ function initializeApp() {
   logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
 
   // Track scroll position
-  let scrollPosX = ((1760 * 8) + 440) / config.yardsPerPixel;
+  let scrollPosX = (((1760 * 12) + 880) - config.showFromYards) / config.yardsPerPixel;
   let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
 
   // Initialize scroll position
@@ -141,7 +141,7 @@ function initializeApp() {
 
   // Helper: Convert yards to screen X
   function getX(yards) {
-    return (yards / config.yardsPerPixel) - scrollPosX;
+    return ((yards - config.showFromYards) / config.yardsPerPixel) - scrollPosX;
   }
 
   // Helper: Convert grid Y to screen Y
@@ -171,8 +171,8 @@ function initializeApp() {
   function drawRuler() {
     ctx.clearRect(0, 0, rulerCanvas.width, rulerCanvas.height);
 
-    const visibleLeftLimitYards = scrollPosX * config.yardsPerPixel;
-    const visibleRightLimitYards = (scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel;
+    const visibleLeftLimitYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
+    const visibleRightLimitYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
 
     drawLine(0, 0, rulerCanvas.clientWidth, 0, 4, 'black');
 
@@ -252,8 +252,8 @@ function initializeApp() {
 
   // Draw track diagram
   function drawTracks() {
-    const visibleLeftLimitYards = scrollPosX * config.yardsPerPixel;
-    const visibleRightLimitYards = (scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel;
+    const visibleLeftLimitYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
+    const visibleRightLimitYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
 
     route.tracks.forEach(track => {
       track.shape.forEach((segment, index) => {
@@ -341,8 +341,8 @@ function initializeApp() {
 
   // Draw connection labels (fromConnection and toConnection)
   function drawConnections() {
-    const visibleLeftLimitYards = scrollPosX * config.yardsPerPixel;
-    const visibleRightLimitYards = (scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel;
+    const visibleLeftLimitYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
+    const visibleRightLimitYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
 
     const labels = [];
     const fontSize = 10;
@@ -484,8 +484,8 @@ function initializeApp() {
 
   // Draw stations
   function drawStations() {
-    const visibleLeftLimitYards = scrollPosX * config.yardsPerPixel;
-    const visibleRightLimitYards = (scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel;
+    const visibleLeftLimitYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
+    const visibleRightLimitYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
     const visibleTopLimitY = (scrollPosY / config.horizontalGridSpacing);
     const visibleBottomLimitY = ((scrollPosY + rulerCanvas.clientHeight) / config.horizontalGridSpacing);
 
@@ -554,8 +554,8 @@ function initializeApp() {
   function drawStructures() {
     if (!route.structures) return;
 
-    const visibleLeftLimitYards = scrollPosX * config.yardsPerPixel;
-    const visibleRightLimitYards = (scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel;
+    const visibleLeftLimitYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
+    const visibleRightLimitYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
 
     route.structures.forEach(structure => {
       if (structure.type === 'viaduct' || structure.type === 'underbridge') {
@@ -845,8 +845,8 @@ function initializeApp() {
 
   // Draw buffers
   function drawBuffers() {
-    const visibleLeftLimitYards = scrollPosX * config.yardsPerPixel;
-    const visibleRightLimitYards = (scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel;
+    const visibleLeftLimitYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
+    const visibleRightLimitYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
     const bufferLength = config.horizontalGridSpacing * 0.1;
 
     route.tracks.forEach(track => {

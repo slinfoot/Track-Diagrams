@@ -802,6 +802,36 @@ const routes = [
                     { track: 2100, platformNo: 3, from: 14652, to: 14828, position: "above" },
                     { track: 2200, platformNo: 4, from: 14652, to: 14828, position: "below"},
                 ]
+            },
+            {
+                name: "New Barnet",
+                at: 16104,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 16016, to: 16214, position: "above" },
+                    { track: 1100, platformNo: 2, from: 16016, to: 16214, position: "below" },
+                    { track: 2100, platformNo: 3, from: 16016, to: 16214, position: "above" },
+                    { track: 2200, platformNo: 4, from: 16016, to: 16214, position: "below"},
+                ]
+            },
+            {
+                name: "Hadley Wood",
+                at: 18632,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 18524, to: 18744, position: "below" },
+                    { track: 1100, platformNo: 2, from: 18524, to: 18744, position: "above" },
+                    { track: 2100, platformNo: 3, from: 18524, to: 18744, position: "below" },
+                    { track: 2200, platformNo: 4, from: 18546, to: 18766, position: "above"},
+                ]
+            },
+            {
+                name: "Potters Bar",
+                at: 22440,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 22352, to: 22550, position: "above" },
+                    { track: 1100, platformNo: 2, from: 22352, to: 22550, position: "below" },
+                    { track: 2100, platformNo: 3, from: 22352, to: 22550, position: "above" },
+                    { track: 2200, platformNo: 4, from: 22352, to: 22550, position: "below"},
+                ]
             }
         ],
         structures: [
@@ -947,6 +977,66 @@ const routes = [
                 structureNo: "ECM1-37TE",
                 trackLocation: [
                     { from: 13244, to: 13860, tid: 1200 }
+                ]
+            },
+            {
+            
+                name: "Hadley South Tunnel West Bore",
+                type: "tunnel",
+                structureNo: "ECM1-45TW",
+                trackLocation: [
+                    { from: 18062, to: 18458, tid: 2200 },
+                    { from: 18062, to: 18458, tid: 2100 }
+                ]
+            },
+            {
+            
+                name: "Hadley South Tunnel East Bore",
+                type: "tunnel",
+                structureNo: "ECM1-45TE",
+                trackLocation: [
+                    { from: 18062, to: 18458, tid: 1100 },
+                    { from: 18062, to: 18458, tid: 1200 }
+                ]
+            },
+            {
+            
+                name: "Hadley North Tunnel West Bore",
+                type: "tunnel",
+                structureNo: "ECM1-45TB",
+                trackLocation: [
+                    { from: 18920, to: 19162, tid: 2200 },
+                    { from: 18920, to: 19162, tid: 2100 }
+                ]
+            },
+            {
+            
+                name: "Hadley North Tunnel East Bore",
+                type: "tunnel",
+                structureNo: "ECM1-45TA",
+                trackLocation: [
+                    { from: 18920, to: 19162, tid: 1100 },
+                    { from: 18920, to: 19162, tid: 1200 }
+                ]
+            },
+            {
+            
+                name: "Potters Bar Tunnel West Bore",
+                type: "tunnel",
+                structureNo: "ECM1-46TD",
+                trackLocation: [
+                    { from: 19888, to: 21120, tid: 2200 },
+                    { from: 19888, to: 21120, tid: 2100 }
+                ]
+            },
+            {
+            
+                name: "Potters Bar Tunnel East Bore",
+                type: "tunnel",
+                structureNo: "ECM1-46TC",
+                trackLocation: [
+                    { from: 19888, to: 21120, tid: 1100 },
+                    { from: 19888, to: 21120, tid: 1200 }
                 ]
             },
         ]
