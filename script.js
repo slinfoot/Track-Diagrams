@@ -35,8 +35,8 @@ function initializeApp() {
     yardsPerPixel: 1,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
-    showFromYards: 7 * 1760,
-    showToYards: 17 * 1760
+    showFromYards: 10 * 1760,
+    showToYards: 20 * 1760
 
   };
 
@@ -51,7 +51,7 @@ function initializeApp() {
   logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
 
   // Track scroll position
-  let scrollPosX = (((1760 * 12) + 880) - config.showFromYards) / config.yardsPerPixel;
+  let scrollPosX = (((1760 * 17) + 880) - config.showFromYards) / config.yardsPerPixel;
   let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
 
   // Initialize scroll position
@@ -70,11 +70,12 @@ function initializeApp() {
 
   // Convert Yards to Mileage
   function yardsToMiles_text(yards) {
-    if (yards % 1760 === 0) {
-      return (yards / 1760) + "M 0Y";
-    } else {
-      return (yards % 1760) + " Y";
-    }
+    return  Math.floor(yards / 1760) + "M " + (yards % 1760) + "Y";
+    // if (yards % 1760 === 0) {
+    //   return (yards / 1760) + "M 0Y";
+    // } else {
+    //   return (yards % 1760) + " Y";
+    // }
   }
 
   // Draw line function
@@ -192,17 +193,17 @@ function initializeApp() {
 
       if (adjustedYard % 1760 === 0) {
         drawLine(screenX, 0, screenX, 30, 2, 'black');
-        ctx.font = '10px Arial';
+        ctx.font = '12px Arial';
         ctx.fillStyle = 'black';
-        ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 35);
+        ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 40);
         drawLine(screenX, 30, screenX, rulerCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.2)');
       }
 
       if (adjustedYard % 440 === 0 && adjustedYard % 1760 !== 0) {
         drawLine(screenX, 0, screenX, 20, 2, 'black');
-        ctx.font = '10px Arial';
+        ctx.font = '12px Arial';
         ctx.fillStyle = 'black';
-        ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 25);
+        ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 30);
         drawLine(screenX, 20, screenX, rulerCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.2)');
       }
 

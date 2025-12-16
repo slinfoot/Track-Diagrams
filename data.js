@@ -832,6 +832,33 @@ const routes = [
                     { track: 2100, platformNo: 3, from: 22352, to: 22550, position: "above" },
                     { track: 2200, platformNo: 4, from: 22352, to: 22550, position: "below"},
                 ]
+            },
+            {
+                name: "Brookmans Park",
+                at: 25476,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 25410, to: 25542, position: "above" },
+                    { track: 1100, platformNo: 2, from: 25410, to: 25542, position: "below" },
+                    { track: 2100, platformNo: 3, from: 25410, to: 25542, position: "above" },
+                    { track: 2200, platformNo: 4, from: 25410, to: 25542, position: "below"},
+                ]
+            },
+            {
+                name: "Welham Green",
+                at: 27368,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 27302, to: 27456, position: "below" },
+                    { track: 2200, platformNo: 2, from: 27302, to: 27456, position: "above"},
+                ]
+            },
+            {
+                name: "Hatfield Station",
+                at: 31152,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 30976, to: 31152, position: "below" },
+                    { track: 2100, platformNo: 2, from: 31174, to: 31350, position: "above"},
+                    { track: 2200, platformNo: 3, from: 31174, to: 31350, position: "below"},
+                ]
             }
         ],
         structures: [
