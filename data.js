@@ -722,6 +722,44 @@ const routes = [
                     { from: 8269, to: 8794, yFrom: 53, yTo: 53 }
                 ]
             },
+            {
+                tid: 3900,
+                fromConnection: { type: "buffer"},
+                toConnection: { type: "junction", at: 34810, track: 3800, sc_name: "5506B" },
+                shape: [
+                    { from: 34412, to: 34810, yFrom: 52, yTo: 52 }
+                ]
+            },
+            {
+                tid: 3800,
+                fromConnection: { type: "junction", at: 34710, track: 1200, sc_name: "5506A" },
+                shape: [
+                    { from: 34710, to: 34810, yFrom: null, yTo: 52 },
+                    { from: 34810, to: 34929, yFrom: 52, yTo: 52 },
+                    { from: 34929, to: 34973, yFrom: 52, yTo: 53 },
+                    { from: 34973, to: 35130, yFrom: 53, yTo: 53 },
+                    { from: 35130, to: 35283, yFrom: 53, yTo: 47 },
+                    { from: 35283, to: 35535, yFrom: 47, yTo: 47 }
+                ]
+            },
+            {
+                tid: 3200,
+                fromConnection: { type: "junction", at: 34929, track: 3800, sc_name: "5507A" },
+                toConnection: { type: "junction", at: 35559, track: 1500, sc_name: "5517B" },
+                shape: [
+                    { from: 34929, to: 35559, yFrom: 52, yTo: 52 }
+                ]
+            },
+            {
+                tid: 1500,
+                fromConnection: { type: "junction", at: 35488, track: 1200, sc_name: "5517A" },
+                toConnection: { type: "junction", at: 36002, track: 1200, sc_name: "5525" },
+                shape: [
+                    { from: 35488, to: 35559, yFrom: null, yTo: 52 },
+                    { from: 35559, to: 35958, yFrom: 52, yTo: 52 },
+                    { from: 35958, to: 36002, yFrom: 52, yTo: null }
+                ]
+            },
             
 
         ],
@@ -1066,6 +1104,15 @@ const routes = [
                     { from: 19888, to: 21120, tid: 1200 }
                 ]
             },
+            {
+            
+                name: "Welwyn Flyover",
+                type: "viaduct",
+                structureNo: "ECM1-67D",
+                trackLocation: [
+                    { from: 35090, to: 35310, tid: 3800 }
+                ]
+            }
         ]
     },
 ];

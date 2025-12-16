@@ -35,8 +35,8 @@ function initializeApp() {
     yardsPerPixel: 1,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
-    showFromYards: 10 * 1760,
-    showToYards: 20 * 1760
+    showFromYards: 0 * 1760,
+    showToYards: 25 * 1760
 
   };
 
@@ -51,7 +51,7 @@ function initializeApp() {
   logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
 
   // Track scroll position
-  let scrollPosX = (((1760 * 17) + 880) - config.showFromYards) / config.yardsPerPixel;
+  let scrollPosX = (((1760 * 19) + 440) - config.showFromYards) / config.yardsPerPixel;
   let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
 
   // Initialize scroll position
@@ -92,49 +92,45 @@ function initializeApp() {
   function getYAtJunction(trackId, at, elr, visited = []) {
     if (visited.includes(trackId)) return null;
 
-    let connectedTrack;
-    if (elr && !route.sections.some(s => s.elr === elr)) {
-      connectedTrack = route.tracks.find(t => t.tid === trackId && t.altRoute && t.altRoute.elr === elr);
-    }
+    const potentialTracks = route.tracks.filter(t => t.tid === trackId);
 
-    if (!connectedTrack) {
-      connectedTrack = route.tracks.find(t => t.tid === trackId && !t.altRoute);
-      if (!connectedTrack) {
-        connectedTrack = route.tracks.find(t => t.tid === trackId);
+    for (const connectedTrack of potentialTracks) {
+      if (elr && !route.sections.some(s => s.elr === elr)) {
+        if (!connectedTrack.altRoute || connectedTrack.altRoute.elr !== elr) {
+          continue;
+        }
       }
-    }
 
-    if (!connectedTrack) return null;
+      for (let i = 0; i < connectedTrack.shape.length; i++) {
+        const segment = connectedTrack.shape[i];
+        const segMin = Math.min(segment.from, segment.to);
+        const segMax = Math.max(segment.from, segment.to);
 
-    for (let i = 0; i < connectedTrack.shape.length; i++) {
-      const segment = connectedTrack.shape[i];
-      const segMin = Math.min(segment.from, segment.to);
-      const segMax = Math.max(segment.from, segment.to);
+        if (at >= segMin && at <= segMax) {
+          let effectiveYFrom = segment.yFrom;
+          let effectiveYTo = segment.yTo;
 
-      if (at >= segMin && at <= segMax) {
-        let effectiveYFrom = segment.yFrom;
-        let effectiveYTo = segment.yTo;
+          if (i === 0 && connectedTrack.fromConnection && connectedTrack.fromConnection.type === 'junction') {
+            const startY = getYAtJunction(connectedTrack.fromConnection.track, connectedTrack.fromConnection.at, connectedTrack.fromConnection.elr, [...visited, trackId]);
+            if (startY !== null) effectiveYFrom = startY;
+          }
 
-        if (i === 0 && connectedTrack.fromConnection && connectedTrack.fromConnection.type === 'junction') {
-          const startY = getYAtJunction(connectedTrack.fromConnection.track, connectedTrack.fromConnection.at, connectedTrack.fromConnection.elr, [...visited, trackId]);
-          if (startY !== null) effectiveYFrom = startY;
+          if (i === connectedTrack.shape.length - 1 && connectedTrack.toConnection && connectedTrack.toConnection.type === 'junction') {
+            const endY = getYAtJunction(connectedTrack.toConnection.track, connectedTrack.toConnection.at, connectedTrack.toConnection.elr, [...visited, trackId]);
+            if (endY !== null) effectiveYTo = endY;
+          }
+
+          if (effectiveYFrom === null || effectiveYTo === null) continue;
+
+          let ratio;
+          if (segment.from <= segment.to) {
+            ratio = (at - segment.from) / (segment.to - segment.from);
+          } else {
+            ratio = (at - segment.to) / (segment.from - segment.to);
+          }
+
+          return effectiveYFrom + ratio * (effectiveYTo - effectiveYFrom);
         }
-
-        if (i === connectedTrack.shape.length - 1 && connectedTrack.toConnection && connectedTrack.toConnection.type === 'junction') {
-          const endY = getYAtJunction(connectedTrack.toConnection.track, connectedTrack.toConnection.at, connectedTrack.toConnection.elr, [...visited, trackId]);
-          if (endY !== null) effectiveYTo = endY;
-        }
-
-        if (effectiveYFrom === null || effectiveYTo === null) return null;
-
-        let ratio;
-        if (segment.from <= segment.to) {
-          ratio = (at - segment.from) / (segment.to - segment.from);
-        } else {
-          ratio = (at - segment.to) / (segment.from - segment.to);
-        }
-
-        return effectiveYFrom + ratio * (effectiveYTo - effectiveYFrom);
       }
     }
     return null;
@@ -519,7 +515,17 @@ function initializeApp() {
 
       // Draw each platform
       station.platforms.forEach(platform => {
-        const track = route.tracks.find(t => t.tid === platform.track);
+        const track = route.tracks.find(t => {
+          if (t.tid !== platform.track) return false;
+          // Check if any segment overlaps with platform
+          return t.shape.some(seg => {
+            const segMin = Math.min(seg.from, seg.to);
+            const segMax = Math.max(seg.from, seg.to);
+            const platMin = Math.min(platform.from, platform.to);
+            const platMax = Math.max(platform.from, platform.to);
+            return Math.max(segMin, platMin) < Math.min(segMax, platMax); // Overlap check
+          });
+        });
         if (!track) return;
         // Get the tracks vertical grid number
         const trackY = getYAtJunction(platform.track, station.at, platform.elr);
@@ -587,7 +593,17 @@ function initializeApp() {
         const flareLen = offset;
 
         const drawWall = (loc, isTop) => {
-          const track = route.tracks.find(t => t.tid === loc.tid);
+          const track = route.tracks.find(t => {
+            if (t.tid !== loc.tid) return false;
+            // Check if any segment overlaps with loc
+            return t.shape.some(seg => {
+              const segMin = Math.min(seg.from, seg.to);
+              const segMax = Math.max(seg.from, seg.to);
+              const locMin = Math.min(loc.from, loc.to);
+              const locMax = Math.max(loc.from, loc.to);
+              return Math.max(segMin, locMin) < Math.min(segMax, locMax); // Overlap check
+            });
+          });
           if (!track) return;
 
           const startYard = Math.min(loc.from, loc.to);
