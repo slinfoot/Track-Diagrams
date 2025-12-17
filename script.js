@@ -35,8 +35,8 @@ function initializeApp() {
     yardsPerPixel: 1,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
-    showFromYards: 20 * 1760,
-    showToYards: 70 * 1760
+    showFromYards: 188 * 1760,
+    showToYards: 595826
 
   };
 
@@ -51,7 +51,7 @@ function initializeApp() {
   logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
 
   // Track scroll position
-  let scrollPosX = (((1760 * 65) + 880) - config.showFromYards) / config.yardsPerPixel;
+  let scrollPosX = (((1760 * 28) + 1320 + 331782) - config.showFromYards) / config.yardsPerPixel;
   let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
 
   // Initialize scroll position
@@ -204,11 +204,11 @@ function initializeApp() {
         ctx.font = '12px Arial';
         ctx.fillStyle = 'black';
         ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 30);
-        drawLine(screenX, 20, screenX, rulerCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.2)');
+        drawLine(screenX, 20, screenX, rulerCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.3)');
       }
 
       if (adjustedYard % 110 === 0 && adjustedYard % 440 !== 0) {
-        drawLine(screenX, 0, screenX, rulerCanvas.clientHeight, 1, 'rgba(0, 0, 255, 0.2)');
+        drawLine(screenX, 0, screenX, rulerCanvas.clientHeight, 1, 'rgba(0, 0, 255, 0.3)');
       }
 
       if (adjustedYard % 22 === 0 && adjustedYard % 110 !== 0) {
@@ -221,7 +221,8 @@ function initializeApp() {
           const sectionMidX = getX(sectionMidYard);
           ctx.font = '14px Arial';
           ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-          ctx.fillText(s.elr, sectionMidX - 10, 40);
+          ctx.textBaseline = 'top';
+          ctx.fillText(s.elr, sectionMidX - 10, 5);
 
           if (s.from >= visibleLeftLimitYards && s.from <= visibleRightLimitYards) {
             const interfaceX = getX(s.from);
@@ -532,7 +533,8 @@ function initializeApp() {
         });
         if (!track) return;
         // Get the tracks vertical grid number
-        const trackY = getYAtJunction(platform.track, station.at, platform.elr);
+        const platformMid = (platform.from + platform.to) / 2;
+        const trackY = getYAtJunction(platform.track, platformMid, platform.elr);
         if (trackY === null) return;
 
         // Check if platform is within vertical viewport bounds

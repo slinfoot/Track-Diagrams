@@ -4,13 +4,13 @@ const routes = [
         code: "ECML",
         length_yards: 595826,
         sections: [
-            { from: 0, to: 281952, elr: "ECM1", offset: 0 },
-            { from: 281952, to: 298320, elr: "ECM2", offset: 0 },
-            { from: 298320, to: 322960, elr: "ECM3", offset: 0 },
-            { from: 322960, to: 331760, elr: "ECM4", offset: 0 },
-            { from: 331760, to: 472670, elr: "ECM5", offset: 331760 },
-            { from: 472670, to: 472912, elr: "ECM6", offset: 331760 },
-            { from: 472912, to: 595826, elr: "ECM7", offset: 472912 },
+            { from: 0, to: 281902, elr: "ECM1", offset: 0 },
+            { from: 281902, to: 297781, elr: "ECM2", offset: 0 },
+            { from: 297781, to: 322052, elr: "ECM3", offset: 0 },
+            { from: 322052, to: 331781, elr: "ECM4", offset: 0 },
+            { from: 331781, to: 472692, elr: "ECM5", offset: 331782}, //Offset has been adjusted by -1yards to account for ECM5 starting at -1y
+            { from: 472692, to: 472942, elr: "ECM6", offset: 331782}, //Offset has been adjusted by -1yards to account for ECM5 starting at -1y
+            { from: 472942, to: 595826, elr: "ECM7", offset: 472930}, //Offset has been adjusted by 12yards to account for ECM7 starting at 0m 12y
         ],
         tracks: [
             {
@@ -238,7 +238,19 @@ const routes = [
             {
                 tid: 1100,
                 shape: [
-                    { from: 1253, to: 331760, yFrom: 50, yTo: 50 }
+                    { from: 1253, to: 331254, yFrom: 50, yTo: 50 },
+                    { from: 331254, to: 331298, yFrom: 50, yTo: 51 },
+                    { from: 331298, to: 331814, yFrom: 51, yTo: 51 },
+                    { from: 331814, to: 331858, yFrom: 51, yTo: 50 },
+                    { from: 331858, to: 595826, yFrom: 50, yTo: 50 }
+                ]
+            },
+            {
+                tid: 3804,
+                altRoute: { elr: "YMS" },
+                fromConnection: { type: "junction", at: 331814, track: 1100, sc_name: "801" },
+                shape: [
+                    { from: 331814, to: 332112, yFrom: null, yTo: 51 }
                 ]
             },
             {
@@ -296,7 +308,7 @@ const routes = [
             {
                 tid: 2100,
                 shape: [
-                    { from: 1664, to: 331760, yFrom: 49, yTo: 49 }
+                    { from: 1664, to: 595826, yFrom: 49, yTo: 49 }
                 ]
             },
             {
@@ -805,6 +817,69 @@ const routes = [
                     { from: 118325, to: 118369, yFrom: 51, yTo: null }
                 ]
             },
+            {
+                tid: 3700,
+                fromConnection: { type: "junction", at: 334112, track: 1100, sc_name: "831A" },
+                toConnection: { type: "junction", at: 334239, track: 2100, sc_name: "831B" },
+                shape: [
+                    { from: 334112, to: 334239, yFrom: null, yTo: null }
+                ]
+            },
+            {
+                tid: 1200,
+                fromConnection: { type: "junction", at: 334252, track: 2100, sc_name: "832A" },
+                toConnection: { type: "junction", at: 337193, track: 2100, sc_name: "851" },
+                shape: [
+                    { from: 334252, to: 334470, yFrom: null, yTo: 48 },
+                    { from: 334470, to: 337149, yFrom: 48, yTo: 48 },
+                    { from: 337149, to: 337193, yFrom: 48, yTo: null }
+                ]
+            },
+            {
+                tid: 2200,
+                fromConnection: { type: "junction", at: 334480, track: 1200, sc_name: "834A" },
+                shape: [
+                    { from: 334480, to: 334611, yFrom: null, yTo: 47 },
+                    { from: 334611, to: 337282, yFrom: 47, yTo: 47 },
+                    { from: 337282, to: 337392, yFrom: 47, yTo: 48 },
+                    { from: 337392, to: 382731, yFrom: 48, yTo: 48 },
+                    
+                ]
+            },
+            {
+                tid: 3700,
+                fromConnection: { type: "junction", at: 337211, track: 2100, sc_name: "835A" },
+                toConnection: { type: "junction", at: 337288, track: 1100, sc_name: "835B" },
+                shape: [
+                    { from: 337211, to: 337288, yFrom: null, yTo: null }
+                ]
+            },
+            {
+                tid: 1200,
+                fromConnection: { type: "junction", at: 337548, track: 1100, sc_name: "832A" },
+                toConnection: { type: "junction", at: 384063, track: 1100, sc_name: "884" },
+                shape: [
+                    { from: 337548, to: 337592, yFrom: null, yTo: 51 },
+                    { from: 337592, to: 384019, yFrom: 51, yTo: 51 },
+                    { from: 384019, to: 384063, yFrom: 51, yTo: null }
+                ]
+            },
+            {
+                tid: 3700,
+                fromConnection: { type: "junction", at: 382354, track: 2200, sc_name: "881A" },
+                toConnection: { type: "junction", at: 382554, track: 2100, sc_name: "881B" },
+                shape: [
+                    { from: 382354, to: 382554, yFrom: null, yTo: null }
+                ]
+            },
+            {
+                tid: 3700,
+                fromConnection: { type: "junction", at: 382568, track: 2100, sc_name: "882A" },
+                toConnection: { type: "junction", at: 382731, track: 2200, sc_name: "882B" },
+                shape: [
+                    { from: 382568, to: 382731, yFrom: null, yTo: null }
+                ]
+            },
             
 
         ],
@@ -1031,6 +1106,34 @@ const routes = [
                 platforms: [
                     { track: 1200, platformNo: 1, from: 103378, to: 103664, position: "below" },
                     { track: 2200, platformNo: 2, from: 103356, to: 103642, position: "above"},
+                ]
+            },
+            {
+                name: "York",
+                at: 331782,
+                platforms: [
+                    { track: 1100, platformNo: 3, from: 331518, to: 331814, position: "below" },
+                    { track: 3804, platformNo: 4, from: 331814, to: 332068, position: "below", elr: "YMS" },
+                    { track: 2100, platformNo: 5, from: 331474, to: 331936, position: "above" },
+                    
+                ]
+            },
+            {
+                name: "Thirsk",
+                at: 370832,
+                platforms: [
+                    { track: 1200, platformNo: 1, from: 370744, to: 370942, position: "above" },
+                    { track: 2200, platformNo: 2, from: 370744, to: 370936, position: "below" },
+                    
+                ]
+            },
+            {
+                name: "Northallerton",
+                at: 384500,
+                platforms: [
+                    { track: 1100, platformNo: 1, from: 384274, to: 384538, position: "below" },
+                    { track: 2100, platformNo: 2, from: 384384, to: 384670, position: "above" },
+                    
                 ]
             },
         ],
