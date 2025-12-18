@@ -11,6 +11,63 @@ const centerButton = document.getElementById('centerButton');
 const hamburgerMenu = document.getElementById('hamburgerMenu');
 const sidebar = document.getElementById('sidebar');
 const windowSizeInput = document.getElementById('windowSizeInput');
+const editDiagramBtn = document.getElementById('editDiagramBtn');
+const editPanel = document.getElementById('editPanel');
+const closeEditPanelBtn = document.getElementById('closeEditPanelBtn');
+const containerWrapper = document.getElementById('container-wrapper');
+const routeSelector = document.getElementById('routeSelector');
+
+// Populate route selector
+async function populateRouteSelector() {
+  if (!routeSelector) return;
+
+  try {
+    // Try to fetch routes from API
+    const response = await fetch(`${API_URL}`);
+    if (response.ok) {
+      const routes = await response.json();
+      if (Array.isArray(routes) && routes.length > 0) {
+        routeSelector.innerHTML = '';
+        routes.forEach(r => {
+          const option = document.createElement('option');
+          option.value = r.code;
+          option.textContent = `${r.code} - ${r.name || 'Unknown'}`;
+          routeSelector.appendChild(option);
+        });
+        if (route && route.code) {
+          routeSelector.value = route.code;
+        }
+        return;
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching routes from API:', err);
+  }
+
+  // Fallback to local data.js
+  if (typeof routes !== 'undefined' && Array.isArray(routes)) {
+    routeSelector.innerHTML = '';
+    routes.forEach(r => {
+      const option = document.createElement('option');
+      option.value = r.code;
+      option.textContent = `${r.code} - ${r.name || 'Unknown'}`;
+      routeSelector.appendChild(option);
+    });
+    if (route && route.code) {
+      routeSelector.value = route.code;
+    }
+  }
+}
+
+// Handle route selection change
+if (routeSelector) {
+  routeSelector.addEventListener('change', (e) => {
+    const selectedCode = e.target.value;
+    if (selectedCode) {
+      loadRoute(selectedCode);
+    }
+  });
+}
 
 // Toggle sidebar
 if (hamburgerMenu && sidebar) {
@@ -18,6 +75,32 @@ if (hamburgerMenu && sidebar) {
     hamburgerMenu.classList.toggle('active');
     sidebar.classList.toggle('open');
   });
+}
+
+// Toggle edit panel
+function toggleEditPanel() {
+  if (editPanel) {
+    editPanel.classList.toggle('open');
+    // Trigger resize/redraw after a brief delay to allow layout to adjust
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 310); // Slightly longer than CSS transition duration
+  }
+}
+
+if (editDiagramBtn) {
+  editDiagramBtn.addEventListener('click', () => {
+    toggleEditPanel();
+    // Close sidebar when opening edit panel
+    if (hamburgerMenu && sidebar) {
+      hamburgerMenu.classList.remove('active');
+      sidebar.classList.remove('open');
+    }
+  });
+}
+
+if (closeEditPanelBtn) {
+  closeEditPanelBtn.addEventListener('click', toggleEditPanel);
 }
 
 async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
@@ -29,6 +112,7 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
 
     route = await response.json();
     console.log('Route loaded from API:', route);
+    populateRouteSelector();
     initializeApp();
   } catch (err) {
     console.error('Error loading route from API:', err);
@@ -39,6 +123,7 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
       if (fallbackRoute) {
         route = fallbackRoute;
         console.warn('Loaded route from local data.js as fallback');
+        populateRouteSelector();
         initializeApp();
         return;
       }
@@ -1037,7 +1122,14 @@ function initializeApp() {
     });
   }
 
-  function updateConfigFromInputs(recenter = false) {
+  function updateConfigFromInputs(recenter = false, preserveCenter = false) {
+    // Calculate current center position before changes
+    let centerYards = null;
+    if (preserveCenter && container) {
+      const centerX = scrollPosX + (container.clientWidth / 2);
+      centerYards = config.showFromYards + (centerX * config.yardsPerPixel);
+    }
+
     const newYardsPerPixel = parseFloat(yardsPerPixelInput?.value);
     const newGridSpacing = parseFloat(gridSpacingInput?.value);
 
@@ -1050,6 +1142,15 @@ function initializeApp() {
     }
 
     applyLayoutSizing(recenter);
+
+    // Restore center position after layout change
+    if (preserveCenter && centerYards !== null && container) {
+      const newCenterX = (centerYards - config.showFromYards) / config.yardsPerPixel;
+      const newScrollX = newCenterX - (container.clientWidth / 2);
+      scrollPosX = Math.max(0, newScrollX);
+      container.scrollLeft = scrollPosX;
+      drawAll();
+    }
   }
 
   function centerFromInputs() {
@@ -1089,11 +1190,11 @@ function initializeApp() {
   });
 
   if (yardsPerPixelInput) {
-    yardsPerPixelInput.addEventListener('input', () => updateConfigFromInputs(true));
+    yardsPerPixelInput.addEventListener('input', () => updateConfigFromInputs(true, true));
   }
 
   if (gridSpacingInput) {
-    gridSpacingInput.addEventListener('input', () => updateConfigFromInputs(true));
+    gridSpacingInput.addEventListener('input', () => updateConfigFromInputs(true, false));
   }
 
   // Window size control

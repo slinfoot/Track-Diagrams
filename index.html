@@ -18,6 +18,16 @@
   </div>
   <div id="sidebar" class="sidebar">
     <div class="sidebar-content">
+      <section class="settings-section">
+        <h3>Route Selection</h3>
+        <div class="setting-item">
+          <label for="routeSelector">Select Route</label>
+          <select id="routeSelector">
+            <option value="">Loading routes...</option>
+          </select>
+        </div>
+      </section>
+
       <h2>Settings</h2>
       
       <section class="settings-section">
@@ -26,16 +36,23 @@
           <label for="windowSizeInput">Window Size (miles)</label>
           <input type="number" id="windowSizeInput" min="1" max="50" step="1" value="10">
         </div>
+        <div class="setting-item">
+          <label for="yardsPerPixelInput">Yards per Pixel</label>
+          <input type="number" id="yardsPerPixelInput" min="0.1" step="0.05" value="1">
+        </div>
+        <div class="setting-item">
+          <label for="gridSpacingInput">Grid Spacing (px)</label>
+          <input type="number" id="gridSpacingInput" min="5" step="1" value="50">
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3>Diagram Management</h3>
+        <button id="editDiagramBtn" class="sidebar-button">Edit Diagram</button>
       </section>
     </div>
   </div>
   <div id="controls">
-    <label for="yardsPerPixelInput">Yards per pixel
-      <input id="yardsPerPixelInput" type="number" min="0.1" step="0.05" value="1">
-    </label>
-    <label for="gridSpacingInput">Horizontal grid spacing (px)
-      <input id="gridSpacingInput" type="number" min="5" step="1" value="50">
-    </label>
     <label for="elrInput">ELR
       <input id="elrInput" type="text" placeholder="e.g. ECM5" value="">
     </label>
@@ -55,6 +72,15 @@
     <div id="container">
       <!-- Spacer element sized in JS to define scrollbars -->
       <div id="logicalSize"></div>
+    </div>
+  </div>
+  <div id="editPanel" class="edit-panel">
+    <div class="edit-panel-header">
+      <h3>Edit Diagram</h3>
+      <button id="closeEditPanelBtn" class="close-btn">×</button>
+    </div>
+    <div class="edit-panel-content">
+      <!-- Editing UI will go here -->
     </div>
   </div>
   <script src="data.js"></script>
