@@ -111,6 +111,10 @@
                   <span>Filter by TID:</span>
                   <input type="text" id="tidFilter" placeholder="Enter TID...">
                 </label>
+                <div class="tracks-filter-actions">
+                  <button type="button" id="addTrackBtn" class="sidebar-button">Add New Track</button>
+                  <button type="button" id="editSelectedTrackBtn" class="sidebar-button" disabled>Edit Selected</button>
+                </div>
               </div>
               <div class="tracks-table-header">
                 <table class="tracks-table">
@@ -162,57 +166,6 @@
                 </table>
               </div>
             </div>
-
-            <div class="tracks-detail-pane">
-              <div id="trackDetailForm" class="track-detail-form">
-                <h4 class="detail-header">Track Details</h4>
-                <div class="detail-empty">Select a track from the table to edit details.</div>
-                <div class="detail-content" hidden>
-                  <label class="detail-field">
-                    <span>TID</span>
-                    <input type="text" id="detailTid" readonly>
-                  </label>
-
-                  <div class="detail-row">
-                    <label class="detail-field">
-                      <span>From Type</span>
-                      <input type="text" id="detailFromType">
-                    </label>
-                    <label class="detail-field">
-                      <span>From SC</span>
-                      <input type="text" id="detailFromSc">
-                    </label>
-                    <label class="detail-field">
-                      <span>From Track</span>
-                      <input type="number" id="detailFromTrack" step="1">
-                    </label>
-                    <label class="detail-field">
-                      <span>From At</span>
-                      <input type="number" id="detailFromAt" step="1">
-                    </label>
-                  </div>
-
-                  <div class="detail-row">
-                    <label class="detail-field">
-                      <span>To Type</span>
-                      <input type="text" id="detailToType">
-                    </label>
-                    <label class="detail-field">
-                      <span>To SC</span>
-                      <input type="text" id="detailToSc">
-                    </label>
-                    <label class="detail-field">
-                      <span>To Track</span>
-                      <input type="number" id="detailToTrack" step="1">
-                    </label>
-                    <label class="detail-field">
-                      <span>To At</span>
-                      <input type="number" id="detailToAt" step="1">
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="edit-tab-content" data-tab="sections">
             <div class="tab-placeholder">Sections editor coming soon.</div>
@@ -227,6 +180,153 @@
       </div>
     </div>
   </div>
+
+  <!-- Track Edit Modal -->
+  <div id="trackEditModal" class="modal" hidden>
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Edit Track</h3>
+        <button type="button" id="modalCloseBtn" class="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="trackEditForm">
+          <div class="form-row">
+            <label class="form-field">
+              <span>TID</span>
+              <input type="number" id="formTid" required>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <h4>Alt Route</h4>
+            <div class="form-row">
+              <label class="form-field">
+                <span>ELR</span>
+                <input type="text" id="formAltRouteElr" placeholder="e.g., ECM1">
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h4>From Connection</h4>
+            <div class="form-row">
+              <label class="form-field">
+                <span>Type</span>
+                <input type="text" id="formFromType" placeholder="e.g., buffer_stop, junction">
+              </label>
+              <label class="form-field">
+                <span>SC Name</span>
+                <input type="text" id="formFromSc" placeholder="e.g., 5041">
+              </label>
+              <label class="form-field">
+                <span>Track</span>
+                <input type="number" id="formFromTrack" placeholder="TID">
+              </label>
+              <label class="form-field">
+                <span>At</span>
+                <div class="input-with-calc">
+                  <input type="number" id="formFromAt" placeholder="Yards">
+                  <button type="button" class="btn-calc" data-target="formFromAt" title="Calculate from ELR/Mile/Yard">📍</button>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h4>To Connection</h4>
+            <div class="form-row">
+              <label class="form-field">
+                <span>Type</span>
+                <input type="text" id="formToType" placeholder="e.g., buffer_stop, junction">
+              </label>
+              <label class="form-field">
+                <span>SC Name</span>
+                <input type="text" id="formToSc" placeholder="e.g., 5041">
+              </label>
+              <label class="form-field">
+                <span>Track</span>
+                <input type="number" id="formToTrack" placeholder="TID">
+              </label>
+              <label class="form-field">
+                <span>At</span>
+                <div class="input-with-calc">
+                  <input type="number" id="formToAt" placeholder="Yards">
+                  <button type="button" class="btn-calc" data-target="formToAt" title="Calculate from ELR/Mile/Yard">📍</button>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="shape-section-header">
+              <h4>Shape</h4>
+              <button type="button" id="addShapeBtn" class="btn-add-shape">+ Add Segment</button>
+            </div>
+            <div class="shape-table-container">
+              <table class="modal-shape-table">
+                <thead>
+                  <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Y From</th>
+                    <th>Y To</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="shapeTableModalBody">
+                  <tr class="shape-empty-row">
+                    <td colspan="5">No shape segments. Click "+ Add Segment" to create one.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="modalCancelBtn" class="btn-secondary">Cancel</button>
+            <button type="submit" id="modalSaveBtn" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Yards Calculator Modal -->
+  <div id="yardsCalcModal" class="modal modal-small" hidden>
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-calc-content">
+      <div class="modal-header">
+        <h3>Calculate Yards</h3>
+        <button type="button" id="calcModalCloseBtn" class="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="yardsCalcForm">
+          <div class="form-row">
+            <label class="form-field">
+              <span>ELR</span>
+              <input type="text" id="calcElr" placeholder="e.g., ECM1" required>
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Miles</span>
+              <input type="number" id="calcMiles" placeholder="0" required>
+            </label>
+            <label class="form-field">
+              <span>Yards</span>
+              <input type="number" id="calcYards" placeholder="0" required>
+            </label>
+          </div>
+          <div class="modal-actions">
+            <button type="button" id="calcCancelBtn" class="btn-secondary">Cancel</button>
+            <button type="submit" id="calcOkBtn" class="btn-primary">OK</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="data.js"></script>
   <script src="script.js"></script>
   <script src="ui.js"></script>

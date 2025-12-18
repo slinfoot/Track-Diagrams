@@ -20,20 +20,49 @@ const editRouteCode = document.getElementById('editRouteCode');
 const editRouteLength = document.getElementById('editRouteLength');
 const tracksTableBody = document.getElementById('tracksTableBody');
 const tidFilter = document.getElementById('tidFilter');
+const addTrackBtn = document.getElementById('addTrackBtn');
+const editSelectedTrackBtn = document.getElementById('editSelectedTrackBtn');
 const editTabButtons = Array.from(document.querySelectorAll('.edit-tab-button'));
+const editTabPanels = Array.from(document.querySelectorAll('.edit-tab-content'));
+
+// Modal elements
+const trackEditModal = document.getElementById('trackEditModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+const modalCancelBtn = document.getElementById('modalCancelBtn');
+const trackEditForm = document.getElementById('trackEditForm');
+const formTid = document.getElementById('formTid');
+const formFromType = document.getElementById('formFromType');
+const formFromSc = document.getElementById('formFromSc');
+const formFromTrack = document.getElementById('formFromTrack');
+const formFromAt = document.getElementById('formFromAt');
+const formToType = document.getElementById('formToType');
+const formToSc = document.getElementById('formToSc');
+const formToTrack = document.getElementById('formToTrack');
+const formToAt = document.getElementById('formToAt');
+const formAltRouteElr = document.getElementById('formAltRouteElr');
+const shapeTableModalBody = document.getElementById('shapeTableModalBody');
+const addShapeBtn = document.getElementById('addShapeBtn');
+
+// Yards calculator modal
+const yardsCalcModal = document.getElementById('yardsCalcModal');
+const calcModalCloseBtn = document.getElementById('calcModalCloseBtn');
+const calcCancelBtn = document.getElementById('calcCancelBtn');
+const yardsCalcForm = document.getElementById('yardsCalcForm');
+const calcElr = document.getElementById('calcElr');
+const calcMiles = document.getElementById('calcMiles');
+const calcYards = document.getElementById('calcYards');
 
 let selectedTrack = null;
+let selectedTrackTid = null;
+let isAddingNewTrack = false;
+let editingShapeIndex = null;
+let calcTargetInput = null;
 
-const detailTid = document.getElementById('detailTid');
-const detailFromType = document.getElementById('detailFromType');
-const detailFromSc = document.getElementById('detailFromSc');
-const detailFromTrack = document.getElementById('detailFromTrack');
-const detailFromAt = document.getElementById('detailFromAt');
-const detailToType = document.getElementById('detailToType');
-const detailToSc = document.getElementById('detailToSc');
-const detailToTrack = document.getElementById('detailToTrack');
-const detailToAt = document.getElementById('detailToAt');
-const editTabPanels = Array.from(document.querySelectorAll('.edit-tab-content'));
+function updateTrackActionButtons() {
+  if (!editSelectedTrackBtn) return;
+  editSelectedTrackBtn.disabled = !selectedTrack;
+}
 
 function toggleEditPanel() {
   if (editPanel) {
@@ -168,6 +197,9 @@ window.addEventListener('diagram:routeLoaded', () => {
   }
   const r = window.TrackDiagramApp?.getRoute();
   if (r) {
+    selectedTrack = null;
+    selectedTrackTid = null;
+    updateTrackActionButtons();
     if (editRouteName) editRouteName.value = r.name || '';
     if (editRouteCode) editRouteCode.value = r.code || '';
     if (editRouteLength) {
@@ -240,6 +272,9 @@ function renderTracksTable(filterTid = '') {
   const r = window.TrackDiagramApp?.getRoute();
   if (!r?.tracks?.length) {
     tracksTableBody.innerHTML = '<tr><td colspan="10" class="table-empty">No tracks available.</td></tr>';
+    selectedTrack = null;
+    selectedTrackTid = null;
+    updateTrackActionButtons();
     return;
   }
   
@@ -252,6 +287,9 @@ function renderTracksTable(filterTid = '') {
   
   if (!tracks.length) {
     tracksTableBody.innerHTML = '<tr><td colspan="10" class="table-empty">No tracks match the filter.</td></tr>';
+    selectedTrack = null;
+    selectedTrackTid = null;
+    updateTrackActionButtons();
     return;
   }
   
@@ -298,7 +336,8 @@ function renderTracksTable(filterTid = '') {
     const toConnType = track.toConnection?.type ?? '-';
     const scFrom = track.fromConnection?.sc_name ?? '-';
     const scTo = track.toConnection?.sc_name ?? '-';
-    return '<tr data-track-index="' + index + '" class="track-row">' +
+    const tidVal = track.tid ?? '';
+    return '<tr data-track-index="' + index + '" data-tid="' + String(tidVal) + '" class="track-row">' +
       `<td>${elr}</td>` +
       `<td>${track.tid ?? ''}</td>` +
       `<td>${fromFormatted}</td>` +
@@ -312,6 +351,23 @@ function renderTracksTable(filterTid = '') {
       '</tr>';
   }).join('');
   tracksTableBody.innerHTML = rows;
+
+  // Restore selection if possible
+  if (selectedTrackTid != null) {
+    const tidToFind = String(selectedTrackTid);
+    let found = false;
+    tracksTableBody.querySelectorAll('.track-row').forEach(row => {
+      if (row.dataset.tid === tidToFind) {
+        row.classList.add('selected');
+        found = true;
+      }
+    });
+    if (!found) {
+      selectedTrack = null;
+      selectedTrackTid = null;
+    }
+  }
+  updateTrackActionButtons();
   
   // Add click handlers to center on track and show details
   tracksTableBody.querySelectorAll('.track-row').forEach(row => {
@@ -324,119 +380,135 @@ function renderTracksTable(filterTid = '') {
       row.classList.add('selected');
       
       if (track) {
+        selectedTrack = track;
+        selectedTrackTid = track.tid ?? null;
+        updateTrackActionButtons();
+
         // Center diagram on track
         const extents = computeTrackExtents(track);
         if (extents) {
           const centerYards = (extents.minFrom + extents.maxFrom) / 2;
           window.TrackDiagramApp?.centerOnYards?.(centerYards, true);
         }
-        
-        // Populate detail form
-        selectedTrack = track;
-        populateTrackDetails(track, r);
       }
     });
   });
 }
 
-function populateTrackDetails(track, route) {
-  const detailEmpty = document.querySelector('.detail-empty');
-  const detailContent = document.querySelector('.detail-content');
+function getNextTid(route) {
+  const tids = (route?.tracks || [])
+    .map(t => Number(t?.tid))
+    .filter(n => Number.isFinite(n));
+  if (!tids.length) return 1;
+  return Math.max(...tids) + 1;
+}
+
+function showTrackModal(track, isNew = false) {
+  if (!trackEditModal) return;
+  isAddingNewTrack = isNew;
+
+  if (modalTitle) {
+    modalTitle.textContent = isNew ? 'Add New Track' : 'Edit Track';
+  }
+
+  // Populate form
+  if (formTid) formTid.value = track.tid ?? '';
+  if (formFromType) formFromType.value = track.fromConnection?.type ?? '';
+  if (formFromSc) formFromSc.value = track.fromConnection?.sc_name ?? '';
+  if (formFromTrack) formFromTrack.value = track.fromConnection?.track ?? '';
+  if (formFromAt) formFromAt.value = track.fromConnection?.at ?? '';
+  if (formToType) formToType.value = track.toConnection?.type ?? '';
+  if (formToSc) formToSc.value = track.toConnection?.sc_name ?? '';
+  if (formToTrack) formToTrack.value = track.toConnection?.track ?? '';
+  if (formToAt) formToAt.value = track.toConnection?.at ?? '';
+  if (formAltRouteElr) formAltRouteElr.value = track.altRoute?.elr ?? '';
+
+  renderShapeTable();
+  trackEditModal.hidden = false;
+}
+
+function hideTrackModal() {
+  if (trackEditModal) trackEditModal.hidden = true;
+  if (trackEditForm) trackEditForm.reset();
+}
+
+function saveTrackFromForm() {
+  if (!selectedTrack) return;
+
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r) return;
+
+  // Update track from form
+  const newTid = Number(formTid?.value);
+  if (Number.isFinite(newTid)) {
+    selectedTrack.tid = newTid;
+    selectedTrackTid = newTid;
+  }
+
+  // From connection
+  if (!selectedTrack.fromConnection) selectedTrack.fromConnection = {};
+  selectedTrack.fromConnection.type = formFromType?.value || undefined;
+  selectedTrack.fromConnection.sc_name = formFromSc?.value || undefined;
+  const fromTrackVal = formFromTrack?.value;
+  selectedTrack.fromConnection.track = fromTrackVal ? Number(fromTrackVal) : undefined;
+  const fromAtVal = formFromAt?.value;
+  selectedTrack.fromConnection.at = fromAtVal ? Number(fromAtVal) : undefined;
+
+  // To connection
+  if (!selectedTrack.toConnection) selectedTrack.toConnection = {};
+  selectedTrack.toConnection.type = formToType?.value || undefined;
+  selectedTrack.toConnection.sc_name = formToSc?.value || undefined;
+  const toTrackVal = formToTrack?.value;
+  selectedTrack.toConnection.track = toTrackVal ? Number(toTrackVal) : undefined;
+  const toAtVal = formToAt?.value;
+  selectedTrack.toConnection.at = toAtVal ? Number(toAtVal) : undefined;
+
+  // Alt Route
+  const altElrVal = formAltRouteElr?.value?.trim();
+  if (altElrVal) {
+    if (!selectedTrack.altRoute) selectedTrack.altRoute = {};
+    selectedTrack.altRoute.elr = altElrVal;
+  } else {
+    delete selectedTrack.altRoute;
+  }
+
+  // Shape array is already updated in-place via renderShapeTable inline editing
+
+  // If adding new, push to route
+  if (isAddingNewTrack) {
+    if (!Array.isArray(r.tracks)) r.tracks = [];
+    r.tracks.push(selectedTrack);
+  }
+
+  // Clear filter if needed
+  let effectiveFilter = tidFilter?.value ?? '';
+  if (effectiveFilter.trim() && !String(selectedTrackTid).toLowerCase().includes(effectiveFilter.trim().toLowerCase())) {
+    effectiveFilter = '';
+    if (tidFilter) tidFilter.value = '';
+  }
+
+  hideTrackModal();
+  renderTracksTable(effectiveFilter);
+}
+
+function addNewTrack() {
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r) return;
+
+  const newTid = getNextTid(r);
+  const newTrack = {
+    tid: newTid,
+    shape: [{ from: 0, to: 0, yFrom: null, yTo: null }]
+  };
   
-  if (detailEmpty) detailEmpty.style.display = 'none';
-
-  if (detailContent) detailContent.hidden = false;
-
-  if (detailTid) detailTid.value = track.tid ?? '';
-
-  // fromConnection controls
-  const fc = track.fromConnection || {};
-  if (detailFromType) detailFromType.value = fc.type ?? '';
-  if (detailFromSc) detailFromSc.value = fc.sc_name ?? '';
-  if (detailFromTrack) detailFromTrack.value = (fc.track ?? '') === null ? '' : (fc.track ?? '');
-  if (detailFromAt) detailFromAt.value = (fc.at ?? '') === null ? '' : (fc.at ?? '');
-
-  // toConnection controls
-  const tc = track.toConnection || {};
-  if (detailToType) detailToType.value = tc.type ?? '';
-  if (detailToSc) detailToSc.value = tc.sc_name ?? '';
-  if (detailToTrack) detailToTrack.value = (tc.track ?? '') === null ? '' : (tc.track ?? '');
-  if (detailToAt) detailToAt.value = (tc.at ?? '') === null ? '' : (tc.at ?? '');
+  selectedTrack = newTrack;
+  selectedTrackTid = newTid;
+  showTrackModal(newTrack, true);
 }
 
-function ensureFromConnection(track) {
-  if (!track.fromConnection || typeof track.fromConnection !== 'object') {
-    track.fromConnection = {};
-  }
-  return track.fromConnection;
-}
-
-function ensureToConnection(track) {
-  if (!track.toConnection || typeof track.toConnection !== 'object') {
-    track.toConnection = {};
-  }
-  return track.toConnection;
-}
-
-// In-memory editing (no persistence yet)
-if (detailFromType) {
-  detailFromType.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    ensureFromConnection(selectedTrack).type = detailFromType.value;
-  });
-}
-
-if (detailFromSc) {
-  detailFromSc.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    ensureFromConnection(selectedTrack).sc_name = detailFromSc.value;
-  });
-}
-
-if (detailFromTrack) {
-  detailFromTrack.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    const v = detailFromTrack.value;
-    ensureFromConnection(selectedTrack).track = v === '' ? null : Number(v);
-  });
-}
-
-if (detailFromAt) {
-  detailFromAt.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    const v = detailFromAt.value;
-    ensureFromConnection(selectedTrack).at = v === '' ? null : Number(v);
-  });
-}
-
-if (detailToType) {
-  detailToType.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    ensureToConnection(selectedTrack).type = detailToType.value;
-  });
-}
-
-if (detailToSc) {
-  detailToSc.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    ensureToConnection(selectedTrack).sc_name = detailToSc.value;
-  });
-}
-
-if (detailToTrack) {
-  detailToTrack.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    const v = detailToTrack.value;
-    ensureToConnection(selectedTrack).track = v === '' ? null : Number(v);
-  });
-}
-
-if (detailToAt) {
-  detailToAt.addEventListener('input', () => {
-    if (!selectedTrack) return;
-    const v = detailToAt.value;
-    ensureToConnection(selectedTrack).at = v === '' ? null : Number(v);
-  });
+function editSelectedTrack() {
+  if (!selectedTrack) return;
+  showTrackModal(selectedTrack, false);
 }
 
 function setActiveEditTab(tabName) {
@@ -457,9 +529,241 @@ if (tidFilter) {
   });
 }
 
+if (addTrackBtn) {
+  addTrackBtn.addEventListener('click', addNewTrack);
+}
+
+if (editSelectedTrackBtn) {
+  editSelectedTrackBtn.addEventListener('click', editSelectedTrack);
+  updateTrackActionButtons();
+}
+
+function renderShapeTable() {
+  if (!shapeTableModalBody || !selectedTrack) return;
+  
+  const shape = Array.isArray(selectedTrack.shape) ? selectedTrack.shape : [];
+  if (!shape.length) {
+    shapeTableModalBody.innerHTML = '<tr class="shape-empty-row"><td colspan="5">No shape segments. Click "+ Add Segment" to create one.</td></tr>';
+    return;
+  }
+
+  shapeTableModalBody.innerHTML = shape.map((seg, idx) => {
+    return `<tr>
+      <td>
+        <div class="input-with-calc">
+          <input type="number" class="shape-input" id="shapeFrom_${idx}" data-idx="${idx}" data-field="from" value="${seg.from ?? ''}" />
+          <button type="button" class="btn-calc" data-target="shapeFrom_${idx}" title="Calculate from ELR/Mile/Yard">📍</button>
+        </div>
+      </td>
+      <td>
+        <div class="input-with-calc">
+          <input type="number" class="shape-input" id="shapeTo_${idx}" data-idx="${idx}" data-field="to" value="${seg.to ?? ''}" />
+          <button type="button" class="btn-calc" data-target="shapeTo_${idx}" title="Calculate from ELR/Mile/Yard">📍</button>
+        </div>
+      </td>
+      <td>
+        <input type="number" class="shape-input" id="shapeYFrom_${idx}" data-idx="${idx}" data-field="yFrom" value="${seg.yFrom ?? ''}" />
+      </td>
+      <td>
+        <input type="number" class="shape-input" id="shapeYTo_${idx}" data-idx="${idx}" data-field="yTo" value="${seg.yTo ?? ''}" />
+      </td>
+      <td class="shape-actions">
+        <button type="button" class="btn-shape-action btn-shape-delete" data-idx="${idx}">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Attach input change handlers
+  shapeTableModalBody.querySelectorAll('.shape-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      const val = e.target.value.trim();
+      if (!selectedTrack.shape[idx]) return;
+      selectedTrack.shape[idx][field] = val === '' ? null : Number(val);
+    });
+  });
+
+  // Attach delete handlers
+  shapeTableModalBody.querySelectorAll('.btn-shape-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.currentTarget.dataset.idx);
+      if (selectedTrack.shape && Array.isArray(selectedTrack.shape)) {
+        selectedTrack.shape.splice(idx, 1);
+        renderShapeTable();
+      }
+    });
+  });
+
+  // Attach calculator button handlers
+  shapeTableModalBody.querySelectorAll('.btn-calc').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const targetId = e.currentTarget.dataset.target;
+      const targetInput = document.getElementById(targetId);
+      if (targetInput) {
+        showYardsCalc(targetInput);
+      }
+    });
+  });
+}
+
+function addShapeSegment() {
+  if (!selectedTrack) return;
+  if (!Array.isArray(selectedTrack.shape)) selectedTrack.shape = [];
+  selectedTrack.shape.push({ from: null, to: null, yFrom: null, yTo: null });
+  renderShapeTable();
+}
+
 if (editTabButtons.length) {
   editTabButtons.forEach(btn => {
     btn.addEventListener('click', () => setActiveEditTab(btn.dataset.tab));
   });
   setActiveEditTab(editTabButtons[0].dataset.tab);
+}
+
+if (addShapeBtn) {
+  addShapeBtn.addEventListener('click', addShapeSegment);
+}
+
+// Yards Calculator
+function showYardsCalc(targetInput) {
+  if (!yardsCalcModal) return;
+  calcTargetInput = targetInput;
+  
+  const currentYards = Number(targetInput.value);
+  const route = window.TrackDiagramApp?.getRoute();
+  const hasAltRoute = selectedTrack?.altRoute?.elr;
+  
+  // Reset form
+  if (calcElr) calcElr.value = '';
+  if (calcMiles) calcMiles.value = '';
+  if (calcYards) calcYards.value = '';
+  
+  // If there's already a yardage value, reverse-calculate
+  if (Number.isFinite(currentYards) && currentYards !== 0) {
+    if (hasAltRoute) {
+      // Use altRoute ELR, but don't calculate miles/yards
+      if (calcElr) calcElr.value = selectedTrack.altRoute.elr;
+    } else if (route?.sections?.length) {
+      // Find the section that contains this yardage (including boundary for last section)
+      const section = route.sections.find(s => currentYards >= s.from && currentYards <= s.to);
+      if (section) {
+        // Set ELR from section
+        if (calcElr) calcElr.value = section.elr;
+        
+        // Calculate miles and yards relative to section offset
+        const relativeYards = currentYards - (section.offset || 0);
+        const miles = Math.floor(relativeYards / 1760);
+        const yards = relativeYards % 1760;
+        
+        if (calcMiles) calcMiles.value = miles;
+        if (calcYards) calcYards.value = Math.round(yards);
+      }
+    }
+  }
+  
+  yardsCalcModal.hidden = false;
+  if (calcElr) calcElr.focus();
+}
+
+function hideYardsCalc() {
+  if (yardsCalcModal) yardsCalcModal.hidden = true;
+  if (yardsCalcForm) yardsCalcForm.reset();
+  calcTargetInput = null;
+}
+
+function calculateAndSetYards() {
+  if (!calcTargetInput) return;
+  
+  const elr = calcElr?.value?.trim();
+  const miles = Number(calcMiles?.value);
+  const yards = Number(calcYards?.value);
+  
+  if (!elr || !Number.isFinite(miles) || !Number.isFinite(yards)) {
+    window.alert('Please enter valid ELR, Miles, and Yards.');
+    return;
+  }
+  
+  const route = window.TrackDiagramApp?.getRoute();
+  let offset = 0;
+  
+  // Find section with matching ELR to get offset
+  if (route?.sections?.length) {
+    const section = route.sections.find(s => s.elr === elr);
+    if (section) {
+      offset = section.offset || 0;
+    }
+  }
+  
+  // Calculate total yards: (miles * 1760) + yards + offset
+  const totalYards = (miles * 1760) + yards + offset;
+  
+  // Set the target input value
+  calcTargetInput.value = totalYards;
+  
+  // Trigger input event to update the track data
+  const event = new Event('input', { bubbles: true });
+  calcTargetInput.dispatchEvent(event);
+  
+  hideYardsCalc();
+}
+
+// Wire up calculator modal handlers
+if (calcModalCloseBtn) {
+  calcModalCloseBtn.addEventListener('click', hideYardsCalc);
+}
+
+if (calcCancelBtn) {
+  calcCancelBtn.addEventListener('click', hideYardsCalc);
+}
+
+if (yardsCalcForm) {
+  yardsCalcForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculateAndSetYards();
+  });
+}
+
+if (yardsCalcModal) {
+  yardsCalcModal.addEventListener('click', (e) => {
+    if (e.target === yardsCalcModal || e.target.classList.contains('modal-overlay')) {
+      hideYardsCalc();
+    }
+  });
+}
+
+// Wire up calculator buttons on main form (fromAt, toAt)
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('btn-calc') && !e.target.closest('#shapeTableModalBody')) {
+    const targetId = e.target.dataset.target;
+    const targetInput = document.getElementById(targetId);
+    if (targetInput) {
+      showYardsCalc(targetInput);
+    }
+  }
+});
+
+// Modal handlers
+if (modalCloseBtn) {
+  modalCloseBtn.addEventListener('click', hideTrackModal);
+}
+
+if (modalCancelBtn) {
+  modalCancelBtn.addEventListener('click', hideTrackModal);
+}
+
+if (trackEditForm) {
+  trackEditForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveTrackFromForm();
+  });
+}
+
+// Close modal on overlay click
+if (trackEditModal) {
+  trackEditModal.addEventListener('click', (e) => {
+    if (e.target === trackEditModal || e.target.classList.contains('modal-overlay')) {
+      hideTrackModal();
+    }
+  });
 }
