@@ -2,6 +2,8 @@ const API_URL = 'http://localhost:3000/api/routes';
 const DEFAULT_ROUTE_CODE = 'ECML';
 
 let route = null;
+const yardsPerPixelInput = document.getElementById('yardsPerPixelInput');
+const gridSpacingInput = document.getElementById('gridSpacingInput');
 
 async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
   try {
@@ -32,14 +34,19 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
 }
 
 function initializeApp() {
-  // Configuration for logical distances
+  if (!route) {
+    console.error('Cannot initialize app without route data.');
+    return;
+  }
+
+  // Configuration for logical distances (mutable so UI changes can tweak values)
   const config = {
     totalYards: route.length_yards,
-    yardsPerPixel: 1,
-    horizontalGridSpacing: 50,
+    yardsPerPixel: parseFloat(yardsPerPixelInput?.value) || 1,
+    horizontalGridSpacing: parseFloat(gridSpacingInput?.value) || 50,
     horizontalGridLinesNo: 100,
     showFromYards: 0,
-    showToYards: 595826
+    showToYards: route.length_yards || 0
 
   };
 
@@ -50,8 +57,23 @@ function initializeApp() {
   const dpr = window.devicePixelRatio || 1;
 
   // Programmatically set spacer size
-  logicalSize.style.width = `${(config.showToYards - config.showFromYards) / config.yardsPerPixel}px`;
-  logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
+  function centerOnRow(rowIndex = 50) {
+    if (!container) return;
+    const targetY = rowIndex * config.horizontalGridSpacing;
+    const centerY = container.clientHeight / 2;
+    scrollPosY = Math.max(0, targetY - centerY);
+    container.scrollTop = scrollPosY;
+  }
+
+  function applyLayoutSizing(recenter = false) {
+    logicalSize.style.width = `${(config.showToYards - config.showFromYards) / config.yardsPerPixel}px`;
+    logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
+    canvasResize();
+    if (recenter) {
+      centerOnRow(50);
+    }
+    drawAll();
+  }
 
   // Track scroll position
   let scrollPosX = (((1760 * 28) + 1320 + 331782) - config.showFromYards) / config.yardsPerPixel;
@@ -68,6 +90,7 @@ function initializeApp() {
   function canvasResize() {
     rulerCanvas.width = rulerCanvas.clientWidth * dpr;
     rulerCanvas.height = rulerCanvas.clientHeight * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
   }
 
@@ -945,6 +968,21 @@ function initializeApp() {
     });
   }
 
+  function updateConfigFromInputs(recenter = false) {
+    const newYardsPerPixel = parseFloat(yardsPerPixelInput?.value);
+    const newGridSpacing = parseFloat(gridSpacingInput?.value);
+
+    if (Number.isFinite(newYardsPerPixel) && newYardsPerPixel > 0) {
+      config.yardsPerPixel = newYardsPerPixel;
+    }
+
+    if (Number.isFinite(newGridSpacing) && newGridSpacing > 0) {
+      config.horizontalGridSpacing = newGridSpacing;
+    }
+
+    applyLayoutSizing(recenter);
+  }
+
   function drawAll() {
     drawRuler();
     drawHorizontalGridLines();
@@ -956,14 +994,21 @@ function initializeApp() {
   }
 
   // Initial setup
-  canvasResize();
-  drawAll();
+  applyLayoutSizing(true);
 
   // Redraw ruler when viewport resizes
   window.addEventListener("resize", () => {
     canvasResize();
     drawAll();
   });
+
+  if (yardsPerPixelInput) {
+    yardsPerPixelInput.addEventListener('input', () => updateConfigFromInputs(true));
+  }
+
+  if (gridSpacingInput) {
+    gridSpacingInput.addEventListener('input', () => updateConfigFromInputs(true));
+  }
 
   // Update scroll position
   container.addEventListener('scroll', () => {

@@ -8,6 +8,14 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="controls">
+    <label for="yardsPerPixelInput">Yards per pixel
+      <input id="yardsPerPixelInput" type="number" min="0.1" step="0.05" value="1">
+    </label>
+    <label for="gridSpacingInput">Horizontal grid spacing (px)
+      <input id="gridSpacingInput" type="number" min="5" step="1" value="50">
+    </label>
+  </div>
   <div id="container-wrapper">
     <!-- Overlay canvas for ruler -->
     <canvas id="rulerCanvas"></canvas>
