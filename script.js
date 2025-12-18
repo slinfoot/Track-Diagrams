@@ -4,6 +4,10 @@ const DEFAULT_ROUTE_CODE = 'ECML';
 let route = null;
 const yardsPerPixelInput = document.getElementById('yardsPerPixelInput');
 const gridSpacingInput = document.getElementById('gridSpacingInput');
+const elrInput = document.getElementById('elrInput');
+const mileInput = document.getElementById('mileInput');
+const yardInput = document.getElementById('yardInput');
+const centerButton = document.getElementById('centerButton');
 
 async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
   try {
@@ -45,10 +49,13 @@ function initializeApp() {
     yardsPerPixel: parseFloat(yardsPerPixelInput?.value) || 1,
     horizontalGridSpacing: parseFloat(gridSpacingInput?.value) || 50,
     horizontalGridLinesNo: 100,
+    windowSizeYards: 17600, // 10 miles
     showFromYards: 0,
-    showToYards: route.length_yards || 0
-
+    showToYards: 17600
   };
+
+  // Track current center position in full route for windowed scrolling
+  let currentCenterYards = (((1760 * 28) + 1320 + 331782) || (config.windowSizeYards / 2));
 
   // DOM references
   const container = document.getElementById('container');
@@ -65,6 +72,60 @@ function initializeApp() {
     container.scrollTop = scrollPosY;
   }
 
+  function updateVisibleWindow(centerYards) {
+    const halfWindow = config.windowSizeYards / 2;
+    let newFrom = centerYards - halfWindow;
+    let newTo = centerYards + halfWindow;
+
+    // Clamp to route bounds
+    if (newFrom < 0) {
+      newFrom = 0;
+      newTo = Math.min(config.windowSizeYards, config.totalYards);
+    } else if (newTo > config.totalYards) {
+      newTo = config.totalYards;
+      newFrom = Math.max(0, config.totalYards - config.windowSizeYards);
+    }
+
+    config.showFromYards = newFrom;
+    config.showToYards = newTo;
+    currentCenterYards = (newFrom + newTo) / 2;
+  }
+
+  function centerOnYards(yards, updateWindow = true) {
+    if (!container) return;
+
+    if (updateWindow) {
+      // Update window to be centered on target yards
+      updateVisibleWindow(yards);
+      applyLayoutSizing(false);
+    }
+
+    // Center scrollbar on target within current window
+    const targetX = (yards - config.showFromYards) / config.yardsPerPixel;
+    const centerX = container.clientWidth / 2;
+    const maxScrollX = Math.max(0, logicalSize.clientWidth - container.clientWidth);
+    const nextScrollX = Math.min(Math.max(0, targetX - centerX), maxScrollX);
+    scrollPosX = nextScrollX;
+    container.scrollLeft = nextScrollX;
+    drawAll();
+  }
+
+  function computeAbsoluteYards(elrCode, miles, yards) {
+    if (!route || !Array.isArray(route.sections)) return { value: null, error: 'Route sections unavailable' };
+    const normElr = (elrCode || '').trim().toUpperCase();
+    if (!normElr) return { value: null, error: 'ELR is required' };
+
+    const section = route.sections.find(s => (s.elr || '').toUpperCase() === normElr);
+    if (!section) return { value: null, error: `ELR ${normElr} not found in sections` };
+
+    const milesVal = Number.isFinite(miles) ? miles : 0;
+    const yardsVal = Number.isFinite(yards) ? yards : 0;
+    const relativeYards = (milesVal * 1760) + yardsVal;
+    const absoluteYards = relativeYards + (section.offset || 0);
+
+    return { value: absoluteYards, section, relativeYards };
+  }
+
   function applyLayoutSizing(recenter = false) {
     logicalSize.style.width = `${(config.showToYards - config.showFromYards) / config.yardsPerPixel}px`;
     logicalSize.style.height = `${config.horizontalGridLinesNo * config.horizontalGridSpacing}px`;
@@ -76,12 +137,9 @@ function initializeApp() {
   }
 
   // Track scroll position
-  let scrollPosX = (((1760 * 28) + 1320 + 331782) - config.showFromYards) / config.yardsPerPixel;
-  let scrollPosY = ((config.horizontalGridLinesNo * config.horizontalGridSpacing) / 2) - (rulerCanvas.clientHeight / 2);
-
-  // Initialize scroll position
-  container.scrollLeft = scrollPosX;
-  container.scrollTop = scrollPosY;
+  let scrollPosX = 0;
+  let scrollPosY = 0;
+  let scrollTimeout = null;
 
   // Get canvas drawing context
   const ctx = rulerCanvas.getContext('2d');
@@ -983,6 +1041,20 @@ function initializeApp() {
     applyLayoutSizing(recenter);
   }
 
+  function centerFromInputs() {
+    const milesVal = parseFloat(mileInput?.value);
+    const yardsVal = parseFloat(yardInput?.value);
+    const elrVal = elrInput?.value;
+
+    const { value, error } = computeAbsoluteYards(elrVal, milesVal, yardsVal);
+    if (error || value === null) {
+      console.warn(error || 'Unable to compute yardage');
+      return;
+    }
+
+    centerOnYards(value);
+  }
+
   function drawAll() {
     drawRuler();
     drawHorizontalGridLines();
@@ -993,8 +1065,11 @@ function initializeApp() {
     drawStructures();
   }
 
-  // Initial setup
-  applyLayoutSizing(true);
+  // Initialize window and scroll position
+  updateVisibleWindow(currentCenterYards);
+  applyLayoutSizing(false);
+  centerOnYards(currentCenterYards, false);
+  centerOnRow(50);
 
   // Redraw ruler when viewport resizes
   window.addEventListener("resize", () => {
@@ -1010,11 +1085,56 @@ function initializeApp() {
     gridSpacingInput.addEventListener('input', () => updateConfigFromInputs(true));
   }
 
-  // Update scroll position
+  if (centerButton) {
+    centerButton.addEventListener('click', () => centerFromInputs());
+  }
+
+  [elrInput, mileInput, yardInput].forEach(input => {
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          centerFromInputs();
+        }
+      });
+    }
+  });
+
+  // Update scroll position with windowed scrolling support
   container.addEventListener('scroll', () => {
     scrollPosX = container.scrollLeft;
     scrollPosY = container.scrollTop;
     drawAll();
+
+    // Calculate current visible center in yards
+    const visibleCenterX = scrollPosX + (container.clientWidth / 2);
+    const visibleCenterYards = config.showFromYards + (visibleCenterX * config.yardsPerPixel);
+
+    // Check if near edges of window (within 20% from either side)
+    const windowMargin = config.windowSizeYards * 0.2;
+    const distanceFromStart = visibleCenterYards - config.showFromYards;
+    const distanceFromEnd = config.showToYards - visibleCenterYards;
+
+    const nearEdge = distanceFromStart < windowMargin || distanceFromEnd < windowMargin;
+
+    // Clear previous timeout
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+
+    // Recenter window when scrolling stops or near edge
+    scrollTimeout = setTimeout(() => {
+      const currentVisibleCenterX = scrollPosX + (container.clientWidth / 2);
+      const currentVisibleCenterYards = config.showFromYards + (currentVisibleCenterX * config.yardsPerPixel);
+      
+      // Only update if significantly different from current window center
+      if (Math.abs(currentVisibleCenterYards - currentCenterYards) > config.windowSizeYards * 0.1) {
+        updateVisibleWindow(currentVisibleCenterYards);
+        applyLayoutSizing(false);
+        // Maintain view by recentering on same yards
+        centerOnYards(currentVisibleCenterYards, false);
+      }
+    }, nearEdge ? 100 : 500); // Faster response near edges
   });
 }
 
