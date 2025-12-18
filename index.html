@@ -216,7 +216,14 @@
             <div class="form-row">
               <label class="form-field">
                 <span>Type</span>
-                <input type="text" id="formFromType" placeholder="e.g., buffer_stop, junction">
+                <select id="formFromType">
+                  <option value=""></option>
+                  <option value="buffer_stop">buffer_stop</option>
+                  <option value="junction">junction</option>
+                  <option value="fixed">fixed</option>
+                  <option value="buffer">buffer</option>
+                  <option value="other">other</option>
+                </select>
               </label>
               <label class="form-field">
                 <span>SC Name</span>
@@ -241,7 +248,14 @@
             <div class="form-row">
               <label class="form-field">
                 <span>Type</span>
-                <input type="text" id="formToType" placeholder="e.g., buffer_stop, junction">
+                <select id="formToType">
+                  <option value=""></option>
+                  <option value="buffer_stop">buffer_stop</option>
+                  <option value="junction">junction</option>
+                  <option value="fixed">fixed</option>
+                  <option value="buffer">buffer</option>
+                  <option value="other">other</option>
+                </select>
               </label>
               <label class="form-field">
                 <span>SC Name</span>
@@ -330,6 +344,7 @@
     </div>
   </div>
 
+  <script src="config.js"></script>
   <script src="data.js"></script>
   <script src="script.js"></script>
   <script src="ui.js"></script>

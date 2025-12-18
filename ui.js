@@ -1,5 +1,5 @@
 // UI wiring for Track Diagrams
-const apiUrl = 'http://localhost:3000/api/routes';
+const apiUrl = (typeof CONFIG !== 'undefined' ? CONFIG.API_BASE_URL : 'http://localhost:3000/api/routes');
 
 // Elements
 const routeSelector = document.getElementById('routeSelector');
@@ -438,7 +438,7 @@ function renderTracksTable(filterTid = '') {
       try {
         const safeCode = encodeURIComponent(String(route.code || '').trim());
         const safeId = encodeURIComponent(String(trackId));
-        const url = `http://localhost:3000/api/routes/code/${safeCode}/tracks/by-id/${safeId}`;
+        const url = `${apiUrl}/code/${safeCode}/tracks/by-id/${safeId}`;
         const resp = await fetch(url, { method: 'DELETE' });
         if (!resp.ok) {
           let details = '';
@@ -613,14 +613,13 @@ function addNewTrack() {
   const r = window.TrackDiagramApp?.getRoute();
   if (!r) return;
 
-  const newTid = getNextTid(r);
   const newTrack = {
-    tid: newTid,
+    tid: null,
     shape: [{ from: 0, to: 0, yFrom: null, yTo: null }]
   };
   
   selectedTrack = newTrack;
-  selectedTrackTid = newTid;
+  selectedTrackTid = null;
   showTrackModal(newTrack, true);
 }
 
@@ -833,10 +832,10 @@ async function saveTrackToApi(routeCode, track, isNew = false) {
     const safeTid = encodeURIComponent(String(track?.tid ?? ''));
     const safeId = encodeURIComponent(String(track?._id ?? ''));
     const url = isNew
-      ? `http://localhost:3000/api/routes/code/${safeCode}/tracks`
+      ? `${apiUrl}/code/${safeCode}/tracks`
       : (track?._id
-          ? `http://localhost:3000/api/routes/code/${safeCode}/tracks/by-id/${safeId}`
-          : `http://localhost:3000/api/routes/code/${safeCode}/tracks/${safeTid}`);
+          ? `${apiUrl}/code/${safeCode}/tracks/by-id/${safeId}`
+          : `${apiUrl}/code/${safeCode}/tracks/${safeTid}`);
     const response = await fetch(url, {
       method: isNew ? 'POST' : 'PUT',
       headers: {

@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/routes';
+const API_URL = (typeof CONFIG !== 'undefined' ? CONFIG.API_BASE_URL : 'http://localhost:3000/api/routes');
 const DEFAULT_ROUTE_CODE = 'ECML';
 const DEFAULT_YARDS_PER_PIXEL = 1;
 const DEFAULT_GRID_SPACING = 50;
@@ -12,6 +12,12 @@ let lastCenterYards = null;
 let boundContainer = null;
 let boundScrollHandler = null;
 let boundResizeHandler = null;
+let boundPointerDownHandler = null;
+let boundPointerUpHandler = null;
+let boundPointerCancelHandler = null;
+let isMouseDownInDiagram = false;
+let lastNearEdge = false;
+let lastVisibleCenterYards = null;
 
 function dispatchRouteLoaded() {
   window.dispatchEvent(new CustomEvent('diagram:routeLoaded', { detail: { route } }));
@@ -68,7 +74,7 @@ function initializeApp() {
   // Keep the previous center when reloading the route to avoid "snap back".
   let currentCenterYards = Number.isFinite(lastCenterYards)
     ? lastCenterYards
-    : (((1760 * 28) + 1320 + 331782) || (config.windowSizeYards / 2));
+    : (((1760 * 0) + 0 + 331782) || (config.windowSizeYards / 2));
 
   // DOM references
   const container = document.getElementById('container');
@@ -1113,6 +1119,7 @@ function initializeApp() {
   applyLayoutSizing(false);
   centerOnYards(currentCenterYards, false);
   centerOnRow(50);
+  drawAll();
 
   // Avoid accumulating event listeners on repeated loadRoute() calls
   if (boundContainer && boundScrollHandler) {
@@ -1120,6 +1127,15 @@ function initializeApp() {
   }
   if (boundResizeHandler) {
     window.removeEventListener('resize', boundResizeHandler);
+  }
+  if (boundContainer && boundPointerDownHandler) {
+    boundContainer.removeEventListener('pointerdown', boundPointerDownHandler);
+  }
+  if (boundPointerUpHandler) {
+    window.removeEventListener('pointerup', boundPointerUpHandler);
+  }
+  if (boundPointerCancelHandler) {
+    window.removeEventListener('pointercancel', boundPointerCancelHandler);
   }
 
   // Redraw ruler when viewport resizes
@@ -1131,6 +1147,34 @@ function initializeApp() {
 
   // Update scroll position with windowed scrolling support
   boundContainer = container;
+
+  // Recenter window only when the user releases the mouse button near an edge.
+  // This avoids unexpected snapping while the user is still scrolling.
+  boundPointerDownHandler = (e) => {
+    if (e.pointerType === 'mouse' && e.button === 0) {
+      isMouseDownInDiagram = true;
+    }
+  };
+  boundPointerUpHandler = (e) => {
+    if (e.pointerType !== 'mouse') return;
+    if (!isMouseDownInDiagram) return;
+    isMouseDownInDiagram = false;
+
+    if (lastNearEdge && Number.isFinite(lastVisibleCenterYards)) {
+      updateVisibleWindow(lastVisibleCenterYards);
+      applyLayoutSizing(false);
+      // Maintain view by keeping the same yards under the viewport center
+      centerOnYards(lastVisibleCenterYards, false);
+    }
+  };
+  boundPointerCancelHandler = () => {
+    isMouseDownInDiagram = false;
+  };
+
+  container.addEventListener('pointerdown', boundPointerDownHandler);
+  window.addEventListener('pointerup', boundPointerUpHandler);
+  window.addEventListener('pointercancel', boundPointerCancelHandler);
+
   boundScrollHandler = () => {
     scrollPosX = container.scrollLeft;
     scrollPosY = container.scrollTop;
@@ -1140,33 +1184,14 @@ function initializeApp() {
     const visibleCenterX = scrollPosX + (container.clientWidth / 2);
     const visibleCenterYards = config.showFromYards + (visibleCenterX * config.yardsPerPixel);
     lastCenterYards = visibleCenterYards;
+    lastVisibleCenterYards = visibleCenterYards;
 
     // Check if near edges of window (within 20% from either side)
     const windowMargin = config.windowSizeYards * 0.2;
     const distanceFromStart = visibleCenterYards - config.showFromYards;
     const distanceFromEnd = config.showToYards - visibleCenterYards;
 
-    const nearEdge = distanceFromStart < windowMargin || distanceFromEnd < windowMargin;
-
-    // Clear previous timeout
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
-    }
-
-    // Only adjust the yardage window when we scroll near the edge.
-    // This prevents "snap back" behavior after programmatic centering (e.g. double-click a track).
-    scrollTimeout = setTimeout(() => {
-      if (!nearEdge) return;
-
-      const currentVisibleCenterX = scrollPosX + (container.clientWidth / 2);
-      const currentVisibleCenterYards = config.showFromYards + (currentVisibleCenterX * config.yardsPerPixel);
-
-      updateVisibleWindow(currentVisibleCenterYards);
-      applyLayoutSizing(false);
-
-      // Maintain view by keeping the same yards under the viewport center
-      centerOnYards(currentVisibleCenterYards, false);
-    }, nearEdge ? 100 : 500); // Faster response near edges
+    lastNearEdge = distanceFromStart < windowMargin || distanceFromEnd < windowMargin;
   };
 
   container.addEventListener('scroll', boundScrollHandler);
