@@ -1,32 +1,35 @@
-// Replace the beginning of your script.js with this:
-// This version fetches data from the MongoDB API instead of using hardcoded data
+const API_URL = 'http://localhost:3000/api/routes';
+const DEFAULT_ROUTE_CODE = 'ECML';
 
-const API_URL = 'http://localhost:5000/api';
-let route = routes.find(r => r.code === "ECML");; // Will be populated from API
-initializeApp();
+let route = null;
 
-// Fetch route data from API
-// async function loadRoute() {
-//   try {
-//     const response = await fetch(`${API_URL}/routes/ECML`);
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch route data');
-//     }
-//     route = await response.json();
-//     console.log('Route loaded from API:', route);
+async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
+  try {
+    const response = await fetch(`${API_URL}/code/${encodeURIComponent(routeCode)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch route (${response.status})`);
+    }
 
-//     // Initialize the app after data is loaded
-//     initializeApp();
-//   } catch (err) {
-//     console.error('Error loading route:', err);
-//     // Fallback: try to load from local data.js if API fails
-//     if (typeof routes !== 'undefined') {
-//       route = routes.find(r => r.code === "ECML");
-//       console.log('Loaded from local data.js as fallback');
-//       initializeApp();
-//     }
-//   }
-// }
+    route = await response.json();
+    console.log('Route loaded from API:', route);
+    initializeApp();
+  } catch (err) {
+    console.error('Error loading route from API:', err);
+
+    // Fallback: try to load from local data.js if API fails
+    if (typeof routes !== 'undefined') {
+      const fallbackRoute = routes.find(r => r.code === routeCode);
+      if (fallbackRoute) {
+        route = fallbackRoute;
+        console.warn('Loaded route from local data.js as fallback');
+        initializeApp();
+        return;
+      }
+    }
+
+    console.error('No route data available to initialize the app.');
+  }
+}
 
 function initializeApp() {
   // Configuration for logical distances
@@ -35,7 +38,7 @@ function initializeApp() {
     yardsPerPixel: 1,
     horizontalGridSpacing: 50,
     horizontalGridLinesNo: 100,
-    showFromYards: 188 * 1760,
+    showFromYards: 0,
     showToYards: 595826
 
   };
@@ -971,4 +974,6 @@ function initializeApp() {
 }
 
 // Load route when page loads
-// window.addEventListener('DOMContentLoaded', loadRoute);
+window.addEventListener('DOMContentLoaded', () => {
+  loadRoute();
+});
