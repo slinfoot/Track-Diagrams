@@ -1,106 +1,14 @@
 const API_URL = 'http://localhost:3000/api/routes';
 const DEFAULT_ROUTE_CODE = 'ECML';
+const DEFAULT_YARDS_PER_PIXEL = 1;
+const DEFAULT_GRID_SPACING = 50;
+const DEFAULT_WINDOW_MILES = 10;
 
 let route = null;
-const yardsPerPixelInput = document.getElementById('yardsPerPixelInput');
-const gridSpacingInput = document.getElementById('gridSpacingInput');
-const elrInput = document.getElementById('elrInput');
-const mileInput = document.getElementById('mileInput');
-const yardInput = document.getElementById('yardInput');
-const centerButton = document.getElementById('centerButton');
-const hamburgerMenu = document.getElementById('hamburgerMenu');
-const sidebar = document.getElementById('sidebar');
-const windowSizeInput = document.getElementById('windowSizeInput');
-const editDiagramBtn = document.getElementById('editDiagramBtn');
-const editPanel = document.getElementById('editPanel');
-const closeEditPanelBtn = document.getElementById('closeEditPanelBtn');
-const containerWrapper = document.getElementById('container-wrapper');
-const routeSelector = document.getElementById('routeSelector');
+let appAPI = null;
 
-// Populate route selector
-async function populateRouteSelector() {
-  if (!routeSelector) return;
-
-  try {
-    // Try to fetch routes from API
-    const response = await fetch(`${API_URL}`);
-    if (response.ok) {
-      const routes = await response.json();
-      if (Array.isArray(routes) && routes.length > 0) {
-        routeSelector.innerHTML = '';
-        routes.forEach(r => {
-          const option = document.createElement('option');
-          option.value = r.code;
-          option.textContent = `${r.code} - ${r.name || 'Unknown'}`;
-          routeSelector.appendChild(option);
-        });
-        if (route && route.code) {
-          routeSelector.value = route.code;
-        }
-        return;
-      }
-    }
-  } catch (err) {
-    console.error('Error fetching routes from API:', err);
-  }
-
-  // Fallback to local data.js
-  if (typeof routes !== 'undefined' && Array.isArray(routes)) {
-    routeSelector.innerHTML = '';
-    routes.forEach(r => {
-      const option = document.createElement('option');
-      option.value = r.code;
-      option.textContent = `${r.code} - ${r.name || 'Unknown'}`;
-      routeSelector.appendChild(option);
-    });
-    if (route && route.code) {
-      routeSelector.value = route.code;
-    }
-  }
-}
-
-// Handle route selection change
-if (routeSelector) {
-  routeSelector.addEventListener('change', (e) => {
-    const selectedCode = e.target.value;
-    if (selectedCode) {
-      loadRoute(selectedCode);
-    }
-  });
-}
-
-// Toggle sidebar
-if (hamburgerMenu && sidebar) {
-  hamburgerMenu.addEventListener('click', () => {
-    hamburgerMenu.classList.toggle('active');
-    sidebar.classList.toggle('open');
-  });
-}
-
-// Toggle edit panel
-function toggleEditPanel() {
-  if (editPanel) {
-    editPanel.classList.toggle('open');
-    // Trigger resize/redraw after a brief delay to allow layout to adjust
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 310); // Slightly longer than CSS transition duration
-  }
-}
-
-if (editDiagramBtn) {
-  editDiagramBtn.addEventListener('click', () => {
-    toggleEditPanel();
-    // Close sidebar when opening edit panel
-    if (hamburgerMenu && sidebar) {
-      hamburgerMenu.classList.remove('active');
-      sidebar.classList.remove('open');
-    }
-  });
-}
-
-if (closeEditPanelBtn) {
-  closeEditPanelBtn.addEventListener('click', toggleEditPanel);
+function dispatchRouteLoaded() {
+  window.dispatchEvent(new CustomEvent('diagram:routeLoaded', { detail: { route } }));
 }
 
 async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
@@ -112,7 +20,7 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
 
     route = await response.json();
     console.log('Route loaded from API:', route);
-    populateRouteSelector();
+    dispatchRouteLoaded();
     initializeApp();
   } catch (err) {
     console.error('Error loading route from API:', err);
@@ -123,7 +31,7 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
       if (fallbackRoute) {
         route = fallbackRoute;
         console.warn('Loaded route from local data.js as fallback');
-        populateRouteSelector();
+        dispatchRouteLoaded();
         initializeApp();
         return;
       }
@@ -142,12 +50,12 @@ function initializeApp() {
   // Configuration for logical distances (mutable so UI changes can tweak values)
   const config = {
     totalYards: route.length_yards,
-    yardsPerPixel: parseFloat(yardsPerPixelInput?.value) || 1,
-    horizontalGridSpacing: parseFloat(gridSpacingInput?.value) || 50,
+    yardsPerPixel: DEFAULT_YARDS_PER_PIXEL,
+    horizontalGridSpacing: DEFAULT_GRID_SPACING,
     horizontalGridLinesNo: 100,
-    windowSizeYards: 17600 * 2, // 20 miles
+    windowSizeYards: DEFAULT_WINDOW_MILES * 1760,
     showFromYards: 0,
-    showToYards: 17600 * 2
+    showToYards: DEFAULT_WINDOW_MILES * 1760
   };
 
   // Track current center position in full route for windowed scrolling
@@ -1122,28 +1030,18 @@ function initializeApp() {
     });
   }
 
-  function updateConfigFromInputs(recenter = false, preserveCenter = false) {
-    // Calculate current center position before changes
+  function setYardsPerPixel(value, preserveCenter = false) {
+    if (!Number.isFinite(value) || value <= 0) return;
+
     let centerYards = null;
     if (preserveCenter && container) {
       const centerX = scrollPosX + (container.clientWidth / 2);
       centerYards = config.showFromYards + (centerX * config.yardsPerPixel);
     }
 
-    const newYardsPerPixel = parseFloat(yardsPerPixelInput?.value);
-    const newGridSpacing = parseFloat(gridSpacingInput?.value);
+    config.yardsPerPixel = value;
+    applyLayoutSizing(false);
 
-    if (Number.isFinite(newYardsPerPixel) && newYardsPerPixel > 0) {
-      config.yardsPerPixel = newYardsPerPixel;
-    }
-
-    if (Number.isFinite(newGridSpacing) && newGridSpacing > 0) {
-      config.horizontalGridSpacing = newGridSpacing;
-    }
-
-    applyLayoutSizing(recenter);
-
-    // Restore center position after layout change
     if (preserveCenter && centerYards !== null && container) {
       const newCenterX = (centerYards - config.showFromYards) / config.yardsPerPixel;
       const newScrollX = newCenterX - (container.clientWidth / 2);
@@ -1153,11 +1051,21 @@ function initializeApp() {
     }
   }
 
-  function centerFromInputs() {
-    const milesVal = parseFloat(mileInput?.value);
-    const yardsVal = parseFloat(yardInput?.value);
-    const elrVal = elrInput?.value;
+  function setGridSpacing(value) {
+    if (!Number.isFinite(value) || value <= 0) return;
+    config.horizontalGridSpacing = value;
+    applyLayoutSizing(true);
+  }
 
+  function setWindowSizeMiles(miles) {
+    if (!Number.isFinite(miles) || miles <= 0) return;
+    config.windowSizeYards = miles * 1760;
+    updateVisibleWindow(currentCenterYards);
+    applyLayoutSizing(false);
+    centerOnYards(currentCenterYards, false);
+  }
+
+  function centerByELR(elrVal, milesVal, yardsVal) {
     const { value, error } = computeAbsoluteYards(elrVal, milesVal, yardsVal);
     if (error || value === null) {
       console.warn(error || 'Unable to compute yardage');
@@ -1177,6 +1085,15 @@ function initializeApp() {
     drawStructures();
   }
 
+  // Expose handlers for UI layer
+  appAPI = {
+    setYardsPerPixel,
+    setGridSpacing,
+    setWindowSizeMiles,
+    centerByELR,
+    centerOnYards
+  };
+
   // Initialize window and scroll position
   updateVisibleWindow(currentCenterYards);
   applyLayoutSizing(false);
@@ -1187,43 +1104,6 @@ function initializeApp() {
   window.addEventListener("resize", () => {
     canvasResize();
     drawAll();
-  });
-
-  if (yardsPerPixelInput) {
-    yardsPerPixelInput.addEventListener('input', () => updateConfigFromInputs(true, true));
-  }
-
-  if (gridSpacingInput) {
-    gridSpacingInput.addEventListener('input', () => updateConfigFromInputs(true, false));
-  }
-
-  // Window size control
-  if (windowSizeInput) {
-    windowSizeInput.value = config.windowSizeYards / 1760;
-    windowSizeInput.addEventListener('input', () => {
-      const miles = parseFloat(windowSizeInput.value);
-      if (Number.isFinite(miles) && miles > 0) {
-        config.windowSizeYards = miles * 1760;
-        updateVisibleWindow(currentCenterYards);
-        applyLayoutSizing(false);
-        centerOnYards(currentCenterYards, false);
-      }
-    });
-  }
-
-  if (centerButton) {
-    centerButton.addEventListener('click', () => centerFromInputs());
-  }
-
-  [elrInput, mileInput, yardInput].forEach(input => {
-    if (input) {
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          centerFromInputs();
-        }
-      });
-    }
   });
 
   // Update scroll position with windowed scrolling support
@@ -1268,3 +1148,14 @@ function initializeApp() {
 window.addEventListener('DOMContentLoaded', () => {
   loadRoute();
 });
+
+// Expose a minimal API for UI scripts
+window.TrackDiagramApp = {
+  loadRoute,
+  setYardsPerPixel: (v, preserveCenter = true) => appAPI?.setYardsPerPixel(v, preserveCenter),
+  setGridSpacing: (v) => appAPI?.setGridSpacing(v),
+  setWindowSizeMiles: (miles) => appAPI?.setWindowSizeMiles(miles),
+  centerByELR: (elr, miles, yards) => appAPI?.centerByELR(elr, miles, yards),
+  centerOnYards: (yards, updateWindow = true) => appAPI?.centerOnYards(yards, updateWindow),
+  getRoute: () => route
+};

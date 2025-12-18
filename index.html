@@ -74,17 +74,162 @@
       <div id="logicalSize"></div>
     </div>
   </div>
-  <div id="editPanel" class="edit-panel">
+  <div id="editPanel" class="edit-panel open">
     <div class="edit-panel-header">
       <h3>Edit Diagram</h3>
       <button id="closeEditPanelBtn" class="close-btn">×</button>
     </div>
     <div class="edit-panel-content">
-      <!-- Editing UI will go here -->
+      <div class="edit-meta">
+        <div class="edit-meta-fields">
+          <label class="setting-item">
+            <span>Route Name</span>
+            <input type="text" id="editRouteName" placeholder="Route name">
+          </label>
+          <label class="setting-item">
+            <span>Route Code</span>
+            <input type="text" id="editRouteCode" placeholder="Route code">
+          </label>
+          <label class="setting-item">
+            <span>Route Length</span>
+            <span id="editRouteLength" class="readonly-field">-</span>
+          </label>
+        </div>
+        <div class="edit-actions">
+          <button class="sidebar-button edit-tab-button" type="button" data-tab="tracks">Tracks</button>
+          <button class="sidebar-button edit-tab-button" type="button" data-tab="sections">Sections</button>
+          <button class="sidebar-button edit-tab-button" type="button" data-tab="stations">Stations</button>
+          <button class="sidebar-button edit-tab-button" type="button" data-tab="structures">Structures</button>
+        </div>
+      </div>
+      <div class="edit-body">
+        <div class="edit-tabs-content">
+          <div class="edit-tab-content" data-tab="tracks">
+            <div class="tracks-table-wrapper">
+              <div class="tracks-filter">
+                <label for="tidFilter">
+                  <span>Filter by TID:</span>
+                  <input type="text" id="tidFilter" placeholder="Enter TID...">
+                </label>
+              </div>
+              <div class="tracks-table-header">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 60px">
+                    <col style="width: 55px">
+                    <col style="width: 95px">
+                    <col style="width: 95px">
+                    <col style="width: 55px">
+                    <col style="width: 55px">
+                    <col style="width: 100px">
+                    <col style="width: 100px">
+                    <col style="width: 70px">
+                    <col style="width: 70px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>ELR</th>
+                      <th>TID</th>
+                      <th>From</th>
+                      <th>To</th>
+                      <th>Y From</th>
+                      <th>Y To</th>
+                      <th>From Type</th>
+                      <th>To Type</th>
+                      <th>SC From</th>
+                      <th>SC To</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="tracks-table-body" aria-label="Tracks table rows">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 60px">
+                    <col style="width: 55px">
+                    <col style="width: 95px">
+                    <col style="width: 95px">
+                    <col style="width: 55px">
+                    <col style="width: 55px">
+                    <col style="width: 100px">
+                    <col style="width: 100px">
+                    <col style="width: 70px">
+                    <col style="width: 70px">
+                  </colgroup>
+                  <tbody id="tracksTableBody">
+                    <tr><td colspan="10" class="table-empty">No tracks loaded.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="tracks-detail-pane">
+              <div id="trackDetailForm" class="track-detail-form">
+                <h4 class="detail-header">Track Details</h4>
+                <div class="detail-empty">Select a track from the table to edit details.</div>
+                <div class="detail-content" hidden>
+                  <label class="detail-field">
+                    <span>TID</span>
+                    <input type="text" id="detailTid" readonly>
+                  </label>
+
+                  <div class="detail-row">
+                    <label class="detail-field">
+                      <span>From Type</span>
+                      <input type="text" id="detailFromType">
+                    </label>
+                    <label class="detail-field">
+                      <span>From SC</span>
+                      <input type="text" id="detailFromSc">
+                    </label>
+                    <label class="detail-field">
+                      <span>From Track</span>
+                      <input type="number" id="detailFromTrack" step="1">
+                    </label>
+                    <label class="detail-field">
+                      <span>From At</span>
+                      <input type="number" id="detailFromAt" step="1">
+                    </label>
+                  </div>
+
+                  <div class="detail-row">
+                    <label class="detail-field">
+                      <span>To Type</span>
+                      <input type="text" id="detailToType">
+                    </label>
+                    <label class="detail-field">
+                      <span>To SC</span>
+                      <input type="text" id="detailToSc">
+                    </label>
+                    <label class="detail-field">
+                      <span>To Track</span>
+                      <input type="number" id="detailToTrack" step="1">
+                    </label>
+                    <label class="detail-field">
+                      <span>To At</span>
+                      <input type="number" id="detailToAt" step="1">
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="edit-tab-content" data-tab="sections">
+            <div class="tab-placeholder">Sections editor coming soon.</div>
+          </div>
+          <div class="edit-tab-content" data-tab="stations">
+            <div class="tab-placeholder">Stations editor coming soon.</div>
+          </div>
+          <div class="edit-tab-content" data-tab="structures">
+            <div class="tab-placeholder">Structures editor coming soon.</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <script src="data.js"></script>
   <script src="script.js"></script>
+  <script src="ui.js"></script>
 </body>
 
 </html>
