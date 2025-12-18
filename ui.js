@@ -30,6 +30,7 @@ const trackEditModal = document.getElementById('trackEditModal');
 const modalTitle = document.getElementById('modalTitle');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
 const modalCancelBtn = document.getElementById('modalCancelBtn');
+const modalSaveBtn = document.getElementById('modalSaveBtn');
 const trackEditForm = document.getElementById('trackEditForm');
 const formTid = document.getElementById('formTid');
 const formFromType = document.getElementById('formFromType');
@@ -54,8 +55,10 @@ const calcMiles = document.getElementById('calcMiles');
 const calcYards = document.getElementById('calcYards');
 
 let selectedTrack = null;
+let selectedTrackId = null;
 let selectedTrackTid = null;
 let isAddingNewTrack = false;
+let isSavingTrack = false;
 let editingShapeIndex = null;
 let calcTargetInput = null;
 
@@ -198,6 +201,7 @@ window.addEventListener('diagram:routeLoaded', () => {
   const r = window.TrackDiagramApp?.getRoute();
   if (r) {
     selectedTrack = null;
+    selectedTrackId = null;
     selectedTrackTid = null;
     updateTrackActionButtons();
     if (editRouteName) editRouteName.value = r.name || '';
@@ -207,7 +211,7 @@ window.addEventListener('diagram:routeLoaded', () => {
       const yards = (r.length_yards || 0) % 1760;
       editRouteLength.textContent = `${miles}M ${yards}Y`;
     }
-    renderTracksTable();
+    renderTracksTable(tidFilter?.value ?? '');
   }
 });
 
@@ -271,8 +275,9 @@ function renderTracksTable(filterTid = '') {
   if (!tracksTableBody) return;
   const r = window.TrackDiagramApp?.getRoute();
   if (!r?.tracks?.length) {
-    tracksTableBody.innerHTML = '<tr><td colspan="10" class="table-empty">No tracks available.</td></tr>';
+    tracksTableBody.innerHTML = '<tr><td colspan="11" class="table-empty">No tracks available.</td></tr>';
     selectedTrack = null;
+    selectedTrackId = null;
     selectedTrackTid = null;
     updateTrackActionButtons();
     return;
@@ -286,8 +291,9 @@ function renderTracksTable(filterTid = '') {
   }
   
   if (!tracks.length) {
-    tracksTableBody.innerHTML = '<tr><td colspan="10" class="table-empty">No tracks match the filter.</td></tr>';
+    tracksTableBody.innerHTML = '<tr><td colspan="11" class="table-empty">No tracks match the filter.</td></tr>';
     selectedTrack = null;
+    selectedTrackId = null;
     selectedTrackTid = null;
     updateTrackActionButtons();
     return;
@@ -337,7 +343,8 @@ function renderTracksTable(filterTid = '') {
     const scFrom = track.fromConnection?.sc_name ?? '-';
     const scTo = track.toConnection?.sc_name ?? '-';
     const tidVal = track.tid ?? '';
-    return '<tr data-track-index="' + index + '" data-tid="' + String(tidVal) + '" class="track-row">' +
+    const trackIdVal = track._id ?? '';
+    return '<tr data-track-index="' + index + '" data-track-id="' + String(trackIdVal) + '" data-tid="' + String(tidVal) + '" class="track-row">' +
       `<td>${elr}</td>` +
       `<td>${track.tid ?? ''}</td>` +
       `<td>${fromFormatted}</td>` +
@@ -348,30 +355,35 @@ function renderTracksTable(filterTid = '') {
       `<td>${toConnType}</td>` +
       `<td>${scFrom}</td>` +
       `<td>${scTo}</td>` +
+      `<td><button type="button" class="btn-shape-action btn-shape-delete btn-track-delete" data-track-id="${String(trackIdVal)}" title="Delete this track">Delete</button></td>` +
       '</tr>';
   }).join('');
   tracksTableBody.innerHTML = rows;
 
   // Restore selection if possible
-  if (selectedTrackTid != null) {
-    const tidToFind = String(selectedTrackTid);
+  if (selectedTrackId != null) {
+    const idToFind = String(selectedTrackId);
     let found = false;
     tracksTableBody.querySelectorAll('.track-row').forEach(row => {
-      if (row.dataset.tid === tidToFind) {
+      if (row.dataset.trackId === idToFind) {
         row.classList.add('selected');
         found = true;
       }
     });
     if (!found) {
       selectedTrack = null;
+      selectedTrackId = null;
       selectedTrackTid = null;
     }
   }
   updateTrackActionButtons();
   
-  // Add click handlers to center on track and show details
+  // Add click handlers to select track (double-click to center)
   tracksTableBody.querySelectorAll('.track-row').forEach(row => {
-    row.addEventListener('click', () => {
+    row.addEventListener('click', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('btn-track-delete')) {
+        return;
+      }
       const trackIndex = parseInt(row.dataset.trackIndex);
       const track = sortedTracks[trackIndex];
       
@@ -381,15 +393,83 @@ function renderTracksTable(filterTid = '') {
       
       if (track) {
         selectedTrack = track;
+        selectedTrackId = track._id ?? null;
         selectedTrackTid = track.tid ?? null;
         updateTrackActionButtons();
+      }
+    });
 
-        // Center diagram on track
+    // Double-click to center on track
+    row.addEventListener('dblclick', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('btn-track-delete')) {
+        return;
+      }
+      const trackIndex = parseInt(row.dataset.trackIndex);
+      const track = sortedTracks[trackIndex];
+      
+      if (track) {
         const extents = computeTrackExtents(track);
         if (extents) {
           const centerYards = (extents.minFrom + extents.maxFrom) / 2;
           window.TrackDiagramApp?.centerOnYards?.(centerYards, true);
         }
+      }
+    });
+  });
+
+  // Wire up delete buttons (delete by Mongo subdocument _id)
+  tracksTableBody.querySelectorAll('.btn-track-delete').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const route = window.TrackDiagramApp?.getRoute();
+      if (!route?.code) {
+        window.alert('No route loaded.');
+        return;
+      }
+      const trackId = e.currentTarget.dataset.trackId;
+      if (!trackId) {
+        window.alert('Cannot delete this track (missing id).');
+        return;
+      }
+
+      const ok = window.confirm('Delete this track?');
+      if (!ok) return;
+
+      try {
+        const safeCode = encodeURIComponent(String(route.code || '').trim());
+        const safeId = encodeURIComponent(String(trackId));
+        const url = `http://localhost:3000/api/routes/code/${safeCode}/tracks/by-id/${safeId}`;
+        const resp = await fetch(url, { method: 'DELETE' });
+        if (!resp.ok) {
+          let details = '';
+          try {
+            const contentType = resp.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+              const errJson = await resp.json();
+              details = errJson?.message ? ` - ${errJson.message}` : ` - ${JSON.stringify(errJson)}`;
+            } else {
+              const errText = await resp.text();
+              details = errText ? ` - ${errText}` : '';
+            }
+          } catch {
+            // ignore parse errors
+          }
+          throw new Error(`HTTP error! status: ${resp.status}${details}`);
+        }
+
+        // Clear selection if we deleted the selected track
+        if (selectedTrackId && String(selectedTrackId) === String(trackId)) {
+          selectedTrack = null;
+          selectedTrackId = null;
+          selectedTrackTid = null;
+          updateTrackActionButtons();
+        }
+
+        // Refresh route + table
+        window.TrackDiagramApp?.loadRoute(route.code);
+      } catch (err) {
+        console.error('Error deleting track:', err);
+        window.alert('Error deleting track: ' + (err?.message || String(err)));
       }
     });
   });
@@ -432,36 +512,83 @@ function hideTrackModal() {
   if (trackEditForm) trackEditForm.reset();
 }
 
-function saveTrackFromForm() {
-  if (!selectedTrack) return;
+async function saveTrackFromForm() {
+  try {
+    if (!selectedTrack) {
+      window.alert('No track is selected to save.');
+      return;
+    }
 
-  const r = window.TrackDiagramApp?.getRoute();
-  if (!r) return;
+    const r = window.TrackDiagramApp?.getRoute();
+    if (!r) {
+      window.alert('No route is loaded. Please select a route first.');
+      return;
+    }
 
   // Update track from form
   const newTid = Number(formTid?.value);
-  if (Number.isFinite(newTid)) {
-    selectedTrack.tid = newTid;
-    selectedTrackTid = newTid;
+  if (!Number.isFinite(newTid)) {
+    window.alert('Please enter a valid TID.');
+    return;
   }
 
+  selectedTrack.tid = newTid;
+  selectedTrackTid = newTid;
+
+  // Validate shape required fields (schema requires from/to for every segment)
+  const shape = Array.isArray(selectedTrack.shape) ? selectedTrack.shape : [];
+  if (!shape.length) {
+    window.alert('Please add at least one shape segment.');
+    return;
+  }
+  for (let i = 0; i < shape.length; i++) {
+    const seg = shape[i];
+    if (!Number.isFinite(seg?.from) || !Number.isFinite(seg?.to)) {
+      window.alert(`Shape segment ${i + 1} must have numeric From and To values.`);
+      return;
+    }
+  }
+
+  // Connections are optional, but if present schema requires a valid type.
+  const allowedConnTypes = new Set(['buffer_stop', 'junction', 'fixed', 'buffer', 'other']);
+
   // From connection
-  if (!selectedTrack.fromConnection) selectedTrack.fromConnection = {};
-  selectedTrack.fromConnection.type = formFromType?.value || undefined;
-  selectedTrack.fromConnection.sc_name = formFromSc?.value || undefined;
-  const fromTrackVal = formFromTrack?.value;
-  selectedTrack.fromConnection.track = fromTrackVal ? Number(fromTrackVal) : undefined;
-  const fromAtVal = formFromAt?.value;
-  selectedTrack.fromConnection.at = fromAtVal ? Number(fromAtVal) : undefined;
+  const fromType = (formFromType?.value || '').trim();
+  if (fromType) {
+    if (!allowedConnTypes.has(fromType)) {
+      window.alert('From Connection Type must be one of: buffer_stop, junction, fixed, buffer, other.');
+      return;
+    }
+    const fromConn = { type: fromType };
+    const fromScVal = (formFromSc?.value || '').trim();
+    if (fromScVal) fromConn.sc_name = fromScVal;
+    const fromTrackVal = (formFromTrack?.value || '').trim();
+    if (fromTrackVal) fromConn.track = Number(fromTrackVal);
+    const fromAtVal = (formFromAt?.value || '').trim();
+    if (fromAtVal) fromConn.at = Number(fromAtVal);
+    selectedTrack.fromConnection = fromConn;
+  } else {
+    delete selectedTrack.fromConnection;
+  }
 
   // To connection
-  if (!selectedTrack.toConnection) selectedTrack.toConnection = {};
-  selectedTrack.toConnection.type = formToType?.value || undefined;
-  selectedTrack.toConnection.sc_name = formToSc?.value || undefined;
-  const toTrackVal = formToTrack?.value;
-  selectedTrack.toConnection.track = toTrackVal ? Number(toTrackVal) : undefined;
-  const toAtVal = formToAt?.value;
-  selectedTrack.toConnection.at = toAtVal ? Number(toAtVal) : undefined;
+  const toType = (formToType?.value || '').trim();
+  if (toType) {
+    if (!allowedConnTypes.has(toType)) {
+      window.alert('To Connection Type must be one of: buffer_stop, junction, fixed, buffer, other.');
+      return;
+    }
+    const toConn = { type: toType };
+    const toScVal = (formToSc?.value || '').trim();
+    if (toScVal) toConn.sc_name = toScVal;
+    const toTrackVal = (formToTrack?.value || '').trim();
+    if (toTrackVal) toConn.track = Number(toTrackVal);
+    const toAtVal = (formToAt?.value || '').trim();
+    if (toAtVal) toConn.at = Number(toAtVal);
+    selectedTrack.toConnection = toConn;
+  } else {
+    delete selectedTrack.toConnection;
+  }
 
   // Alt Route
   const altElrVal = formAltRouteElr?.value?.trim();
@@ -474,21 +601,12 @@ function saveTrackFromForm() {
 
   // Shape array is already updated in-place via renderShapeTable inline editing
 
-  // If adding new, push to route
-  if (isAddingNewTrack) {
-    if (!Array.isArray(r.tracks)) r.tracks = [];
-    r.tracks.push(selectedTrack);
+    // Persist to API (API will handle adding new or updating existing)
+    await saveTrackToApi(r.code, selectedTrack, isAddingNewTrack);
+  } catch (err) {
+    console.error('Unexpected error while saving track from form:', err);
+    window.alert('Unexpected error while saving: ' + (err?.message || String(err)));
   }
-
-  // Clear filter if needed
-  let effectiveFilter = tidFilter?.value ?? '';
-  if (effectiveFilter.trim() && !String(selectedTrackTid).toLowerCase().includes(effectiveFilter.trim().toLowerCase())) {
-    effectiveFilter = '';
-    if (tidFilter) tidFilter.value = '';
-  }
-
-  hideTrackModal();
-  renderTracksTable(effectiveFilter);
 }
 
 function addNewTrack() {
@@ -708,6 +826,71 @@ function calculateAndSetYards() {
   hideYardsCalc();
 }
 
+// API call to save track to MongoDB
+async function saveTrackToApi(routeCode, track, isNew = false) {
+  try {
+    const safeCode = encodeURIComponent(String(routeCode || '').trim());
+    const safeTid = encodeURIComponent(String(track?.tid ?? ''));
+    const safeId = encodeURIComponent(String(track?._id ?? ''));
+    const url = isNew
+      ? `http://localhost:3000/api/routes/code/${safeCode}/tracks`
+      : (track?._id
+          ? `http://localhost:3000/api/routes/code/${safeCode}/tracks/by-id/${safeId}`
+          : `http://localhost:3000/api/routes/code/${safeCode}/tracks/${safeTid}`);
+    const response = await fetch(url, {
+      method: isNew ? 'POST' : 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(track)
+    });
+
+    if (!response.ok) {
+      let details = '';
+      try {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const errJson = await response.json();
+          details = errJson?.message ? ` - ${errJson.message}` : ` - ${JSON.stringify(errJson)}`;
+        } else {
+          const errText = await response.text();
+          details = errText ? ` - ${errText}` : '';
+        }
+      } catch {
+        // ignore parse errors
+      }
+      throw new Error(`HTTP error! status: ${response.status}${details}`);
+    }
+
+    const savedTrack = await response.json();
+    console.log('Track saved successfully:', savedTrack);
+
+    // Ensure selection stays tied to the saved track's unique id
+    if (savedTrack?._id) {
+      selectedTrackId = savedTrack._id;
+    }
+
+    // Clear filter and re-render to show any changes
+    let effectiveFilter = tidFilter?.value ?? '';
+    if (effectiveFilter.trim() && !String(selectedTrackTid).toLowerCase().includes(effectiveFilter.trim().toLowerCase())) {
+      effectiveFilter = '';
+      if (tidFilter) tidFilter.value = '';
+    }
+
+    hideTrackModal();
+    isAddingNewTrack = false;
+
+    // Reload the route to refresh the diagram + table (table rerenders on diagram:routeLoaded)
+    if (tidFilter) tidFilter.value = effectiveFilter;
+    window.TrackDiagramApp?.loadRoute(routeCode);
+
+    window.alert('Track saved to database!');
+  } catch (error) {
+    console.error('Error saving track:', error);
+    window.alert('Error saving track to database: ' + error.message);
+  }
+}
+
 // Wire up calculator modal handlers
 if (calcModalCloseBtn) {
   calcModalCloseBtn.addEventListener('click', hideYardsCalc);
@@ -753,9 +936,17 @@ if (modalCancelBtn) {
 }
 
 if (trackEditForm) {
-  trackEditForm.addEventListener('submit', (e) => {
+  trackEditForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    saveTrackFromForm();
+    if (isSavingTrack) return;
+    isSavingTrack = true;
+    if (modalSaveBtn) modalSaveBtn.disabled = true;
+    try {
+      await saveTrackFromForm();
+    } finally {
+      isSavingTrack = false;
+      if (modalSaveBtn) modalSaveBtn.disabled = false;
+    }
   });
 }
 

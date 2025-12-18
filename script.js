@@ -7,6 +7,12 @@ const DEFAULT_WINDOW_MILES = 10;
 let route = null;
 let appAPI = null;
 
+// Preserve viewport state across route reloads (save/edit/delete triggers loadRoute again)
+let lastCenterYards = null;
+let boundContainer = null;
+let boundScrollHandler = null;
+let boundResizeHandler = null;
+
 function dispatchRouteLoaded() {
   window.dispatchEvent(new CustomEvent('diagram:routeLoaded', { detail: { route } }));
 }
@@ -59,7 +65,10 @@ function initializeApp() {
   };
 
   // Track current center position in full route for windowed scrolling
-  let currentCenterYards = (((1760 * 28) + 1320 + 331782) || (config.windowSizeYards / 2));
+  // Keep the previous center when reloading the route to avoid "snap back".
+  let currentCenterYards = Number.isFinite(lastCenterYards)
+    ? lastCenterYards
+    : (((1760 * 28) + 1320 + 331782) || (config.windowSizeYards / 2));
 
   // DOM references
   const container = document.getElementById('container');
@@ -93,10 +102,15 @@ function initializeApp() {
     config.showFromYards = newFrom;
     config.showToYards = newTo;
     currentCenterYards = (newFrom + newTo) / 2;
+    lastCenterYards = currentCenterYards;
   }
 
   function centerOnYards(yards, updateWindow = true) {
     if (!container) return;
+
+    if (Number.isFinite(yards)) {
+      lastCenterYards = yards;
+    }
 
     if (updateWindow) {
       // Update window to be centered on target yards
@@ -1100,14 +1114,24 @@ function initializeApp() {
   centerOnYards(currentCenterYards, false);
   centerOnRow(50);
 
+  // Avoid accumulating event listeners on repeated loadRoute() calls
+  if (boundContainer && boundScrollHandler) {
+    boundContainer.removeEventListener('scroll', boundScrollHandler);
+  }
+  if (boundResizeHandler) {
+    window.removeEventListener('resize', boundResizeHandler);
+  }
+
   // Redraw ruler when viewport resizes
-  window.addEventListener("resize", () => {
+  boundResizeHandler = () => {
     canvasResize();
     drawAll();
-  });
+  };
+  window.addEventListener('resize', boundResizeHandler);
 
   // Update scroll position with windowed scrolling support
-  container.addEventListener('scroll', () => {
+  boundContainer = container;
+  boundScrollHandler = () => {
     scrollPosX = container.scrollLeft;
     scrollPosY = container.scrollTop;
     drawAll();
@@ -1115,6 +1139,7 @@ function initializeApp() {
     // Calculate current visible center in yards
     const visibleCenterX = scrollPosX + (container.clientWidth / 2);
     const visibleCenterYards = config.showFromYards + (visibleCenterX * config.yardsPerPixel);
+    lastCenterYards = visibleCenterYards;
 
     // Check if near edges of window (within 20% from either side)
     const windowMargin = config.windowSizeYards * 0.2;
@@ -1128,20 +1153,23 @@ function initializeApp() {
       clearTimeout(scrollTimeout);
     }
 
-    // Recenter window when scrolling stops or near edge
+    // Only adjust the yardage window when we scroll near the edge.
+    // This prevents "snap back" behavior after programmatic centering (e.g. double-click a track).
     scrollTimeout = setTimeout(() => {
+      if (!nearEdge) return;
+
       const currentVisibleCenterX = scrollPosX + (container.clientWidth / 2);
       const currentVisibleCenterYards = config.showFromYards + (currentVisibleCenterX * config.yardsPerPixel);
-      
-      // Only update if significantly different from current window center
-      if (Math.abs(currentVisibleCenterYards - currentCenterYards) > config.windowSizeYards * 0.1) {
-        updateVisibleWindow(currentVisibleCenterYards);
-        applyLayoutSizing(false);
-        // Maintain view by recentering on same yards
-        centerOnYards(currentVisibleCenterYards, false);
-      }
+
+      updateVisibleWindow(currentVisibleCenterYards);
+      applyLayoutSizing(false);
+
+      // Maintain view by keeping the same yards under the viewport center
+      centerOnYards(currentVisibleCenterYards, false);
     }, nearEdge ? 100 : 500); // Faster response near edges
-  });
+  };
+
+  container.addEventListener('scroll', boundScrollHandler);
 }
 
 // Load route when page loads
