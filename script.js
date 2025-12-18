@@ -8,6 +8,17 @@ const elrInput = document.getElementById('elrInput');
 const mileInput = document.getElementById('mileInput');
 const yardInput = document.getElementById('yardInput');
 const centerButton = document.getElementById('centerButton');
+const hamburgerMenu = document.getElementById('hamburgerMenu');
+const sidebar = document.getElementById('sidebar');
+const windowSizeInput = document.getElementById('windowSizeInput');
+
+// Toggle sidebar
+if (hamburgerMenu && sidebar) {
+  hamburgerMenu.addEventListener('click', () => {
+    hamburgerMenu.classList.toggle('active');
+    sidebar.classList.toggle('open');
+  });
+}
 
 async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
   try {
@@ -49,9 +60,9 @@ function initializeApp() {
     yardsPerPixel: parseFloat(yardsPerPixelInput?.value) || 1,
     horizontalGridSpacing: parseFloat(gridSpacingInput?.value) || 50,
     horizontalGridLinesNo: 100,
-    windowSizeYards: 17600, // 10 miles
+    windowSizeYards: 17600 * 2, // 20 miles
     showFromYards: 0,
-    showToYards: 17600
+    showToYards: 17600 * 2
   };
 
   // Track current center position in full route for windowed scrolling
@@ -1083,6 +1094,20 @@ function initializeApp() {
 
   if (gridSpacingInput) {
     gridSpacingInput.addEventListener('input', () => updateConfigFromInputs(true));
+  }
+
+  // Window size control
+  if (windowSizeInput) {
+    windowSizeInput.value = config.windowSizeYards / 1760;
+    windowSizeInput.addEventListener('input', () => {
+      const miles = parseFloat(windowSizeInput.value);
+      if (Number.isFinite(miles) && miles > 0) {
+        config.windowSizeYards = miles * 1760;
+        updateVisibleWindow(currentCenterYards);
+        applyLayoutSizing(false);
+        centerOnYards(currentCenterYards, false);
+      }
+    });
   }
 
   if (centerButton) {

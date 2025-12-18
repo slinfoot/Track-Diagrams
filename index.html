@@ -8,6 +8,27 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="topBar">
+    <div id="titleBar">Track Diagrams</div>
+    <button id="hamburgerMenu" class="hamburger" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-content">
+      <h2>Settings</h2>
+      
+      <section class="settings-section">
+        <h3>View Controls</h3>
+        <div class="setting-item">
+          <label for="windowSizeInput">Window Size (miles)</label>
+          <input type="number" id="windowSizeInput" min="1" max="50" step="1" value="10">
+        </div>
+      </section>
+    </div>
+  </div>
   <div id="controls">
     <label for="yardsPerPixelInput">Yards per pixel
       <input id="yardsPerPixelInput" type="number" min="0.1" step="0.05" value="1">
