@@ -1017,3 +1017,8 @@ body {
 #logicalSize {
   display: block;
 }
+/* Structure Modal Specifics */
+#structureEditModal .modal-content {
+ max-width: 1100px;
+}
+

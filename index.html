@@ -227,7 +227,52 @@
             </div>
           </div>
           <div class="edit-tab-content" data-tab="structures">
-            <div class="tab-placeholder">Structures editor coming soon.</div>
+            <div class="tracks-table-wrapper">
+              <div class="tracks-filter">
+                <label for="structureFilter">
+                  <span>Filter by Name:</span>
+                  <input type="text" id="structureFilter" placeholder="Enter Structure Name...">
+                </label>
+                <div class="tracks-filter-actions">
+                  <button type="button" id="addStructureBtn" class="sidebar-button">Add New Structure</button>
+                  <button type="button" id="editSelectedStructureBtn" class="sidebar-button" disabled>Edit Selected</button>
+                </div>
+              </div>
+              <div class="tracks-table-header">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 200px">
+                    <col style="width: 100px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>No.</th>
+                      <th>Tracks</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="tracks-table-body" aria-label="Structures table rows">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 200px">
+                    <col style="width: 100px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <tbody id="structuresTableBody">
+                    <tr><td colspan="5" class="table-empty">No structures loaded.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -414,6 +459,70 @@
           <div class="modal-actions">
             <button type="button" id="stationModalCancelBtn" class="btn-secondary">Cancel</button>
             <button type="submit" id="stationModalSaveBtn" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Structure Edit Modal -->
+  <div id="structureEditModal" class="modal" hidden>
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="structureModalTitle">Edit Structure</h3>
+        <button type="button" id="structureModalCloseBtn" class="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="structureEditForm">
+          <div class="form-row">
+            <label class="form-field">
+              <span>Name</span>
+              <input type="text" id="formStructureName" required placeholder="Structure Name">
+            </label>
+            <label class="form-field">
+              <span>Type</span>
+              <select id="formStructureType" required>
+                <option value="tunnel">Tunnel</option>
+                <option value="viaduct">Viaduct</option>
+                <option value="overbridge">Overbridge</option>
+                <option value="underbridge">Underbridge</option>
+              </select>
+            </label>
+            <label class="form-field">
+              <span>Number</span>
+              <input type="text" id="formStructureNo" placeholder="e.g. ECM1-71T">
+            </label>
+          </div>
+
+          <div class="form-section">
+            <div class="shape-section-header">
+              <h4>Track Locations</h4>
+              <button type="button" id="addStructureTrackBtn" class="btn-add-shape">+ Add Track</button>
+            </div>
+            <div class="shape-table-container">
+              <table class="modal-shape-table">
+                <thead>
+                  <tr>
+                    <th>ELR</th>
+                    <th>TID</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="structureTracksTableBody">
+                  <tr class="shape-empty-row">
+                    <td colspan="5">No tracks. Click "+ Add Track" to create one.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="structureModalCancelBtn" class="btn-secondary">Cancel</button>
+            <button type="submit" id="structureModalSaveBtn" class="btn-primary">Save</button>
           </div>
         </form>
       </div>

@@ -65,6 +65,25 @@ const formStationAt = document.getElementById('formStationAt');
 const platformsTableBody = document.getElementById('platformsTableBody');
 const addPlatformBtn = document.getElementById('addPlatformBtn');
 
+// Structure Elements
+const structuresTableBody = document.getElementById('structuresTableBody');
+const structureFilter = document.getElementById('structureFilter');
+const addStructureBtn = document.getElementById('addStructureBtn');
+const editSelectedStructureBtn = document.getElementById('editSelectedStructureBtn');
+
+// Structure Modal Elements
+const structureEditModal = document.getElementById('structureEditModal');
+const structureModalTitle = document.getElementById('structureModalTitle');
+const structureModalCloseBtn = document.getElementById('structureModalCloseBtn');
+const structureModalCancelBtn = document.getElementById('structureModalCancelBtn');
+const structureModalSaveBtn = document.getElementById('structureModalSaveBtn');
+const structureEditForm = document.getElementById('structureEditForm');
+const formStructureName = document.getElementById('formStructureName');
+const formStructureType = document.getElementById('formStructureType');
+const formStructureNo = document.getElementById('formStructureNo');
+const structureTracksTableBody = document.getElementById('structureTracksTableBody');
+const addStructureTrackBtn = document.getElementById('addStructureTrackBtn');
+
 // Yards calculator modal
 const yardsCalcModal = document.getElementById('yardsCalcModal');
 const calcModalCloseBtn = document.getElementById('calcModalCloseBtn');
@@ -84,6 +103,11 @@ let selectedStation = null;
 let selectedStationId = null;
 let isAddingNewStation = false;
 let isSavingStation = false;
+
+let selectedStructure = null;
+let selectedStructureId = null;
+let isAddingNewStructure = false;
+let isSavingStructure = false;
 
 let editingShapeIndex = null;
 let calcTargetInput = null;
@@ -812,6 +836,15 @@ function setActiveEditTab(tabName) {
     const isActive = panel.dataset.tab === tabName;
     panel.classList.toggle('active', isActive);
   });
+
+  // Trigger render for the active tab
+  if (tabName === 'tracks') {
+      if (typeof renderTracksTable === 'function') renderTracksTable(tidFilter?.value || '');
+  } else if (tabName === 'stations') {
+      if (typeof renderStationsTable === 'function') renderStationsTable(stationFilter?.value || '');
+  } else if (tabName === 'structures') {
+      if (typeof renderStructuresTable === 'function') renderStructuresTable(structureFilter?.value || '');
+  }
 }
 
 if (tidFilter) {
@@ -1274,6 +1307,261 @@ function editSelectedStation() {
   showStationModal(selectedStation, false);
 }
 
+// Structure Functions
+
+function updateStructureActionButtons() {
+  if (!editSelectedStructureBtn) return;
+  editSelectedStructureBtn.disabled = !selectedStructure;
+}
+
+function renderStructuresTable(filterText = '') {
+  if (!structuresTableBody) return;
+  const route = window.TrackDiagramApp?.getRoute();
+  const structures = route?.structures || [];
+
+  // Filter
+  const filtered = structures.filter(s => {
+    if (!filterText) return true;
+    const term = filterText.toLowerCase();
+    return (s.name || '').toLowerCase().includes(term) ||
+           (s.structureNo || '').toLowerCase().includes(term);
+  });
+
+  if (filtered.length === 0) {
+    structuresTableBody.innerHTML = '<tr><td colspan="5" class="table-empty">No structures found.</td></tr>';
+    return;
+  }
+
+  structuresTableBody.innerHTML = filtered.map((s, idx) => {
+    const isSelected = selectedStructure === s; // Object reference equality
+    const trackCount = s.trackLocation ? s.trackLocation.length : 0;
+    return `<tr class="${isSelected ? 'selected' : ''}" data-idx="${idx}">
+      <td>${s.name || '-'}</td>
+      <td>${s.type || '-'}</td>
+      <td>${s.structureNo || '-'}</td>
+      <td>${trackCount} tracks</td>
+      <td><button class="btn-delete-row" data-idx="${idx}">Delete</button></td>
+    </tr>`;
+  }).join('');
+
+  // Row selection
+  structuresTableBody.querySelectorAll('tr').forEach((row, i) => {
+    row.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') return; // Ignore delete button clicks
+      const idx = parseInt(row.dataset.idx);
+      selectedStructure = filtered[idx];
+      selectedStructureId = selectedStructure._id;
+      renderStructuresTable(filterText); // Re-render to update selection highlight
+      updateStructureActionButtons();
+    });
+  });
+
+  // Delete button
+  structuresTableBody.querySelectorAll('.btn-delete-row').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.idx);
+      const s = filtered[idx];
+      if (window.confirm(`Are you sure you want to delete structure "${s.name}"?`)) {
+        // TODO: Implement delete API
+        // For now, just remove from array and save? No, should use API.
+        // Assuming we have a delete endpoint or we update the route.
+        // Since we don't have a specific delete structure endpoint in the snippets, 
+        // we might need to implement it or just remove from local and save?
+        // Let's assume we can't easily delete without an endpoint.
+        // For now, let's just alert.
+        window.alert('Delete functionality not yet implemented for structures.');
+      }
+    });
+  });
+}
+
+function renderStructureTracksTable() {
+  if (!structureTracksTableBody || !selectedStructure) return;
+  
+  const tracks = Array.isArray(selectedStructure.trackLocation) ? selectedStructure.trackLocation : [];
+  if (!tracks.length) {
+    structureTracksTableBody.innerHTML = '<tr class="shape-empty-row"><td colspan="5">No tracks. Click "+ Add Track" to create one.</td></tr>';
+    return;
+  }
+
+  structureTracksTableBody.innerHTML = tracks.map((t, idx) => {
+    return `<tr>
+      <td><input type="text" class="struct-track-input" data-idx="${idx}" data-field="elr" value="${t.elr ?? ''}" placeholder="ELR"></td>
+      <td><input type="number" class="struct-track-input" data-idx="${idx}" data-field="tid" value="${t.tid ?? ''}" placeholder="TID"></td>
+      <td>
+        <div class="input-with-calc">
+          <input type="number" class="struct-track-input" id="structFrom_${idx}" data-idx="${idx}" data-field="from" value="${t.from ?? ''}">
+          <button type="button" class="btn-calc" data-target="structFrom_${idx}" title="Calculate">📍</button>
+        </div>
+      </td>
+      <td>
+        <div class="input-with-calc">
+          <input type="number" class="struct-track-input" id="structTo_${idx}" data-idx="${idx}" data-field="to" value="${t.to ?? ''}">
+          <button type="button" class="btn-calc" data-target="structTo_${idx}" title="Calculate">📍</button>
+        </div>
+      </td>
+      <td class="shape-actions">
+        <button type="button" class="btn-shape-action btn-shape-delete" data-idx="${idx}">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Attach input handlers
+  structureTracksTableBody.querySelectorAll('.struct-track-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      let val = e.target.value;
+      
+      if (field === 'tid' || field === 'from' || field === 'to') {
+        val = val === '' ? null : Number(val);
+      }
+      
+      if (selectedStructure.trackLocation[idx]) {
+        selectedStructure.trackLocation[idx][field] = val;
+      }
+    });
+  });
+
+  // Attach delete handlers
+  structureTracksTableBody.querySelectorAll('.btn-shape-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.currentTarget.dataset.idx);
+      if (selectedStructure.trackLocation) {
+        selectedStructure.trackLocation.splice(idx, 1);
+        renderStructureTracksTable();
+      }
+    });
+  });
+  
+  // Attach calculator handlers
+  structureTracksTableBody.querySelectorAll('.btn-calc').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const targetId = e.currentTarget.dataset.target;
+      const targetInput = document.getElementById(targetId);
+      if (targetInput) showYardsCalc(targetInput);
+    });
+  });
+}
+
+function addStructureTrack() {
+  if (!selectedStructure) return;
+  if (!Array.isArray(selectedStructure.trackLocation)) selectedStructure.trackLocation = [];
+  selectedStructure.trackLocation.push({ tid: null, from: null, to: null, elr: '' });
+  renderStructureTracksTable();
+}
+
+function showStructureModal(structure, isNew) {
+  if (!structureEditModal) return;
+  isAddingNewStructure = isNew;
+  selectedStructure = structure;
+  
+  if (structureModalTitle) structureModalTitle.textContent = isNew ? 'Add New Structure' : 'Edit Structure';
+  
+  if (formStructureName) formStructureName.value = structure.name || '';
+  if (formStructureType) formStructureType.value = structure.type || 'tunnel';
+  if (formStructureNo) formStructureNo.value = structure.structureNo || '';
+  
+  renderStructureTracksTable();
+  structureEditModal.hidden = false;
+}
+
+function hideStructureModal() {
+  if (structureEditModal) structureEditModal.hidden = true;
+  if (structureEditForm) structureEditForm.reset();
+}
+
+async function saveStructureFromForm() {
+  try {
+    if (!selectedStructure) return;
+    const r = window.TrackDiagramApp?.getRoute();
+    if (!r) return;
+
+    // Update structure from form
+    const name = formStructureName?.value?.trim();
+    if (!name) {
+      window.alert('Structure Name is required.');
+      return;
+    }
+    selectedStructure.name = name;
+    
+    selectedStructure.type = formStructureType?.value || 'tunnel';
+    selectedStructure.structureNo = formStructureNo?.value?.trim() || '';
+
+    // Validate tracks
+    const tracks = selectedStructure.trackLocation || [];
+    for (let i = 0; i < tracks.length; i++) {
+      const t = tracks[i];
+      if (!Number.isFinite(t.tid) || !Number.isFinite(t.from) || !Number.isFinite(t.to)) {
+        window.alert(`Track ${i + 1} is missing required numeric fields (TID, From, To).`);
+        return;
+      }
+    }
+
+    await saveStructureToApi(r.code, selectedStructure, isAddingNewStructure);
+  } catch (err) {
+    console.error('Error saving structure:', err);
+    window.alert('Error saving structure: ' + err.message);
+  }
+}
+
+async function saveStructureToApi(routeCode, structure, isNew) {
+  try {
+    const safeCode = encodeURIComponent(String(routeCode || '').trim());
+    const safeId = encodeURIComponent(String(structure._id || ''));
+    const url = isNew
+      ? `${apiUrl}/code/${safeCode}/structures`
+      : `${apiUrl}/code/${safeCode}/structures/${safeId}`;
+      
+    const response = await fetch(url, {
+      method: isNew ? 'POST' : 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(structure)
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status} - ${errText}`);
+    }
+
+    const savedStructure = await response.json();
+    console.log('Structure saved:', savedStructure);
+    
+    if (savedStructure._id) selectedStructureId = savedStructure._id;
+    
+    hideStructureModal();
+    isAddingNewStructure = false;
+    
+    // Reload route
+    window.TrackDiagramApp?.loadRoute(routeCode);
+  } catch (error) {
+    console.error('Error saving structure:', error);
+    window.alert('Error saving structure: ' + error.message);
+  }
+}
+
+function addNewStructure() {
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r) return;
+  
+  const newStructure = {
+    name: '',
+    type: 'tunnel',
+    structureNo: '',
+    trackLocation: []
+  };
+  
+  selectedStructure = newStructure;
+  selectedStructureId = null;
+  showStructureModal(newStructure, true);
+}
+
+function editSelectedStructure() {
+  if (!selectedStructure) return;
+  showStructureModal(selectedStructure, false);
+}
+
 // Wire up calculator modal handlers
 if (calcModalCloseBtn) {
   calcModalCloseBtn.addEventListener('click', hideYardsCalc);
@@ -1392,4 +1680,56 @@ if (stationEditModal) {
 
 if (addPlatformBtn) {
   addPlatformBtn.addEventListener('click', addPlatform);
+}
+
+// Structure Event Listeners
+
+if (structureFilter) {
+  structureFilter.addEventListener('input', () => {
+    renderStructuresTable(structureFilter.value);
+  });
+}
+
+if (addStructureBtn) {
+  addStructureBtn.addEventListener('click', addNewStructure);
+}
+
+if (editSelectedStructureBtn) {
+  editSelectedStructureBtn.addEventListener('click', editSelectedStructure);
+  updateStructureActionButtons();
+}
+
+if (structureModalCloseBtn) {
+  structureModalCloseBtn.addEventListener('click', hideStructureModal);
+}
+
+if (structureModalCancelBtn) {
+  structureModalCancelBtn.addEventListener('click', hideStructureModal);
+}
+
+if (structureEditForm) {
+  structureEditForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSavingStructure) return;
+    isSavingStructure = true;
+    if (structureModalSaveBtn) structureModalSaveBtn.disabled = true;
+    try {
+      await saveStructureFromForm();
+    } finally {
+      isSavingStructure = false;
+      if (structureModalSaveBtn) structureModalSaveBtn.disabled = false;
+    }
+  });
+}
+
+if (structureEditModal) {
+  structureEditModal.addEventListener('click', (e) => {
+    if (e.target === structureEditModal || e.target.classList.contains('modal-overlay')) {
+      hideStructureModal();
+    }
+  });
+}
+
+if (addStructureTrackBtn) {
+  addStructureTrackBtn.addEventListener('click', addStructureTrack);
 }

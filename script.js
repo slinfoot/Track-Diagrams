@@ -764,7 +764,7 @@ function initializeApp() {
 
         structure.trackLocation.forEach(loc => {
           const midYard = (loc.from + loc.to) / 2;
-          const gridY = getYAtJunction(loc.tid, midYard);
+          const gridY = getYAtJunction(loc.tid, midYard, loc.elr);
           if (gridY !== null) {
             if (gridY < minGridY) {
               minGridY = gridY;
@@ -785,6 +785,18 @@ function initializeApp() {
         const drawWall = (loc, isTop) => {
           const track = route.tracks.find(t => {
             if (t.tid !== loc.tid) return false;
+
+            if (loc.elr) {
+              const isMainElr = route.sections.some(s => s.elr === loc.elr);
+              if (isMainElr) {
+                if (t.altRoute) return false;
+              } else {
+                if (!t.altRoute || t.altRoute.elr !== loc.elr) return false;
+              }
+            } else {
+              if (t.altRoute) return false;
+            }
+
             // Check if any segment overlaps with loc
             return t.shape.some(seg => {
               const segMin = Math.min(seg.from, seg.to);
@@ -817,8 +829,8 @@ function initializeApp() {
 
           // Calculate raw offset lines
           const rawLines = segmentsToDraw.map(seg => {
-            const yFromGrid = getYAtJunction(loc.tid, seg.from);
-            const yToGrid = getYAtJunction(loc.tid, seg.to);
+            const yFromGrid = getYAtJunction(loc.tid, seg.from, loc.elr);
+            const yToGrid = getYAtJunction(loc.tid, seg.to, loc.elr);
 
             if (yFromGrid === null || yToGrid === null) return null;
 
@@ -949,7 +961,7 @@ function initializeApp() {
 
       structure.trackLocation.forEach(loc => {
         const midYard = (loc.from + loc.to) / 2;
-        const gridY = getYAtJunction(loc.tid, midYard);
+        const gridY = getYAtJunction(loc.tid, midYard, loc.elr);
 
         if (gridY !== null) {
           const screenY = getY(gridY, true);
