@@ -67,14 +67,82 @@ function initializeApp() {
     horizontalGridLinesNo: 100,
     windowSizeYards: DEFAULT_WINDOW_MILES * 1760,
     showFromYards: 0,
-    showToYards: DEFAULT_WINDOW_MILES * 1760
+    showToYards: DEFAULT_WINDOW_MILES * 1760,
+    showArrayOverlays: true,
+    showUrlOverlays: true
   };
 
   // Track current center position in full route for windowed scrolling
   // Keep the previous center when reloading the route to avoid "snap back".
-  let currentCenterYards = Number.isFinite(lastCenterYards)
+  let initialTargetYards = Number.isFinite(lastCenterYards)
     ? lastCenterYards
     : (((1760 * 0) + 0 + 331782) || (config.windowSizeYards / 2));
+
+  // Check for URL query params for overlay
+  const urlParams = new URLSearchParams(window.location.search);
+  const qRouteCode = urlParams.get('routeCode');
+  const qElr = urlParams.get('elr');
+  const qTid = urlParams.get('tid');
+  const qMileFrom = urlParams.get('mileFrom');
+  const qYardFrom = urlParams.get('yardFrom');
+  const qMileTo = urlParams.get('mileTo');
+  const qYardTo = urlParams.get('yardTo');
+  const qText = urlParams.get('text');
+
+  if (qRouteCode && qElr && qTid && qMileFrom !== null && qYardFrom !== null && qMileTo !== null && qYardTo !== null) {
+      console.log('URL Params detected:', { qRouteCode, qElr, qTid, qMileFrom, qYardFrom, qMileTo, qYardTo });
+      if (qRouteCode === route.code) {
+        const overlay = {
+            group: 'URL Overlay',
+            routeCode: qRouteCode,
+            elr: qElr,
+            tid: parseInt(qTid),
+            mileFrom: parseFloat(qMileFrom),
+            yardFrom: parseFloat(qYardFrom),
+            mileTo: parseFloat(qMileTo),
+            yardTo: parseFloat(qYardTo),
+            text: qText || ''
+        };
+        console.log('Created overlay object:', overlay);
+        
+        if (typeof overlayData !== 'undefined') {
+             const exists = overlayData.some(o => 
+                 o.group === 'URL Overlay' && 
+                 o.tid === overlay.tid && 
+                 o.mileFrom === overlay.mileFrom &&
+                 o.yardFrom === overlay.yardFrom
+             );
+             if (!exists) {
+                 overlayData.push(overlay);
+             }
+        } else {
+             window.overlayData = [overlay];
+        }
+
+        // Calculate center based on ELR offset if available
+        console.log('Attempting to compute absolute yards for centering...');
+        console.log('Route sections available:', route.sections ? route.sections.length : 'None');
+        
+        const startRes = computeAbsoluteYards(overlay.elr, overlay.mileFrom, overlay.yardFrom);
+        const endRes = computeAbsoluteYards(overlay.elr, overlay.mileTo, overlay.yardTo);
+        
+        console.log('Compute results:', { start: startRes, end: endRes });
+
+        if (startRes.value !== null && endRes.value !== null) {
+            initialTargetYards = (startRes.value + endRes.value) / 2;
+            lastCenterYards = initialTargetYards;
+            console.log('Centered on overlay at absolute yards:', initialTargetYards);
+        } else {
+            console.warn('Could not compute absolute yards for overlay centering', startRes.error, endRes.error);
+            // Fallback to absolute calculation if ELR lookup fails
+            const startYards = (overlay.mileFrom * 1760) + overlay.yardFrom;
+            const endYards = (overlay.mileTo * 1760) + overlay.yardTo;
+            initialTargetYards = (startYards + endYards) / 2;
+            lastCenterYards = initialTargetYards;
+            console.log('Fallback centering at:', initialTargetYards);
+        }
+      }
+  }
 
   // DOM references
   const container = document.getElementById('container');
@@ -139,11 +207,18 @@ function initializeApp() {
     const normElr = (elrCode || '').trim().toUpperCase();
     if (!normElr) return { value: null, error: 'ELR is required' };
 
-    const section = route.sections.find(s => (s.elr || '').toUpperCase() === normElr);
-    if (!section) return { value: null, error: `ELR ${normElr} not found in sections` };
+    const section = route.sections.find(s => (s.elr || '').trim().toUpperCase() === normElr);
+    if (!section) {
+        const availableElrs = route.sections.map(s => s.elr).join(', ');
+        return { value: null, error: `ELR ${normElr} not found in sections. Available: ${availableElrs}` };
+    }
 
-    const milesVal = Number.isFinite(miles) ? miles : 0;
-    const yardsVal = Number.isFinite(yards) ? yards : 0;
+    // Ensure inputs are numbers
+    const m = typeof miles === 'string' ? parseFloat(miles) : miles;
+    const y = typeof yards === 'string' ? parseFloat(yards) : yards;
+
+    const milesVal = Number.isFinite(m) ? m : 0;
+    const yardsVal = Number.isFinite(y) ? y : 0;
     const relativeYards = (milesVal * 1760) + yardsVal;
     const absoluteYards = relativeYards + (section.offset || 0);
 
@@ -1096,6 +1171,239 @@ function initializeApp() {
     centerOnYards(value);
   }
 
+  function setShowArrayOverlays(enabled) {
+    config.showArrayOverlays = !!enabled;
+    drawAll();
+  }
+
+  function setShowUrlOverlays(enabled) {
+    config.showUrlOverlays = !!enabled;
+    drawAll();
+  }
+
+  function drawOverlays() {
+    if (typeof overlayData === 'undefined' || !overlayData) return;
+
+    const visibleLeftLimitYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
+    const visibleRightLimitYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
+
+    overlayData.forEach(overlay => {
+      // Check visibility flags
+      if (overlay.group === 'URL Overlay') {
+        if (!config.showUrlOverlays) {
+            // console.log('Skipping URL overlay due to config');
+            return;
+        }
+      } else {
+        if (!config.showArrayOverlays) return;
+      }
+
+      // Find all tracks with the matching TID
+      let matchingTracks = route.tracks.filter(t => t.tid === overlay.tid);
+      
+      // Filter by ELR if specified
+      if (overlay.elr) {
+          const isMainRouteELR = route.sections.some(s => s.elr === overlay.elr);
+          
+          matchingTracks = matchingTracks.filter(track => {
+              if (track.altRoute && track.altRoute.elr) {
+                  // Track is on an alternative route (e.g. MEB)
+                  return track.altRoute.elr === overlay.elr;
+              } else {
+                  // Track is on the main route (e.g. ECM1..ECM7)
+                  // It matches if the requested ELR is also a main route ELR
+                  return isMainRouteELR;
+              }
+          });
+      }
+
+      if (matchingTracks.length === 0) {
+          if (overlay.group === 'URL Overlay') console.warn('No matching tracks found for overlay TID:', overlay.tid, 'ELR:', overlay.elr);
+          return;
+      }
+
+      let startYards, endYards;
+      
+      // Try to resolve using ELR first
+      const startRes = computeAbsoluteYards(overlay.elr, overlay.mileFrom, overlay.yardFrom);
+      const endRes = computeAbsoluteYards(overlay.elr, overlay.mileTo, overlay.yardTo);
+
+      if (startRes.value !== null && endRes.value !== null) {
+          startYards = startRes.value;
+          endYards = endRes.value;
+      } else {
+          // Fallback to raw calculation
+          startYards = (overlay.mileFrom * 1760) + overlay.yardFrom;
+          endYards = (overlay.mileTo * 1760) + overlay.yardTo;
+      }
+
+      const minOverlay = Math.min(startYards, endYards);
+      const maxOverlay = Math.max(startYards, endYards);
+
+      if (maxOverlay < visibleLeftLimitYards || minOverlay > visibleRightLimitYards) return;
+
+      matchingTracks.forEach(track => {
+        const offset = config.horizontalGridSpacing * 0.25;
+        
+        // 1. Build continuous paths from segments
+        const paths = [];
+        let currentPath = [];
+
+        const sortedSegments = [...track.shape].sort((a, b) => Math.min(a.from, a.to) - Math.min(b.from, b.to));
+
+        sortedSegments.forEach(segment => {
+          const segMin = Math.min(segment.from, segment.to);
+          const segMax = Math.max(segment.from, segment.to);
+
+          if (segMax > minOverlay && segMin < maxOverlay) {
+            const clipFrom = Math.max(minOverlay, segMin);
+            const clipTo = Math.min(maxOverlay, segMax);
+
+            const yFromGrid = getYAtJunction(overlay.tid, clipFrom);
+            const yToGrid = getYAtJunction(overlay.tid, clipTo);
+
+            if (yFromGrid === null || yToGrid === null) return;
+
+            const p1 = { x: getX(clipFrom), y: getY(yFromGrid, true) };
+            const p2 = { x: getX(clipTo), y: getY(yToGrid, true) };
+
+            if (currentPath.length === 0) {
+              currentPath.push(p1);
+              currentPath.push(p2);
+            } else {
+              const last = currentPath[currentPath.length - 1];
+              // Check continuity (tolerance 1px)
+              if (Math.hypot(p1.x - last.x, p1.y - last.y) < 1) {
+                currentPath.push(p2);
+              } else {
+                paths.push(currentPath);
+                currentPath = [p1, p2];
+              }
+            }
+          }
+        });
+        if (currentPath.length > 0) paths.push(currentPath);
+
+        // 2. Draw each path with miter joins
+        paths.forEach(path => {
+          if (path.length < 2) return;
+
+          const topPoints = [];
+          const bottomPoints = [];
+
+          for (let i = 0; i < path.length; i++) {
+            const p = path[i];
+            let dx, dy;
+
+            if (i === 0) {
+              // Start point: use normal of first segment
+              const pNext = path[i + 1];
+              const angle = Math.atan2(pNext.y - p.y, pNext.x - p.x);
+              const perp = angle + Math.PI / 2;
+              dx = offset * Math.cos(perp);
+              dy = offset * Math.sin(perp);
+            } else if (i === path.length - 1) {
+              // End point: use normal of last segment
+              const pPrev = path[i - 1];
+              const angle = Math.atan2(p.y - pPrev.y, p.x - pPrev.x);
+              const perp = angle + Math.PI / 2;
+              dx = offset * Math.cos(perp);
+              dy = offset * Math.sin(perp);
+            } else {
+              // Internal point: calculate miter
+              const pPrev = path[i - 1];
+              const pNext = path[i + 1];
+
+              // Normal 1
+              const a1 = Math.atan2(p.y - pPrev.y, p.x - pPrev.x);
+              const n1x = Math.cos(a1 + Math.PI / 2);
+              const n1y = Math.sin(a1 + Math.PI / 2);
+
+              // Normal 2
+              const a2 = Math.atan2(pNext.y - p.y, pNext.x - p.x);
+              const n2x = Math.cos(a2 + Math.PI / 2);
+              const n2y = Math.sin(a2 + Math.PI / 2);
+
+              // Average normal (bisector direction)
+              let mx = n1x + n2x;
+              let my = n1y + n2y;
+              const len = Math.hypot(mx, my);
+
+              if (len < 0.001) {
+                // Fallback for 180 turn
+                dx = n1x * offset;
+                dy = n1y * offset;
+              } else {
+                mx /= len;
+                my /= len;
+                // Miter length scale = 1 / dot(miter, normal)
+                const dot = mx * n1x + my * n1y;
+                const scale = offset / dot;
+                dx = mx * scale;
+                dy = my * scale;
+              }
+            }
+
+            // "Top" is p - normal*offset (to the left relative to direction? No, +PI/2 is left)
+            // Original code: x - dx, y - dy. 
+            // If dx,dy is "left" vector, then -dx,-dy is "right".
+            // Let's stick to the subtraction to match previous behavior.
+            topPoints.push({ x: p.x - dx, y: p.y - dy });
+            bottomPoints.push({ x: p.x + dx, y: p.y + dy });
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(topPoints[0].x, topPoints[0].y);
+          for (let i = 1; i < topPoints.length; i++) {
+            ctx.lineTo(topPoints[i].x, topPoints[i].y);
+          }
+          for (let i = bottomPoints.length - 1; i >= 0; i--) {
+            ctx.lineTo(bottomPoints[i].x, bottomPoints[i].y);
+          }
+          ctx.closePath();
+
+          ctx.fillStyle = 'rgba(255, 165, 0, 0.3)';
+          ctx.fill();
+          ctx.strokeStyle = 'orange';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          if (overlay.text) {
+            // Calculate path length
+            let totalLen = 0;
+            const dists = [0];
+            for (let i = 0; i < path.length - 1; i++) {
+              const d = Math.hypot(path[i+1].x - path[i].x, path[i+1].y - path[i].y);
+              totalLen += d;
+              dists.push(totalLen);
+            }
+
+            // Find midpoint
+            const midLen = totalLen / 2;
+            let midPoint = path[0];
+            
+            for (let i = 0; i < dists.length - 1; i++) {
+              if (midLen >= dists[i] && midLen <= dists[i+1]) {
+                const t = (midLen - dists[i]) / (dists[i+1] - dists[i]);
+                midPoint = {
+                  x: path[i].x + (path[i+1].x - path[i].x) * t,
+                  y: path[i].y + (path[i+1].y - path[i].y) * t
+                };
+                break;
+              }
+            }
+
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(overlay.text, midPoint.x, midPoint.y);
+          }
+        });
+      });
+    });
+  }
+
   function drawAll() {
     drawRuler();
     drawHorizontalGridLines();
@@ -1104,6 +1412,7 @@ function initializeApp() {
     drawBuffers();
     drawStations();
     drawStructures();
+    drawOverlays();
   }
 
   // Expose handlers for UI layer
@@ -1112,15 +1421,24 @@ function initializeApp() {
     setGridSpacing,
     setWindowSizeMiles,
     centerByELR,
-    centerOnYards
+    centerOnYards,
+    setShowArrayOverlays,
+    setShowUrlOverlays
   };
 
   // Initialize window and scroll position
-  updateVisibleWindow(currentCenterYards);
+  // Use initialTargetYards to set the window bounds, but don't let updateVisibleWindow overwrite our target
+  updateVisibleWindow(initialTargetYards);
   applyLayoutSizing(false);
-  centerOnYards(currentCenterYards, false);
-  centerOnRow(50);
-  drawAll();
+  
+  // Force scroll after a brief delay to override browser scroll restoration
+  // Pass initialTargetYards explicitly to ensure we center on the requested location, 
+  // not the center of the clamped window.
+  setTimeout(() => {
+      centerOnYards(initialTargetYards, false);
+      centerOnRow(50);
+      drawAll();
+  }, 10);
 
   // Avoid accumulating event listeners on repeated loadRoute() calls
   if (boundContainer && boundScrollHandler) {
@@ -1200,7 +1518,13 @@ function initializeApp() {
 
 // Load route when page loads
 window.addEventListener('DOMContentLoaded', () => {
-  loadRoute();
+  const urlParams = new URLSearchParams(window.location.search);
+  const routeCode = urlParams.get('routeCode');
+  if (routeCode) {
+    loadRoute(routeCode);
+  } else {
+    loadRoute();
+  }
 });
 
 // Expose a minimal API for UI scripts
@@ -1211,5 +1535,7 @@ window.TrackDiagramApp = {
   setWindowSizeMiles: (miles) => appAPI?.setWindowSizeMiles(miles),
   centerByELR: (elr, miles, yards) => appAPI?.centerByELR(elr, miles, yards),
   centerOnYards: (yards, updateWindow = true) => appAPI?.centerOnYards(yards, updateWindow),
+  setShowArrayOverlays: (v) => appAPI?.setShowArrayOverlays(v),
+  setShowUrlOverlays: (v) => appAPI?.setShowUrlOverlays(v),
   getRoute: () => route
 };

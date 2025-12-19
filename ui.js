@@ -5,6 +5,8 @@ const apiUrl = (typeof CONFIG !== 'undefined' ? CONFIG.API_BASE_URL : 'http://lo
 const routeSelector = document.getElementById('routeSelector');
 const yardsPerPixelInput = document.getElementById('yardsPerPixelInput');
 const gridSpacingInput = document.getElementById('gridSpacingInput');
+const showArrayOverlays = document.getElementById('showArrayOverlays');
+const showUrlOverlays = document.getElementById('showUrlOverlays');
 const windowSizeInput = document.getElementById('windowSizeInput');
 const elrInput = document.getElementById('elrInput');
 const mileInput = document.getElementById('mileInput');
@@ -193,6 +195,18 @@ if (windowSizeInput) {
     if (Number.isFinite(v) && v > 0) {
       window.TrackDiagramApp?.setWindowSizeMiles(v);
     }
+  });
+}
+
+if (showArrayOverlays) {
+  showArrayOverlays.addEventListener('change', () => {
+    window.TrackDiagramApp?.setShowArrayOverlays(showArrayOverlays.checked);
+  });
+}
+
+if (showUrlOverlays) {
+  showUrlOverlays.addEventListener('change', () => {
+    window.TrackDiagramApp?.setShowUrlOverlays(showUrlOverlays.checked);
   });
 }
 
