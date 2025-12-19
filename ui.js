@@ -813,7 +813,7 @@ function addNewTrack() {
 
   const newTrack = {
     tid: null,
-    shape: [{ from: 0, to: 0, yFrom: null, yTo: null }]
+    shape: [{ from: 0, to: 0, yFrom: null, yTo: null, electrification: 'overhead' }]
   };
   
   selectedTrack = newTrack;
