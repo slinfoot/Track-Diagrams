@@ -820,7 +820,7 @@ function renderShapeTable() {
   
   const shape = Array.isArray(selectedTrack.shape) ? selectedTrack.shape : [];
   if (!shape.length) {
-    shapeTableModalBody.innerHTML = '<tr class="shape-empty-row"><td colspan="5">No shape segments. Click "+ Add Segment" to create one.</td></tr>';
+    shapeTableModalBody.innerHTML = '<tr class="shape-empty-row"><td colspan="6">No shape segments. Click "+ Add Segment" to create one.</td></tr>';
     return;
   }
 
@@ -844,6 +844,14 @@ function renderShapeTable() {
       <td>
         <input type="number" class="shape-input" id="shapeYTo_${idx}" data-idx="${idx}" data-field="yTo" value="${seg.yTo ?? ''}" />
       </td>
+      <td>
+        <select class="shape-input" data-idx="${idx}" data-field="electrification">
+            <option value="none" ${seg.electrification === 'none' ? 'selected' : ''}>None</option>
+            <option value="overhead" ${(!seg.electrification || seg.electrification === 'overhead') ? 'selected' : ''}>Overhead</option>
+            <option value="3rd_4th_rail" ${seg.electrification === '3rd_4th_rail' ? 'selected' : ''}>3rd/4th Rail</option>
+            <option value="both" ${seg.electrification === 'both' ? 'selected' : ''}>Both</option>
+        </select>
+      </td>
       <td class="shape-actions">
         <button type="button" class="btn-shape-action btn-shape-delete" data-idx="${idx}">Delete</button>
       </td>
@@ -857,7 +865,12 @@ function renderShapeTable() {
       const field = e.target.dataset.field;
       const val = e.target.value.trim();
       if (!selectedTrack.shape[idx]) return;
-      selectedTrack.shape[idx][field] = val === '' ? null : Number(val);
+      
+      if (field === 'electrification') {
+          selectedTrack.shape[idx][field] = val;
+      } else {
+          selectedTrack.shape[idx][field] = val === '' ? null : Number(val);
+      }
     });
   });
 
@@ -887,7 +900,7 @@ function renderShapeTable() {
 function addShapeSegment() {
   if (!selectedTrack) return;
   if (!Array.isArray(selectedTrack.shape)) selectedTrack.shape = [];
-  selectedTrack.shape.push({ from: null, to: null, yFrom: null, yTo: null });
+  selectedTrack.shape.push({ from: null, to: null, yFrom: null, yTo: null, electrification: 'overhead' });
   renderShapeTable();
 }
 

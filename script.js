@@ -383,7 +383,8 @@ function initializeApp() {
             if (track.altRoute) {
               drawLine(startX, startYPos, endX, endYPos, 3, 'gray');
             } else {
-              drawLine(startX, startYPos, endX, endYPos, 3, 'red');
+              const color = segment.electrification === 'none' ? 'black' : 'red';
+              drawLine(startX, startYPos, endX, endYPos, 3, color);
             }
           }
         }

@@ -65,13 +65,15 @@ const routes = [
                         "from": 35,
                         "to": 349,
                         "yFrom": 55,
-                        "yTo": 55
+                        "yTo": 55,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 349,
                         "to": 459,
                         "yFrom": 55,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -92,13 +94,15 @@ const routes = [
                         "from": 22,
                         "to": 329,
                         "yFrom": 54,
-                        "yTo": 54
+                        "yTo": 54,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 329,
                         "to": 459,
                         "yFrom": 54,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -122,7 +126,8 @@ const routes = [
                         "from": 359,
                         "to": 419,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -143,13 +148,15 @@ const routes = [
                         "from": 20,
                         "to": 329,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 329,
                         "to": 419,
                         "yFrom": 53,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -173,7 +180,8 @@ const routes = [
                         "from": 418826,
                         "to": 418921,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -194,13 +202,15 @@ const routes = [
                         "from": 22,
                         "to": 329,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 329,
                         "to": 469,
                         "yFrom": 52,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -221,13 +231,15 @@ const routes = [
                         "from": 22,
                         "to": 349,
                         "yFrom": 51,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 349,
                         "to": 428,
                         "yFrom": 51,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -248,7 +260,8 @@ const routes = [
                         "from": 33,
                         "to": 469,
                         "yFrom": 50,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -272,7 +285,8 @@ const routes = [
                         "from": 359,
                         "to": 424,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -291,7 +305,8 @@ const routes = [
                         "from": 33,
                         "to": 461,
                         "yFrom": 49,
-                        "yTo": 49
+                        "yTo": 49,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -315,7 +330,8 @@ const routes = [
                         "from": 359,
                         "to": 461,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -336,7 +352,8 @@ const routes = [
                         "from": 32,
                         "to": 450,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -360,7 +377,8 @@ const routes = [
                         "from": 387,
                         "to": 450,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -381,7 +399,8 @@ const routes = [
                         "from": 32,
                         "to": 461,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -402,7 +421,8 @@ const routes = [
                         "from": 158,
                         "to": 410,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -423,19 +443,22 @@ const routes = [
                         "from": 162,
                         "to": 380,
                         "yFrom": 45,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 380,
                         "to": 410,
                         "yFrom": 45,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 410,
                         "to": 461,
                         "yFrom": 46,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -449,7 +472,8 @@ const routes = [
                         "from": 459,
                         "to": 884,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -473,7 +497,8 @@ const routes = [
                         "from": 884,
                         "to": 994,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -487,19 +512,22 @@ const routes = [
                         "from": 419,
                         "to": 449,
                         "yFrom": 52,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 449,
                         "to": 1100,
                         "yFrom": 51,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 1100,
                         "to": 1208,
                         "yFrom": 51,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -513,7 +541,8 @@ const routes = [
                         "from": 469,
                         "to": 1253,
                         "yFrom": 50,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -537,7 +566,8 @@ const routes = [
                         "from": 598,
                         "to": 742,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -561,7 +591,8 @@ const routes = [
                         "from": 881,
                         "to": 990,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -575,7 +606,8 @@ const routes = [
                         "from": 461,
                         "to": 1664,
                         "yFrom": 49,
-                        "yTo": 49
+                        "yTo": 49,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -599,7 +631,8 @@ const routes = [
                         "from": 1019,
                         "to": 1208,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -613,7 +646,8 @@ const routes = [
                         "from": 450,
                         "to": 1285,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -637,7 +671,8 @@ const routes = [
                         "from": 587,
                         "to": 687,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -651,7 +686,8 @@ const routes = [
                         "from": 461,
                         "to": 1456,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -672,13 +708,15 @@ const routes = [
                         "from": 884,
                         "to": 1300,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 1300,
                         "to": 1414,
                         "yFrom": 52,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -692,31 +730,36 @@ const routes = [
                         "from": 1253,
                         "to": 331254,
                         "yFrom": 50,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331254,
                         "to": 331298,
                         "yFrom": 50,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331298,
                         "to": 331814,
                         "yFrom": 51,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331814,
                         "to": 331858,
                         "yFrom": 51,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331858,
                         "to": 595826,
                         "yFrom": 50,
-                        "yTo": 50
+                        "yTo": 50,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -737,7 +780,8 @@ const routes = [
                         "from": 331814,
                         "to": 332112,
                         "yFrom": null,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -759,7 +803,8 @@ const routes = [
                         "from": 1253,
                         "to": 1375,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -778,25 +823,29 @@ const routes = [
                         "from": 1285,
                         "to": 2030,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 2030,
                         "to": 2245,
                         "yFrom": 48,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 2245,
                         "to": 37704,
                         "yFrom": 51,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 37704,
                         "to": 37748,
                         "yFrom": 51,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -818,7 +867,8 @@ const routes = [
                         "from": 1285,
                         "to": 1377,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -837,25 +887,29 @@ const routes = [
                         "from": 1456,
                         "to": 2200,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 2200,
                         "to": 2290,
                         "yFrom": 47,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 2290,
                         "to": 37307,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 37307,
                         "to": 37351,
                         "yFrom": 48,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -877,7 +931,8 @@ const routes = [
                         "from": 1456,
                         "to": 1563,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -899,7 +954,8 @@ const routes = [
                         "from": 1664,
                         "to": 1751,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -913,7 +969,8 @@ const routes = [
                         "from": 1664,
                         "to": 595826,
                         "yFrom": 49,
-                        "yTo": 49
+                        "yTo": 49,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -935,7 +992,8 @@ const routes = [
                         "from": 2514,
                         "to": 2673,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -957,7 +1015,8 @@ const routes = [
                         "from": 2619,
                         "to": 2718,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -979,7 +1038,8 @@ const routes = [
                         "from": 2743,
                         "to": 2888,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1001,7 +1061,8 @@ const routes = [
                         "from": 3014,
                         "to": 3165,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1022,37 +1083,43 @@ const routes = [
                         "from": 3155,
                         "to": 3200,
                         "yFrom": 48,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 3200,
                         "to": 3508,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 3508,
                         "to": 3740,
                         "yFrom": 47,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 3740,
                         "to": 4100,
                         "yFrom": 45,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 4100,
                         "to": 4140,
                         "yFrom": 45,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 4140,
                         "to": 4787,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1072,7 +1139,8 @@ const routes = [
                         "from": 1300,
                         "to": 1424,
                         "yFrom": 44,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1096,7 +1164,8 @@ const routes = [
                         "from": 1227,
                         "to": 1278,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1116,7 +1185,8 @@ const routes = [
                         "from": 1100,
                         "to": 1227,
                         "yFrom": 46,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1136,7 +1206,8 @@ const routes = [
                         "from": 1100,
                         "to": 1279,
                         "yFrom": 45,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1158,7 +1229,8 @@ const routes = [
                         "from": 3286,
                         "to": 3420,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1176,37 +1248,43 @@ const routes = [
                         "from": 3309,
                         "to": 3400,
                         "yFrom": null,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 3400,
                         "to": 3666,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 3666,
                         "to": 3819,
                         "yFrom": 52,
-                        "yTo": 54
+                        "yTo": 54,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 3819,
                         "to": 4270,
                         "yFrom": 54,
-                        "yTo": 54
+                        "yTo": 54,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 4270,
                         "to": 4320,
                         "yFrom": 54,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 4320,
                         "to": 8921,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1224,13 +1302,15 @@ const routes = [
                         "from": 4235,
                         "to": 4990,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 4990,
                         "to": 5032,
                         "yFrom": 47,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1252,7 +1332,8 @@ const routes = [
                         "from": 4705,
                         "to": 4787,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1271,49 +1352,57 @@ const routes = [
                         "from": 4787,
                         "to": 5060,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 5060,
                         "to": 5100,
                         "yFrom": 46,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 5100,
                         "to": 6358,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6358,
                         "to": 6420,
                         "yFrom": 47,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6420,
                         "to": 7216,
                         "yFrom": 45,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 7216,
                         "to": 7260,
                         "yFrom": 45,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 7260,
                         "to": 8529,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 8529,
                         "to": 8640,
                         "yFrom": 47,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1335,7 +1424,8 @@ const routes = [
                         "from": 8529,
                         "to": 9130,
                         "yFrom": null,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1357,7 +1447,8 @@ const routes = [
                         "from": 4821,
                         "to": 4888,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1379,7 +1470,8 @@ const routes = [
                         "from": 4810,
                         "to": 4933,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1401,7 +1493,8 @@ const routes = [
                         "from": 4605,
                         "to": 4680,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1423,7 +1516,8 @@ const routes = [
                         "from": 4656,
                         "to": 4719,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1445,7 +1539,8 @@ const routes = [
                         "from": 4829,
                         "to": 4933,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1467,7 +1562,8 @@ const routes = [
                         "from": 4865,
                         "to": 4943,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1483,7 +1579,8 @@ const routes = [
                         "from": 3740,
                         "to": 4235,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1499,7 +1596,8 @@ const routes = [
                         "from": 3740,
                         "to": 4140,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1515,7 +1613,8 @@ const routes = [
                         "from": 3750,
                         "to": 3840,
                         "yFrom": 46,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1537,7 +1636,8 @@ const routes = [
                         "from": 4162,
                         "to": 4235,
                         "yFrom": 46,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1555,7 +1655,8 @@ const routes = [
                         "from": 4106,
                         "to": 4203,
                         "yFrom": 47,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1576,13 +1677,15 @@ const routes = [
                         "from": 3784,
                         "to": 4250,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 4250,
                         "to": 4312,
                         "yFrom": 52,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1603,13 +1706,15 @@ const routes = [
                         "from": 3784,
                         "to": 4220,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 4220,
                         "to": 4244,
                         "yFrom": 53,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1632,7 +1737,8 @@ const routes = [
                         "from": 4147,
                         "to": 4226,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1658,7 +1764,8 @@ const routes = [
                         "from": 3864,
                         "to": 3994,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1675,7 +1782,8 @@ const routes = [
                         "from": 5362,
                         "to": 6312,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1699,7 +1807,8 @@ const routes = [
                         "from": 5741,
                         "to": 5811,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1723,7 +1832,8 @@ const routes = [
                         "from": 5741,
                         "to": 5810,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1747,7 +1857,8 @@ const routes = [
                         "from": 5824,
                         "to": 5894,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1766,25 +1877,29 @@ const routes = [
                         "from": 5823,
                         "to": 5865,
                         "yFrom": 53,
-                        "yTo": 54
+                        "yTo": 54,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 5865,
                         "to": 6000,
                         "yFrom": 54,
-                        "yTo": 54
+                        "yTo": 54,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6000,
                         "to": 6040,
                         "yFrom": 54,
-                        "yTo": 55
+                        "yTo": 55,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6040,
                         "to": 6273,
                         "yFrom": 55,
-                        "yTo": 55
+                        "yTo": 55,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1808,7 +1923,8 @@ const routes = [
                         "from": 5904,
                         "to": 5966,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1832,7 +1948,8 @@ const routes = [
                         "from": 5948,
                         "to": 6031,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1851,37 +1968,43 @@ const routes = [
                         "from": 5969,
                         "to": 6050,
                         "yFrom": null,
-                        "yTo": 56
+                        "yTo": 56,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6050,
                         "to": 6192,
                         "yFrom": 56,
-                        "yTo": 56
+                        "yTo": 56,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6192,
                         "to": 6406,
                         "yFrom": 56,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6406,
                         "to": 6620,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6620,
                         "to": 6660,
                         "yFrom": 47,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 6660,
                         "to": 6790,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1897,7 +2020,8 @@ const routes = [
                         "from": 6312,
                         "to": 8199,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1921,7 +2045,8 @@ const routes = [
                         "from": 6661,
                         "to": 6731,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1945,7 +2070,8 @@ const routes = [
                         "from": 6734,
                         "to": 6812,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1966,7 +2092,8 @@ const routes = [
                         "from": 6620,
                         "to": 7027,
                         "yFrom": null,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -1990,7 +2117,8 @@ const routes = [
                         "from": 6626,
                         "to": 6728,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2014,7 +2142,8 @@ const routes = [
                         "from": 6765,
                         "to": 6846,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2035,7 +2164,8 @@ const routes = [
                         "from": 6790,
                         "to": 7163,
                         "yFrom": null,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2059,7 +2189,8 @@ const routes = [
                         "from": 6790,
                         "to": 6842,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2083,7 +2214,8 @@ const routes = [
                         "from": 6731,
                         "to": 6778,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2102,7 +2234,8 @@ const routes = [
                         "from": 8199,
                         "to": 8269,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2121,13 +2254,15 @@ const routes = [
                         "from": 8199,
                         "to": 8225,
                         "yFrom": 54,
-                        "yTo": 54
+                        "yTo": 54,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 8225,
                         "to": 8269,
                         "yFrom": 54,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2145,7 +2280,8 @@ const routes = [
                         "from": 6020,
                         "to": 8199,
                         "yFrom": 54,
-                        "yTo": 54
+                        "yTo": 54,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2164,7 +2300,8 @@ const routes = [
                         "from": 8269,
                         "to": 8794,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2185,7 +2322,8 @@ const routes = [
                         "from": 34412,
                         "to": 34810,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2209,37 +2347,43 @@ const routes = [
                         "from": 34710,
                         "to": 34810,
                         "yFrom": null,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 34810,
                         "to": 34929,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 34929,
                         "to": 34973,
                         "yFrom": 52,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 34973,
                         "to": 35130,
                         "yFrom": 53,
-                        "yTo": 53
+                        "yTo": 53,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 35130,
                         "to": 35283,
                         "yFrom": 53,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 35283,
                         "to": 35535,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2263,7 +2407,8 @@ const routes = [
                         "from": 34929,
                         "to": 35559,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2287,19 +2432,22 @@ const routes = [
                         "from": 35488,
                         "to": 35559,
                         "yFrom": null,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 35559,
                         "to": 35958,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 35958,
                         "to": 36002,
                         "yFrom": 52,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2323,19 +2471,22 @@ const routes = [
                         "from": 35459,
                         "to": 35535,
                         "yFrom": null,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 35535,
                         "to": 35954,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 35954,
                         "to": 35998,
                         "yFrom": 47,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2359,19 +2510,22 @@ const routes = [
                         "from": 41963,
                         "to": 42007,
                         "yFrom": null,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 42007,
                         "to": 121645,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 121645,
                         "to": 121689,
                         "yFrom": 48,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2395,19 +2549,22 @@ const routes = [
                         "from": 41963,
                         "to": 42007,
                         "yFrom": null,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 42007,
                         "to": 104218,
                         "yFrom": 51,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 104218,
                         "to": 104262,
                         "yFrom": 51,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2431,19 +2588,22 @@ const routes = [
                         "from": 115346,
                         "to": 115388,
                         "yFrom": null,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 115388,
                         "to": 118325,
                         "yFrom": 51,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 118325,
                         "to": 118369,
                         "yFrom": 51,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2467,7 +2627,8 @@ const routes = [
                         "from": 334112,
                         "to": 334239,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2491,19 +2652,22 @@ const routes = [
                         "from": 334252,
                         "to": 334470,
                         "yFrom": null,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 334470,
                         "to": 337149,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 337149,
                         "to": 337193,
                         "yFrom": 48,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2522,25 +2686,29 @@ const routes = [
                         "from": 334480,
                         "to": 334611,
                         "yFrom": null,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 334611,
                         "to": 337282,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 337282,
                         "to": 337392,
                         "yFrom": 47,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 337392,
                         "to": 382731,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2564,7 +2732,8 @@ const routes = [
                         "from": 337211,
                         "to": 337288,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2588,19 +2757,22 @@ const routes = [
                         "from": 337548,
                         "to": 337592,
                         "yFrom": null,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 337592,
                         "to": 384019,
                         "yFrom": 51,
-                        "yTo": 51
+                        "yTo": 51,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 384019,
                         "to": 384063,
                         "yFrom": 51,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2624,7 +2796,8 @@ const routes = [
                         "from": 382354,
                         "to": 382554,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2648,7 +2821,8 @@ const routes = [
                         "from": 382568,
                         "to": 382731,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2672,7 +2846,8 @@ const routes = [
                         "from": 418701,
                         "to": 418808,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2696,7 +2871,8 @@ const routes = [
                         "from": 397502,
                         "to": 397600,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2710,7 +2886,8 @@ const routes = [
                         "from": 322039,
                         "to": 331179,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2723,19 +2900,22 @@ const routes = [
                         "from": 322039,
                         "to": 331143,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331143,
                         "to": 331240,
                         "yFrom": 47,
-                        "yTo": 44
+                        "yTo": 44,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331240,
                         "to": 331399,
                         "yFrom": 44,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ],
                 "toConnection": {
@@ -2767,7 +2947,8 @@ const routes = [
                         "from": 321879,
                         "to": 322052,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2788,7 +2969,8 @@ const routes = [
                         "from": 321640,
                         "to": 321879,
                         "yFrom": 47,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2809,13 +2991,15 @@ const routes = [
                         "from": 321640,
                         "to": 321879,
                         "yFrom": 46,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 321879,
                         "to": 322052,
                         "yFrom": 48,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2831,7 +3015,8 @@ const routes = [
                         "from": 321640,
                         "to": 322039,
                         "yFrom": 45,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2847,7 +3032,8 @@ const routes = [
                         "from": 321640,
                         "to": 322039,
                         "yFrom": 44,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2871,7 +3057,8 @@ const routes = [
                         "from": 323154,
                         "to": 323311,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2895,7 +3082,8 @@ const routes = [
                         "from": 323344,
                         "to": 323532,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2919,7 +3107,8 @@ const routes = [
                         "from": 323555,
                         "to": 323717,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2943,7 +3132,8 @@ const routes = [
                         "from": 329986,
                         "to": 330049,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -2967,19 +3157,22 @@ const routes = [
                         "from": 330068,
                         "to": 330117,
                         "yFrom": null,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330117,
                         "to": 330760,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330760,
                         "to": 330803,
                         "yFrom": 46,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3001,7 +3194,8 @@ const routes = [
                         "from": 330003,
                         "to": 330117,
                         "yFrom": 46,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3025,19 +3219,22 @@ const routes = [
                         "from": 330224,
                         "to": 330254,
                         "yFrom": null,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330254,
                         "to": 330975,
                         "yFrom": 45,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330975,
                         "to": 331019,
                         "yFrom": 45,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3061,19 +3258,22 @@ const routes = [
                         "from": 330255,
                         "to": 330285,
                         "yFrom": null,
-                        "yTo": 44
+                        "yTo": 44,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330285,
                         "to": 330923,
                         "yFrom": 44,
-                        "yTo": 44
+                        "yTo": 44,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330923,
                         "to": 330953,
                         "yFrom": 44,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3097,19 +3297,22 @@ const routes = [
                         "from": 330288,
                         "to": 330318,
                         "yFrom": null,
-                        "yTo": 43
+                        "yTo": 43,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330318,
                         "to": 330894,
                         "yFrom": 43,
-                        "yTo": 43
+                        "yTo": 43,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 330894,
                         "to": 330924,
                         "yFrom": 43,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3133,7 +3336,8 @@ const routes = [
                         "from": 330827,
                         "to": 330901,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3157,7 +3361,8 @@ const routes = [
                         "from": 330786,
                         "to": 330908,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3181,7 +3386,8 @@ const routes = [
                         "from": 330918,
                         "to": 331026,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3205,43 +3411,50 @@ const routes = [
                         "from": 331040,
                         "to": 331179,
                         "yFrom": null,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331179,
                         "to": 331197,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331197,
                         "to": 331299,
                         "yFrom": 48,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331299,
                         "to": 331311,
                         "yFrom": 45,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331311,
                         "to": 331399,
                         "yFrom": 45,
-                        "yTo": 44
+                        "yTo": 44,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331399,
                         "to": 331956,
                         "yFrom": 44,
-                        "yTo": 44
+                        "yTo": 44,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331956,
                         "to": 331986,
                         "yFrom": 44,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3265,13 +3478,15 @@ const routes = [
                         "from": 331311,
                         "to": 331986,
                         "yFrom": 45,
-                        "yTo": 45
+                        "yTo": 45,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331986,
                         "to": 332060,
                         "yFrom": 45,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3295,7 +3510,8 @@ const routes = [
                         "from": 331143,
                         "to": 331299,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3319,7 +3535,8 @@ const routes = [
                         "from": 331131,
                         "to": 331197,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3343,7 +3560,8 @@ const routes = [
                         "from": 331227,
                         "to": 331359,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3365,13 +3583,15 @@ const routes = [
                         "from": 331398,
                         "to": 331438,
                         "yFrom": null,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331438,
                         "to": 331751,
                         "yFrom": 52,
-                        "yTo": 52
+                        "yTo": 52,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3395,19 +3615,22 @@ const routes = [
                         "from": 331197,
                         "to": 331248,
                         "yFrom": null,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331248,
                         "to": 331321,
                         "yFrom": 48,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331321,
                         "to": 332060,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3428,7 +3651,8 @@ const routes = [
                         "from": 331248,
                         "to": 331749,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3449,13 +3673,15 @@ const routes = [
                         "from": 331331,
                         "to": 331371,
                         "yFrom": null,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 331371,
                         "to": 331749,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3476,13 +3702,15 @@ const routes = [
                         "from": 331796,
                         "to": 332076,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 332076,
                         "to": 332116,
                         "yFrom": 47,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3506,7 +3734,8 @@ const routes = [
                         "from": 332093,
                         "to": 332182,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3524,25 +3753,29 @@ const routes = [
                         "from": 332060,
                         "to": 332181,
                         "yFrom": 46,
-                        "yTo": 46
+                        "yTo": 46,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 332181,
                         "to": 332300,
                         "yFrom": 46,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 332300,
                         "to": 332363,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 332363,
                         "to": 332449,
                         "yFrom": 48,
-                        "yTo": 49
+                        "yTo": 49,
+                        "electrification": "overhead"
                     }
                 ],
                 "toConnection": {
@@ -3572,7 +3805,8 @@ const routes = [
                         "from": 332101,
                         "to": 332261,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3596,7 +3830,8 @@ const routes = [
                         "from": 332281,
                         "to": 332365,
                         "yFrom": null,
-                        "yTo": null
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             },
@@ -3617,19 +3852,22 @@ const routes = [
                         "from": 332363,
                         "to": 332403,
                         "yFrom": 48,
-                        "yTo": 48
+                        "yTo": 48,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 332403,
                         "to": 332443,
                         "yFrom": 48,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     },
                     {
                         "from": 332443,
                         "to": 332935,
                         "yFrom": 47,
-                        "yTo": 47
+                        "yTo": 47,
+                        "electrification": "overhead"
                     }
                 ]
             }
