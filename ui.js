@@ -45,6 +45,24 @@ const formAltRouteElr = document.getElementById('formAltRouteElr');
 const shapeTableModalBody = document.getElementById('shapeTableModalBody');
 const addShapeBtn = document.getElementById('addShapeBtn');
 
+// Station Elements
+const stationsTableBody = document.getElementById('stationsTableBody');
+const stationFilter = document.getElementById('stationFilter');
+const addStationBtn = document.getElementById('addStationBtn');
+const editSelectedStationBtn = document.getElementById('editSelectedStationBtn');
+
+// Station Modal Elements
+const stationEditModal = document.getElementById('stationEditModal');
+const stationModalTitle = document.getElementById('stationModalTitle');
+const stationModalCloseBtn = document.getElementById('stationModalCloseBtn');
+const stationModalCancelBtn = document.getElementById('stationModalCancelBtn');
+const stationModalSaveBtn = document.getElementById('stationModalSaveBtn');
+const stationEditForm = document.getElementById('stationEditForm');
+const formStationName = document.getElementById('formStationName');
+const formStationAt = document.getElementById('formStationAt');
+const platformsTableBody = document.getElementById('platformsTableBody');
+const addPlatformBtn = document.getElementById('addPlatformBtn');
+
 // Yards calculator modal
 const yardsCalcModal = document.getElementById('yardsCalcModal');
 const calcModalCloseBtn = document.getElementById('calcModalCloseBtn');
@@ -59,6 +77,12 @@ let selectedTrackId = null;
 let selectedTrackTid = null;
 let isAddingNewTrack = false;
 let isSavingTrack = false;
+
+let selectedStation = null;
+let selectedStationId = null;
+let isAddingNewStation = false;
+let isSavingStation = false;
+
 let editingShapeIndex = null;
 let calcTargetInput = null;
 
@@ -212,6 +236,7 @@ window.addEventListener('diagram:routeLoaded', () => {
       editRouteLength.textContent = `${miles}M ${yards}Y`;
     }
     renderTracksTable(tidFilter?.value ?? '');
+    renderStationsTable(stationFilter?.value ?? '');
   }
 });
 
@@ -473,6 +498,141 @@ function renderTracksTable(filterTid = '') {
       }
     });
   });
+}
+
+function renderStationsTable(filterName = '') {
+  if (!stationsTableBody) return;
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r?.stations?.length) {
+    stationsTableBody.innerHTML = '<tr><td colspan="4" class="table-empty">No stations available.</td></tr>';
+    selectedStation = null;
+    selectedStationId = null;
+    updateStationActionButtons();
+    return;
+  }
+
+  let stations = r.stations;
+  if (filterName.trim()) {
+    const filterLower = filterName.trim().toLowerCase();
+    stations = stations.filter(s => String(s.name || '').toLowerCase().includes(filterLower));
+  }
+
+  if (!stations.length) {
+    stationsTableBody.innerHTML = '<tr><td colspan="4" class="table-empty">No stations match the filter.</td></tr>';
+    selectedStation = null;
+    selectedStationId = null;
+    updateStationActionButtons();
+    return;
+  }
+
+  // Sort by 'at' location
+  const sortedStations = [...stations].sort((a, b) => (a.at || 0) - (b.at || 0));
+
+  const rows = sortedStations.map((station, index) => {
+    const atParts = yardsToMilesParts(station.at);
+    const atFormatted = (atParts.miles !== '-' && atParts.yards !== '-')
+      ? `${String(atParts.miles).padStart(3, '0')}M ${String(atParts.yards).padStart(4, '0')}Y`
+      : '-';
+    const platformCount = station.platforms?.length || 0;
+    const stationIdVal = station._id ?? '';
+
+    return '<tr data-station-index="' + index + '" data-station-id="' + String(stationIdVal) + '" class="station-row">' +
+      `<td>${station.name ?? ''}</td>` +
+      `<td>${atFormatted}</td>` +
+      `<td>${platformCount}</td>` +
+      `<td><button type="button" class="btn-shape-action btn-shape-delete btn-station-delete" data-station-id="${String(stationIdVal)}" title="Delete this station">Delete</button></td>` +
+      '</tr>';
+  }).join('');
+  stationsTableBody.innerHTML = rows;
+
+  // Restore selection
+  if (selectedStationId != null) {
+    const idToFind = String(selectedStationId);
+    let found = false;
+    stationsTableBody.querySelectorAll('.station-row').forEach(row => {
+      if (row.dataset.stationId === idToFind) {
+        row.classList.add('selected');
+        found = true;
+      }
+    });
+    if (!found) {
+      selectedStation = null;
+      selectedStationId = null;
+    }
+  }
+  updateStationActionButtons();
+
+  // Click handlers
+  stationsTableBody.querySelectorAll('.station-row').forEach(row => {
+    row.addEventListener('click', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('btn-station-delete')) {
+        return;
+      }
+      const stationIndex = parseInt(row.dataset.stationIndex);
+      const station = sortedStations[stationIndex];
+
+      stationsTableBody.querySelectorAll('.station-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+
+      if (station) {
+        selectedStation = station;
+        selectedStationId = station._id ?? null;
+        updateStationActionButtons();
+      }
+    });
+    
+    // Double-click to center
+    row.addEventListener('dblclick', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('btn-station-delete')) {
+        return;
+      }
+      const stationIndex = parseInt(row.dataset.stationIndex);
+      const station = sortedStations[stationIndex];
+      
+      if (station && Number.isFinite(station.at)) {
+        window.TrackDiagramApp?.centerOnYards?.(station.at, true);
+      }
+    });
+  });
+  
+  // Delete handlers
+  stationsTableBody.querySelectorAll('.btn-station-delete').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const route = window.TrackDiagramApp?.getRoute();
+      if (!route?.code) return;
+      
+      const stationId = btn.dataset.stationId;
+      if (!stationId) return;
+
+      if (!window.confirm('Are you sure you want to delete this station?')) return;
+      
+      try {
+        const safeCode = encodeURIComponent(String(route.code || '').trim());
+        const safeId = encodeURIComponent(String(stationId));
+        const url = `${apiUrl}/code/${safeCode}/stations/${safeId}`;
+        const resp = await fetch(url, { method: 'DELETE' });
+        
+        if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
+
+        if (selectedStationId && String(selectedStationId) === String(stationId)) {
+          selectedStation = null;
+          selectedStationId = null;
+          updateStationActionButtons();
+        }
+
+        window.TrackDiagramApp?.loadRoute(route.code);
+      } catch (err) {
+        console.error('Error deleting station:', err);
+        window.alert('Error deleting station: ' + err.message);
+      }
+    });
+  });
+}
+
+function updateStationActionButtons() {
+  if (!editSelectedStationBtn) return;
+  editSelectedStationBtn.disabled = !selectedStation;
 }
 
 function getNextTid(route) {
@@ -883,11 +1043,208 @@ async function saveTrackToApi(routeCode, track, isNew = false) {
     if (tidFilter) tidFilter.value = effectiveFilter;
     window.TrackDiagramApp?.loadRoute(routeCode);
 
-    window.alert('Track saved to database!');
+    //window.alert('Track saved to database!');
   } catch (error) {
     console.error('Error saving track:', error);
     window.alert('Error saving track to database: ' + error.message);
   }
+}
+
+// Station Functions
+
+function showStationModal(station, isNew) {
+  if (!stationEditModal) return;
+  isAddingNewStation = isNew;
+  selectedStation = station; // Ensure we're editing this object
+  
+  if (stationModalTitle) stationModalTitle.textContent = isNew ? 'Add New Station' : 'Edit Station';
+  
+  if (formStationName) formStationName.value = station.name || '';
+  if (formStationAt) formStationAt.value = station.at ?? '';
+  
+  renderPlatformsTable();
+  stationEditModal.hidden = false;
+}
+
+function hideStationModal() {
+  if (stationEditModal) stationEditModal.hidden = true;
+  if (stationEditForm) stationEditForm.reset();
+}
+
+function renderPlatformsTable() {
+  if (!platformsTableBody || !selectedStation) return;
+  
+  const platforms = Array.isArray(selectedStation.platforms) ? selectedStation.platforms : [];
+  if (!platforms.length) {
+    platformsTableBody.innerHTML = '<tr class="shape-empty-row"><td colspan="7">No platforms. Click "+ Add Platform" to create one.</td></tr>';
+    return;
+  }
+
+  platformsTableBody.innerHTML = platforms.map((plat, idx) => {
+    return `<tr>
+      <td><input type="number" class="plat-input" data-idx="${idx}" data-field="track" value="${plat.track ?? ''}" placeholder="TID"></td>
+      <td><input type="number" class="plat-input" data-idx="${idx}" data-field="platformNo" value="${plat.platformNo ?? ''}" placeholder="No"></td>
+      <td>
+        <div class="input-with-calc">
+          <input type="number" class="plat-input" id="platFrom_${idx}" data-idx="${idx}" data-field="from" value="${plat.from ?? ''}">
+          <button type="button" class="btn-calc" data-target="platFrom_${idx}" title="Calculate">📍</button>
+        </div>
+      </td>
+      <td>
+        <div class="input-with-calc">
+          <input type="number" class="plat-input" id="platTo_${idx}" data-idx="${idx}" data-field="to" value="${plat.to ?? ''}">
+          <button type="button" class="btn-calc" data-target="platTo_${idx}" title="Calculate">📍</button>
+        </div>
+      </td>
+      <td>
+        <select class="plat-input" data-idx="${idx}" data-field="position">
+          <option value="above" ${plat.position === 'above' ? 'selected' : ''}>Above</option>
+          <option value="below" ${plat.position === 'below' ? 'selected' : ''}>Below</option>
+        </select>
+      </td>
+      <td><input type="text" class="plat-input" data-idx="${idx}" data-field="elr" value="${plat.elr ?? ''}" placeholder="ELR"></td>
+      <td class="shape-actions">
+        <button type="button" class="btn-shape-action btn-shape-delete" data-idx="${idx}">Delete</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Attach input handlers
+  platformsTableBody.querySelectorAll('.plat-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      let val = e.target.value;
+      
+      if (field === 'track' || field === 'platformNo' || field === 'from' || field === 'to') {
+        val = val === '' ? null : Number(val);
+      }
+      
+      if (selectedStation.platforms[idx]) {
+        selectedStation.platforms[idx][field] = val;
+      }
+    });
+  });
+
+  // Attach delete handlers
+  platformsTableBody.querySelectorAll('.btn-shape-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.currentTarget.dataset.idx);
+      if (selectedStation.platforms) {
+        selectedStation.platforms.splice(idx, 1);
+        renderPlatformsTable();
+      }
+    });
+  });
+  
+  // Attach calculator handlers
+  platformsTableBody.querySelectorAll('.btn-calc').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const targetId = e.currentTarget.dataset.target;
+      const targetInput = document.getElementById(targetId);
+      if (targetInput) showYardsCalc(targetInput);
+    });
+  });
+}
+
+function addPlatform() {
+  if (!selectedStation) return;
+  if (!Array.isArray(selectedStation.platforms)) selectedStation.platforms = [];
+  selectedStation.platforms.push({ track: null, platformNo: null, from: null, to: null, position: 'above', elr: '' });
+  renderPlatformsTable();
+}
+
+async function saveStationFromForm() {
+  try {
+    if (!selectedStation) return;
+    const r = window.TrackDiagramApp?.getRoute();
+    if (!r) return;
+
+    // Update station from form
+    const name = formStationName?.value?.trim();
+    if (!name) {
+      window.alert('Station Name is required.');
+      return;
+    }
+    selectedStation.name = name;
+
+    const atVal = Number(formStationAt?.value);
+    if (!Number.isFinite(atVal)) {
+      window.alert('Station "At" location is required.');
+      return;
+    }
+    selectedStation.at = atVal;
+
+    // Validate platforms
+    const platforms = selectedStation.platforms || [];
+    for (let i = 0; i < platforms.length; i++) {
+      const p = platforms[i];
+      if (!Number.isFinite(p.track) || !Number.isFinite(p.platformNo) || !Number.isFinite(p.from) || !Number.isFinite(p.to)) {
+        window.alert(`Platform ${i + 1} is missing required numeric fields (Track, No, From, To).`);
+        return;
+      }
+    }
+
+    await saveStationToApi(r.code, selectedStation, isAddingNewStation);
+  } catch (err) {
+    console.error('Error saving station:', err);
+    window.alert('Error saving station: ' + err.message);
+  }
+}
+
+async function saveStationToApi(routeCode, station, isNew) {
+  try {
+    const safeCode = encodeURIComponent(String(routeCode || '').trim());
+    const safeId = encodeURIComponent(String(station._id || ''));
+    const url = isNew
+      ? `${apiUrl}/code/${safeCode}/stations`
+      : `${apiUrl}/code/${safeCode}/stations/${safeId}`;
+      
+    const response = await fetch(url, {
+      method: isNew ? 'POST' : 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(station)
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status} - ${errText}`);
+    }
+
+    const savedStation = await response.json();
+    console.log('Station saved:', savedStation);
+    
+    if (savedStation._id) selectedStationId = savedStation._id;
+    
+    hideStationModal();
+    isAddingNewStation = false;
+    
+    // Reload route
+    window.TrackDiagramApp?.loadRoute(routeCode);
+  } catch (error) {
+    console.error('Error saving station:', error);
+    window.alert('Error saving station: ' + error.message);
+  }
+}
+
+function addNewStation() {
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r) return;
+  
+  const newStation = {
+    name: '',
+    at: null,
+    platforms: []
+  };
+  
+  selectedStation = newStation;
+  selectedStationId = null;
+  showStationModal(newStation, true);
+}
+
+function editSelectedStation() {
+  if (!selectedStation) return;
+  showStationModal(selectedStation, false);
 }
 
 // Wire up calculator modal handlers
@@ -956,4 +1313,56 @@ if (trackEditModal) {
       hideTrackModal();
     }
   });
+}
+
+// Station Event Listeners
+
+if (stationFilter) {
+  stationFilter.addEventListener('input', () => {
+    renderStationsTable(stationFilter.value);
+  });
+}
+
+if (addStationBtn) {
+  addStationBtn.addEventListener('click', addNewStation);
+}
+
+if (editSelectedStationBtn) {
+  editSelectedStationBtn.addEventListener('click', editSelectedStation);
+  updateStationActionButtons();
+}
+
+if (stationModalCloseBtn) {
+  stationModalCloseBtn.addEventListener('click', hideStationModal);
+}
+
+if (stationModalCancelBtn) {
+  stationModalCancelBtn.addEventListener('click', hideStationModal);
+}
+
+if (stationEditForm) {
+  stationEditForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSavingStation) return;
+    isSavingStation = true;
+    if (stationModalSaveBtn) stationModalSaveBtn.disabled = true;
+    try {
+      await saveStationFromForm();
+    } finally {
+      isSavingStation = false;
+      if (stationModalSaveBtn) stationModalSaveBtn.disabled = false;
+    }
+  });
+}
+
+if (stationEditModal) {
+  stationEditModal.addEventListener('click', (e) => {
+    if (e.target === stationEditModal || e.target.classList.contains('modal-overlay')) {
+      hideStationModal();
+    }
+  });
+}
+
+if (addPlatformBtn) {
+  addPlatformBtn.addEventListener('click', addPlatform);
 }

@@ -74,7 +74,7 @@
       <div id="logicalSize"></div>
     </div>
   </div>
-  <div id="editPanel" class="edit-panel open">
+  <div id="editPanel" class="edit-panel">
     <div class="edit-panel-header">
       <h3>Edit Diagram</h3>
       <button id="closeEditPanelBtn" class="close-btn">×</button>
@@ -174,7 +174,49 @@
             <div class="tab-placeholder">Sections editor coming soon.</div>
           </div>
           <div class="edit-tab-content" data-tab="stations">
-            <div class="tab-placeholder">Stations editor coming soon.</div>
+            <div class="tracks-table-wrapper">
+              <div class="tracks-filter">
+                <label for="stationFilter">
+                  <span>Filter by Name:</span>
+                  <input type="text" id="stationFilter" placeholder="Enter Station Name...">
+                </label>
+                <div class="tracks-filter-actions">
+                  <button type="button" id="addStationBtn" class="sidebar-button">Add New Station</button>
+                  <button type="button" id="editSelectedStationBtn" class="sidebar-button" disabled>Edit Selected</button>
+                </div>
+              </div>
+              <div class="tracks-table-header">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 200px">
+                    <col style="width: 150px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>At (Location)</th>
+                      <th>Platforms</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="tracks-table-body" aria-label="Stations table rows">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 200px">
+                    <col style="width: 150px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <tbody id="stationsTableBody">
+                    <tr><td colspan="4" class="table-empty">No stations loaded.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
           <div class="edit-tab-content" data-tab="structures">
             <div class="tab-placeholder">Structures editor coming soon.</div>
@@ -303,6 +345,66 @@
           <div class="modal-actions">
             <button type="button" id="modalCancelBtn" class="btn-secondary">Cancel</button>
             <button type="submit" id="modalSaveBtn" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Station Edit Modal -->
+  <div id="stationEditModal" class="modal" hidden>
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="stationModalTitle">Edit Station</h3>
+        <button type="button" id="stationModalCloseBtn" class="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="stationEditForm">
+          <div class="form-row">
+            <label class="form-field">
+              <span>Name</span>
+              <input type="text" id="formStationName" required placeholder="Station Name">
+            </label>
+            <label class="form-field">
+              <span>At</span>
+              <div class="input-with-calc">
+                <input type="number" id="formStationAt" required placeholder="Yards">
+                <button type="button" class="btn-calc" data-target="formStationAt" title="Calculate from ELR/Mile/Yard">📍</button>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <div class="shape-section-header">
+              <h4>Platforms</h4>
+              <button type="button" id="addPlatformBtn" class="btn-add-shape">+ Add Platform</button>
+            </div>
+            <div class="shape-table-container">
+              <table class="modal-shape-table">
+                <thead>
+                  <tr>
+                    <th>Track (TID)</th>
+                    <th>Plat No</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Pos</th>
+                    <th>ELR</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="platformsTableBody">
+                  <tr class="shape-empty-row">
+                    <td colspan="7">No platforms. Click "+ Add Platform" to create one.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="stationModalCancelBtn" class="btn-secondary">Cancel</button>
+            <button type="submit" id="stationModalSaveBtn" class="btn-primary">Save</button>
           </div>
         </form>
       </div>
