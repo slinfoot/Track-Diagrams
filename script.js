@@ -893,6 +893,238 @@ function drawStructuresLayer({
         return;
       }
 
+      if (structure.type === 'level_crossing') {
+        // Find top-most and bottom-most tracks
+        let topTrackLoc = null;
+        let bottomTrackLoc = null;
+        let minGridY = Infinity;
+        let maxGridY = -Infinity;
+
+        structure.trackLocation.forEach(loc => {
+          const midYard = (loc.from + loc.to) / 2;
+          const gridY = getYAtJunction(loc.tid, midYard, loc.elr);
+          if (gridY !== null) {
+            if (gridY < minGridY) {
+              minGridY = gridY;
+              topTrackLoc = loc;
+            }
+            if (gridY > maxGridY) {
+              maxGridY = gridY;
+              bottomTrackLoc = loc;
+            }
+          }
+        });
+
+        if (!topTrackLoc || !bottomTrackLoc) return;
+
+        const offset = config.horizontalGridSpacing * 0.25;
+
+        const drawWall = (loc, isTop) => {
+          const candidates = tracksByTid.get(loc.tid) || [];
+          const locElrNorm = normalizeElr(loc.elr);
+          const track = candidates.find(t => {
+            if (locElrNorm) {
+              const isMainElr = sectionsByElr.has(locElrNorm);
+              if (isMainElr) {
+                if (t.altRoute) return false;
+              } else {
+                if (!t.altRoute || normalizeElr(t.altRoute.elr) !== locElrNorm) return false;
+              }
+            } else {
+              if (t.altRoute) return false;
+            }
+
+            // Check if any segment overlaps with loc
+            const { min: locMin, max: locMax } = getRangeMinMax(loc.from, loc.to);
+            return t.shape.some(seg => {
+              return segmentOverlapsRange(seg, locMin, locMax);
+            });
+          });
+          if (!track) return;
+
+          const startYard = Math.min(loc.from, loc.to);
+          const endYard = Math.max(loc.from, loc.to);
+
+          // Collect segments that are part of the structure
+          const segmentsToDraw = [];
+
+          track.shape.forEach(segment => {
+            const clipped = clipSegmentToRange(segment, startYard, endYard);
+            if (clipped) segmentsToDraw.push(clipped);
+          });
+
+          segmentsToDraw.sort((a, b) => a.from - b.from);
+
+          // Calculate raw offset lines
+          const rawLines = segmentsToDraw.map(seg => {
+            const yFromGrid = getYAtJunction(loc.tid, seg.from, loc.elr);
+            const yToGrid = getYAtJunction(loc.tid, seg.to, loc.elr);
+
+            if (yFromGrid === null || yToGrid === null) return null;
+
+            const x1 = getX(seg.from);
+            const y1 = getY(yFromGrid, true);
+            const x2 = getX(seg.to);
+            const y2 = getY(yToGrid, true);
+
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const angle = Math.atan2(dy, dx);
+            const offsetAngle = isTop ? angle - Math.PI / 2 : angle + Math.PI / 2;
+
+            const ox = Math.cos(offsetAngle) * offset;
+            const oy = Math.sin(offsetAngle) * offset;
+
+            return {
+              start: { x: x1 + ox, y: y1 + oy },
+              end: { x: x2 + ox, y: y2 + oy },
+              angle: angle
+            };
+          }).filter(l => l !== null);
+
+          if (rawLines.length === 0) return;
+
+          const points = [];
+          points.push(rawLines[0].start);
+
+          for (let i = 0; i < rawLines.length - 1; i++) {
+            const l1 = rawLines[i];
+            const l2 = rawLines[i + 1];
+
+            // Find intersection of l1 and l2
+            const x1 = l1.start.x, y1 = l1.start.y;
+            const x2 = l1.end.x, y2 = l1.end.y;
+            const x3 = l2.start.x, y3 = l2.start.y;
+            const x4 = l2.end.x, y4 = l2.end.y;
+
+            const denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+
+            if (Math.abs(denom) < 0.001) {
+              // Parallel lines, just use the end of the first line
+              points.push(l1.end);
+            } else {
+              const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom;
+              const ix = x1 + ua * (x2 - x1);
+              const iy = y1 + ua * (y2 - y1);
+              points.push({ x: ix, y: iy });
+            }
+          }
+
+          points.push(rawLines[rawLines.length - 1].end);
+
+          return points;
+        };
+
+        const topWall = drawWall(topTrackLoc, true);
+        const bottomWall = drawWall(bottomTrackLoc, false);
+
+        if (topWall && bottomWall) {
+          // Draw filled polygon with solid outline
+          ctx.beginPath();
+          ctx.moveTo(topWall[0].x, topWall[0].y);
+          
+          // Top wall left to right
+          for (let i = 1; i < topWall.length; i++) {
+            ctx.lineTo(topWall[i].x, topWall[i].y);
+          }
+          
+          // Right side
+          ctx.lineTo(bottomWall[bottomWall.length - 1].x, bottomWall[bottomWall.length - 1].y);
+          
+          // Bottom wall right to left
+          for (let i = bottomWall.length - 2; i >= 0; i--) {
+            ctx.lineTo(bottomWall[i].x, bottomWall[i].y);
+          }
+          
+          // Left side
+          ctx.closePath();
+          
+          // Fill with gray
+          ctx.fillStyle = 'rgba(128, 128, 128, 0.5)';
+          ctx.fill();
+          
+          // Solid outline
+          ctx.strokeStyle = 'gray';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([]);
+          ctx.stroke();
+          
+          // Draw dashed centerline from top to bottom
+          const centerTopX = (topWall[0].x + topWall[topWall.length - 1].x) / 2;
+          const centerTopY = (topWall[0].y + topWall[topWall.length - 1].y) / 2;
+          const centerBottomX = (bottomWall[0].x + bottomWall[bottomWall.length - 1].x) / 2;
+          const centerBottomY = (bottomWall[0].y + bottomWall[bottomWall.length - 1].y) / 2;
+          
+          ctx.setLineDash([5, 5]);
+          ctx.strokeStyle = 'white';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(centerTopX, centerTopY);
+          ctx.lineTo(centerBottomX, centerBottomY);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          
+          // Draw red X above and below the crossing
+          const xWidth = offset * 0.8;
+          const xHeight = xWidth * (2/3);
+          const xClearance = offset * 0.5;
+          
+          // Calculate direction vector from center of crossing to top/bottom
+          const dx = centerBottomX - centerTopX;
+          const dy = centerBottomY - centerTopY;
+          const length = Math.sqrt(dx * dx + dy * dy);
+          const dirX = length > 0 ? dx / length : 0;
+          const dirY = length > 0 ? dy / length : 1;
+          
+          // Top X (above the crossing) - offset outward
+          const topCenterX = centerTopX - dirX * (xHeight + xClearance);
+          const topCenterY = centerTopY - dirY * (xHeight + xClearance);
+          ctx.strokeStyle = 'red';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(topCenterX - xWidth, topCenterY - xHeight);
+          ctx.lineTo(topCenterX + xWidth, topCenterY + xHeight);
+          ctx.moveTo(topCenterX + xWidth, topCenterY - xHeight);
+          ctx.lineTo(topCenterX - xWidth, topCenterY + xHeight);
+          ctx.stroke();
+          
+          // Bottom X (below the crossing) - offset outward
+          const bottomCenterX = centerBottomX + dirX * (xHeight + xClearance);
+          const bottomCenterY = centerBottomY + dirY * (xHeight + xClearance);
+          ctx.beginPath();
+          ctx.moveTo(bottomCenterX - xWidth, bottomCenterY - xHeight);
+          ctx.lineTo(bottomCenterX + xWidth, bottomCenterY + xHeight);
+          ctx.moveTo(bottomCenterX + xWidth, bottomCenterY - xHeight);
+          ctx.lineTo(bottomCenterX - xWidth, bottomCenterY + xHeight);
+          ctx.stroke();
+        }
+
+        // Label
+        let midX, midY;
+        if (topWall && bottomWall) {
+          const allX = [...topWall.map(p => p.x), ...bottomWall.map(p => p.x)];
+          const allY = [...topWall.map(p => p.y), ...bottomWall.map(p => p.y)];
+          midX = allX.reduce((sum, x) => sum + x, 0) / allX.length;
+          midY = allY.reduce((sum, y) => sum + y, 0) / allY.length;
+        } else {
+          midX = (getX(topTrackLoc.from) + getX(topTrackLoc.to)) / 2;
+          midY = (getY(minGridY, true) + getY(maxGridY, true)) / 2;
+        }
+
+        ctx.fillStyle = 'black';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        
+        if (structure.structureNo) {
+          ctx.fillText(structure.name, midX, midY - 7);
+          ctx.fillText(structure.structureNo, midX, midY + 7);
+        } else {
+          ctx.fillText(structure.name, midX, midY);
+        }
+
+        return;
+      }
+
       if (structure.type !== 'tunnel' && structure.type !== 'overbridge') return;
 
     // Collect points for From and To lines
