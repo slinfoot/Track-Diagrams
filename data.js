@@ -4771,10 +4771,473 @@ const routes = [
                         "electrification": "overhead"
                     }
                 ]
+            },
+            {
+                "tid": 2200,
+                "altRoute": null,
+                "fromConnection": null,
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 274244,
+                        "to": 275373,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1200,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 267520,
+                    "track": 1100,
+                    "sc_name": "2282"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 275488,
+                    "track": 1100,
+                    "sc_name": "2481"
+                },
+                "shape": [
+                    {
+                        "from": 267520,
+                        "to": 267564,
+                        "yFrom": null,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 267564,
+                        "to": 275444,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 275444,
+                        "to": 275488,
+                        "yFrom": 51,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3201,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 270911,
+                    "track": 2100,
+                    "sc_name": "2311A"
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 270911,
+                        "to": 270955,
+                        "yFrom": null,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 270955,
+                        "to": 273651,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3200,
+                "altRoute": null,
+                "fromConnection": null,
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 273651,
+                        "to": 274244,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3302,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 273651,
+                    "track": 3200,
+                    "sc_name": "2400"
+                },
+                "shape": [
+                    {
+                        "from": 273651,
+                        "to": 273695,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 273695,
+                        "to": 274128,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274128,
+                        "to": 274230,
+                        "yFrom": 47,
+                        "yTo": 42,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274230,
+                        "to": 274758,
+                        "yFrom": 42,
+                        "yTo": 42,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274758,
+                        "to": 274829,
+                        "yFrom": 42,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274829,
+                    "track": 3301,
+                    "sc_name": "2442B"
+                }
+            },
+            {
+                "altRoute": null,
+                "tid": 2808,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 274251,
+                    "track": 2200,
+                    "sc_name": "2423"
+                },
+                "shape": [
+                    {
+                        "from": 274251,
+                        "to": 274285,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274285,
+                        "to": 274398,
+                        "yFrom": 47,
+                        "yTo": 44,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274398,
+                        "to": 274714,
+                        "yFrom": 44,
+                        "yTo": 44,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274714,
+                        "to": 274817,
+                        "yFrom": 44,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274817,
+                    "track": 2200,
+                    "sc_name": "2445"
+                }
+            },
+            {
+                "tid": 3605,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 274285,
+                    "track": 2808,
+                    "sc_name": "2424"
+                },
+                "toConnection": {
+                    "type": "buffer_stop"
+                },
+                "shape": [
+                    {
+                        "from": 274285,
+                        "to": 274410,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3607,
+                "fromConnection": {
+                    "type": "buffer_stop"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274785,
+                    "track": 2200,
+                    "sc_name": "2448"
+                },
+                "shape": [
+                    {
+                        "from": 274551,
+                        "to": 274696,
+                        "yFrom": 45,
+                        "yTo": 45,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274696,
+                        "to": 274718,
+                        "yFrom": 45,
+                        "yTo": 46,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274718,
+                        "to": 274750,
+                        "yFrom": 46,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274750,
+                        "to": 274785,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274718,
+                    "track": 3607,
+                    "sc_name": "2446B"
+                },
+                "shape": [
+                    {
+                        "from": 274551,
+                        "to": 274718,
+                        "yFrom": 46,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3606,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274750,
+                    "track": 3607,
+                    "sc_name": "2447"
+                },
+                "shape": [
+                    {
+                        "from": 274551,
+                        "to": 274750,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3301,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 274157,
+                    "track": 3200,
+                    "sc_name": "2461A"
+                },
+                "shape": [
+                    {
+                        "from": 274157,
+                        "to": 274216,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274216,
+                        "to": 274220,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274220,
+                        "to": 274296,
+                        "yFrom": 47,
+                        "yTo": 43,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274296,
+                        "to": 274736,
+                        "yFrom": 43,
+                        "yTo": 43,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274736,
+                        "to": 274862,
+                        "yFrom": 43,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274862,
+                    "track": 2200,
+                    "sc_name": "2445"
+                }
+            },
+            {
+                "tid": 3702,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 274220,
+                    "track": 3301,
+                    "sc_name": "2452A"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274398,
+                    "track": 2808,
+                    "sc_name": "2426"
+                },
+                "shape": [
+                    {
+                        "from": 274220,
+                        "to": 274242,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274242,
+                        "to": 274376,
+                        "yFrom": 47,
+                        "yTo": 44,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274376,
+                        "to": 274398,
+                        "yFrom": 44,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 274128,
+                    "track": 3302,
+                    "sc_name": "2413A"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 274216,
+                    "track": 3301,
+                    "sc_name": "2416B"
+                },
+                "shape": [
+                    {
+                        "from": 274128,
+                        "to": 274216,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "toConnection": null,
+                "tid": 2300,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 274770,
+                    "track": 3302,
+                    "sc_name": "2442A"
+                },
+                "shape": [
+                    {
+                        "from": 274770,
+                        "to": 274890,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274890,
+                        "to": 274898,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 274898,
+                        "to": 274978,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 274978,
+                        "to": 275496,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    }
+                ]
             }
         ],
         "stations": [
             {
+                "sideDiagramVisible": true,
                 "name": "Kings Cross",
                 "at": 220,
                 "platforms": [
@@ -4917,7 +5380,8 @@ const routes = [
                         "to": 4510,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Harringay",
@@ -4937,7 +5401,8 @@ const routes = [
                         "to": 6072,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Hornsey",
@@ -4957,7 +5422,8 @@ const routes = [
                         "to": 7194,
                         "position": "above"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Alexandra Palace",
@@ -4992,7 +5458,8 @@ const routes = [
                         "position": "below",
                         "elr": "HDB"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "New Southgate",
@@ -5026,7 +5493,8 @@ const routes = [
                         "to": 11440,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Oakleigh Park",
@@ -5060,7 +5528,8 @@ const routes = [
                         "to": 14828,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "New Barnet",
@@ -5094,7 +5563,8 @@ const routes = [
                         "to": 16214,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Hadley Wood",
@@ -5128,9 +5598,11 @@ const routes = [
                         "to": 18766,
                         "position": "above"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
+                "sideDiagramVisible": true,
                 "name": "Potters Bar",
                 "at": 22440,
                 "platforms": [
@@ -5196,7 +5668,8 @@ const routes = [
                         "to": 25542,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Welham Green",
@@ -5216,7 +5689,8 @@ const routes = [
                         "to": 27456,
                         "position": "above"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Hatfield Station",
@@ -5243,7 +5717,8 @@ const routes = [
                         "to": 31350,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Welwyn Garden City",
@@ -5277,7 +5752,8 @@ const routes = [
                         "to": 35860,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Welham North",
@@ -5297,7 +5773,8 @@ const routes = [
                         "to": 38830,
                         "position": "above"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Knebworth",
@@ -5331,9 +5808,11 @@ const routes = [
                         "to": 44198,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
+                "sideDiagramVisible": true,
                 "name": "Stevenage",
                 "at": 48576,
                 "platforms": [
@@ -5385,7 +5864,8 @@ const routes = [
                         "to": 56254,
                         "position": "above"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Arlesey",
@@ -5405,7 +5885,8 @@ const routes = [
                         "to": 65384,
                         "position": "above"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "name": "Biggleswade",
@@ -5439,9 +5920,11 @@ const routes = [
                         "to": 72512,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
+                "sideDiagramVisible": true,
                 "name": "Sandy",
                 "at": 77638,
                 "platforms": [
@@ -5493,9 +5976,11 @@ const routes = [
                         "to": 91190,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
+                "sideDiagramVisible": true,
                 "name": "Huntingdon",
                 "at": 103510,
                 "platforms": [
@@ -5516,6 +6001,7 @@ const routes = [
                 ]
             },
             {
+                "sideDiagramVisible": true,
                 "name": "York",
                 "at": 331782,
                 "platforms": [
@@ -5600,6 +6086,7 @@ const routes = [
                 ]
             },
             {
+                "sideDiagramVisible": true,
                 "name": "Thirsk",
                 "at": 370832,
                 "platforms": [
@@ -5620,6 +6107,7 @@ const routes = [
                 ]
             },
             {
+                "sideDiagramVisible": true,
                 "name": "Northallerton",
                 "at": 384500,
                 "platforms": [
@@ -5636,6 +6124,61 @@ const routes = [
                         "from": 384384,
                         "to": 384670,
                         "position": "above"
+                    }
+                ]
+            },
+            {
+                "name": "Doncaster",
+                "at": 274494,
+                "sideDiagramVisible": true,
+                "platforms": [
+                    {
+                        "track": 2200,
+                        "platformNo": 4,
+                        "from": 274340,
+                        "to": 274703,
+                        "position": "above",
+                        "elr": ""
+                    },
+                    {
+                        "track": 1200,
+                        "platformNo": 3,
+                        "from": 274263,
+                        "to": 274703,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 3605,
+                        "platformNo": 5,
+                        "from": 274340,
+                        "to": 274450,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 3606,
+                        "platformNo": 6,
+                        "from": 274538,
+                        "to": 274703,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 3607,
+                        "platformNo": 7,
+                        "from": 274538,
+                        "to": 274626,
+                        "position": "above",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2808,
+                        "platformNo": 8,
+                        "from": 274406,
+                        "to": 274626,
+                        "position": "below",
+                        "elr": ""
                     }
                 ]
             }
@@ -6412,7 +6955,7 @@ const routes = [
                 ]
             },
             {
-                "name": "Ryther Viaduct",
+                "name": "Ryther Viaduct (River Wharfe)",
                 "type": "viaduct",
                 "structureNo": "ECM3-30",
                 "trackLocation": [
@@ -6596,6 +7139,253 @@ const routes = [
                     {
                         "from": 335962,
                         "to": 335972,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Whinny Hagg Lane",
+                "type": "overbridge",
+                "structureNo": "ECM3-15",
+                "trackLocation": [
+                    {
+                        "from": 306355,
+                        "to": 306365,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 306350,
+                        "to": 306360,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Colton Old Road",
+                "type": "overbridge",
+                "structureNo": "ECM3-33",
+                "trackLocation": [
+                    {
+                        "from": 319440,
+                        "to": 319450,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 319445,
+                        "to": 319455,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Church Lane",
+                "type": "overbridge",
+                "structureNo": "ECM3-32",
+                "trackLocation": [
+                    {
+                        "from": 318934,
+                        "to": 318944,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 318934,
+                        "to": 318944,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Oak Avenue",
+                "type": "overbridge",
+                "structureNo": "ECM3-31",
+                "trackLocation": [
+                    {
+                        "from": 318191,
+                        "to": 318201,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 318186,
+                        "to": 318196,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "B1233 Ryther Road",
+                "type": "overbridge",
+                "structureNo": "ECM3-29",
+                "trackLocation": [
+                    {
+                        "from": 316382,
+                        "to": 316392,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 316377,
+                        "to": 316387,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Millfield footbridge",
+                "type": "overbridge",
+                "structureNo": "ECM3-28",
+                "trackLocation": [
+                    {
+                        "from": 315744,
+                        "to": 315754,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 315744,
+                        "to": 315754,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Underbridge",
+                "type": "underbridge",
+                "structureNo": "ECM3-27",
+                "trackLocation": [
+                    {
+                        "from": 315717,
+                        "to": 315727,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 315722,
+                        "to": 315732,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Moor Lane",
+                "type": "overbridge",
+                "structureNo": "ECM3-26",
+                "trackLocation": [
+                    {
+                        "from": 315128,
+                        "to": 315138,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 315133,
+                        "to": 315143,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Violet Hill footbridge",
+                "type": "overbridge",
+                "structureNo": "ECM3-25",
+                "trackLocation": [
+                    {
+                        "from": 314270,
+                        "to": 314280,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 314270,
+                        "to": 314280,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Bullmoor Drain",
+                "type": "underbridge",
+                "structureNo": "ECM3-24",
+                "trackLocation": [
+                    {
+                        "from": 312774,
+                        "to": 312784,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 312774,
+                        "to": 312784,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Biggins footbridge",
+                "type": "overbridge",
+                "structureNo": "ECM3-23",
+                "trackLocation": [
+                    {
+                        "from": 311916,
+                        "to": 311921,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 311916,
+                        "to": 311921,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Bishops Dyke",
+                "type": "underbridge",
+                "structureNo": "ECM3-22",
+                "trackLocation": [
+                    {
+                        "from": 311014,
+                        "to": 311024,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 311014,
+                        "to": 311024,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "B1222 Bishops Dyke Road",
+                "type": "overbridge",
+                "structureNo": "ECM3-21",
+                "trackLocation": [
+                    {
+                        "from": 310899,
+                        "to": 310909,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 310904,
+                        "to": 310914,
                         "tid": 1100,
                         "elr": ""
                     }
