@@ -92,6 +92,7 @@ const yardsCalcForm = document.getElementById('yardsCalcForm');
 const calcElr = document.getElementById('calcElr');
 const calcMiles = document.getElementById('calcMiles');
 const calcYards = document.getElementById('calcYards');
+const calcChains = document.getElementById('calcChains');
 
 let selectedTrack = null;
 let selectedTrackId = null;
@@ -1732,4 +1733,27 @@ if (structureEditModal) {
 
 if (addStructureTrackBtn) {
   addStructureTrackBtn.addEventListener('click', addStructureTrack);
+}
+
+// Yards/Chains Conversion Event Listeners
+if (calcYards && calcChains) {
+  // When yards changes, update chains
+  calcYards.addEventListener('input', () => {
+    const yardsValue = parseFloat(calcYards.value);
+    if (!isNaN(yardsValue)) {
+      calcChains.value = (yardsValue / 22).toFixed(2);
+    } else {
+      calcChains.value = '';
+    }
+  });
+
+  // When chains changes, update yards
+  calcChains.addEventListener('input', () => {
+    const chainsValue = parseFloat(calcChains.value);
+    if (!isNaN(chainsValue)) {
+      calcYards.value = Math.round(chainsValue * 22);
+    } else {
+      calcYards.value = '';
+    }
+  });
 }
