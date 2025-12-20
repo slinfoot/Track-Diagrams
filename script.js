@@ -24,6 +24,9 @@ const DEFAULT_YARDS_PER_PIXEL = 1;
 const DEFAULT_GRID_SPACING = 50;
 const DEFAULT_WINDOW_MILES = 10;
 
+// Default initial centering (historically York area). Used when no prior viewport state exists.
+const DEFAULT_INITIAL_TARGET_YARDS = 331782;
+
 // Layout/label defaults
 const WINDOW_EDGE_MARGIN_RATIO = 0.2;
 const DEFAULT_LABEL_OVERLAP_ITERATIONS = 10;
@@ -33,35 +36,386 @@ let route = null;
 let appAPI = null;
 
 // Preserve viewport state across route reloads (save/edit/delete triggers loadRoute again)
-let lastCenterYards = null;
-let lastScrollTopPx = null;
-let lastScrollLeftPx = null;
-let lastShowFromYards = null;
-let lastYardsPerPixel = null;
-let boundContainer = null;
-let boundScrollHandler = null;
-let boundResizeHandler = null;
-let boundPointerDownHandler = null;
-let boundPointerUpHandler = null;
-let boundPointerCancelHandler = null;
-let isMouseDownInDiagram = false;
-let lastNearEdge = false;
-let lastVisibleCenterYards = null;
+const viewportState = {
+  lastCenterYards: null,
+  lastVisibleCenterYards: null,
+  lastScrollTopPx: null,
+  lastScrollLeftPx: null,
+  lastShowFromYards: null,
+  lastYardsPerPixel: null,
+  boundContainer: null,
+  boundScrollHandler: null,
+  boundResizeHandler: null,
+  boundPointerDownHandler: null,
+  boundPointerUpHandler: null,
+  boundPointerCancelHandler: null,
+  isMouseDownInDiagram: false,
+  lastNearEdge: false
+};
 
 function captureViewportStateFromDom() {
-  if (!boundContainer) return;
+  if (!viewportState.boundContainer) return;
 
-  lastScrollTopPx = boundContainer.scrollTop;
-  lastScrollLeftPx = boundContainer.scrollLeft;
+  viewportState.lastScrollTopPx = viewportState.boundContainer.scrollTop;
+  viewportState.lastScrollLeftPx = viewportState.boundContainer.scrollLeft;
 
-  if (Number.isFinite(lastShowFromYards) && Number.isFinite(lastYardsPerPixel)) {
-    const visibleCenterX = boundContainer.scrollLeft + (boundContainer.clientWidth / 2);
-    const visibleCenterYards = lastShowFromYards + (visibleCenterX * lastYardsPerPixel);
+  if (Number.isFinite(viewportState.lastShowFromYards) && Number.isFinite(viewportState.lastYardsPerPixel)) {
+    const visibleCenterX = viewportState.boundContainer.scrollLeft + (viewportState.boundContainer.clientWidth / 2);
+    const visibleCenterYards = viewportState.lastShowFromYards + (visibleCenterX * viewportState.lastYardsPerPixel);
     if (Number.isFinite(visibleCenterYards)) {
-      lastCenterYards = visibleCenterYards;
-      lastVisibleCenterYards = visibleCenterYards;
+      viewportState.lastCenterYards = visibleCenterYards;
+      viewportState.lastVisibleCenterYards = visibleCenterYards;
     }
   }
+}
+
+function buildTracksByTid(nextRoute) {
+  const tracksByTid = new Map();
+  if (Array.isArray(nextRoute?.tracks)) {
+    nextRoute.tracks.forEach(track => {
+      const tid = track?.tid;
+      if (tid === null || tid === undefined) return;
+      const bucket = tracksByTid.get(tid);
+      if (bucket) {
+        bucket.push(track);
+      } else {
+        tracksByTid.set(tid, [track]);
+      }
+    });
+  }
+  return tracksByTid;
+}
+
+function buildSectionsByElr(nextRoute) {
+  const sectionsByElr = new Map();
+  if (Array.isArray(nextRoute?.sections)) {
+    nextRoute.sections.forEach(section => {
+      const normElr = normalizeElr(section?.elr);
+      if (!normElr) return;
+      if (!sectionsByElr.has(normElr)) {
+        sectionsByElr.set(normElr, section);
+      }
+    });
+  }
+  return sectionsByElr;
+}
+
+function getDiagramDomRefs() {
+  return {
+    container: document.getElementById('container'),
+    logicalSize: document.getElementById('logicalSize'),
+    rulerCanvas: document.getElementById('rulerCanvas'),
+    dpr: window.devicePixelRatio || 1
+  };
+}
+
+function consumeUrlOverlayFromLocation(expectedRouteCode) {
+  try {
+    if (typeof window === 'undefined' || !window.location) return null;
+
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const qRouteCode = params.get('routeCode');
+    const qElr = params.get('elr');
+    const qTid = params.get('tid');
+    const qMileFrom = params.get('mileFrom');
+    const qYardFrom = params.get('yardFrom');
+    const qMileTo = params.get('mileTo');
+    const qYardTo = params.get('yardTo');
+    const qText = params.get('text');
+
+    if (!(qRouteCode && qElr && qTid && qMileFrom !== null && qYardFrom !== null && qMileTo !== null && qYardTo !== null)) {
+      return null;
+    }
+
+    if (qRouteCode !== expectedRouteCode) {
+      return null;
+    }
+
+    // One-shot: remove overlay params from the URL once consumed, so future route reloads
+    // (e.g. triggered by Save) don't keep forcing a recenter.
+    if (window.history && typeof window.history.replaceState === 'function') {
+      const overlayKeys = ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'];
+      let changed = false;
+      overlayKeys.forEach(key => {
+        if (params.has(key)) {
+          params.delete(key);
+          changed = true;
+        }
+      });
+      if (changed) {
+        url.search = params.toString();
+        window.history.replaceState(null, '', url.toString());
+      }
+    }
+
+    return {
+      group: 'URL Overlay',
+      routeCode: qRouteCode,
+      elr: qElr,
+      tid: parseInt(qTid),
+      mileFrom: parseFloat(qMileFrom),
+      yardFrom: parseFloat(qYardFrom),
+      mileTo: parseFloat(qMileTo),
+      yardTo: parseFloat(qYardTo),
+      text: qText || ''
+    };
+  } catch {
+    return null;
+  }
+}
+
+function addOverlayIfMissing(overlay, isDuplicateFn) {
+  if (typeof overlayData !== 'undefined') {
+    const exists = typeof isDuplicateFn === 'function'
+      ? overlayData.some(isDuplicateFn)
+      : false;
+    if (!exists) {
+      overlayData.push(overlay);
+    }
+    return;
+  }
+
+  // Preserve existing behavior: overwrite window.overlayData when overlayData is undefined.
+  window.overlayData = [overlay];
+}
+
+function computeInitialTargetYards({ lastCenterYards }, config) {
+  if (Number.isFinite(lastCenterYards)) return lastCenterYards;
+  return DEFAULT_INITIAL_TARGET_YARDS || (config.windowSizeYards / 2);
+}
+
+function createDefaultConfig(nextRoute) {
+  return {
+    totalYards: nextRoute.length_yards,
+    yardsPerPixel: DEFAULT_YARDS_PER_PIXEL,
+    horizontalGridSpacing: DEFAULT_GRID_SPACING,
+    horizontalGridLinesNo: 100,
+    windowSizeYards: DEFAULT_WINDOW_MILES * YARDS_PER_MILE,
+    showFromYards: 0,
+    showToYards: DEFAULT_WINDOW_MILES * YARDS_PER_MILE,
+    showArrayOverlays: true,
+    showUrlOverlays: true
+  };
+}
+
+function unbindViewportEvents() {
+  // Avoid accumulating event listeners on repeated loadRoute() calls
+  if (viewportState.boundContainer && viewportState.boundScrollHandler) {
+    viewportState.boundContainer.removeEventListener('scroll', viewportState.boundScrollHandler);
+  }
+  if (viewportState.boundResizeHandler) {
+    window.removeEventListener('resize', viewportState.boundResizeHandler);
+  }
+  if (viewportState.boundContainer && viewportState.boundPointerDownHandler) {
+    viewportState.boundContainer.removeEventListener('pointerdown', viewportState.boundPointerDownHandler);
+  }
+  if (viewportState.boundPointerUpHandler) {
+    window.removeEventListener('pointerup', viewportState.boundPointerUpHandler);
+  }
+  if (viewportState.boundPointerCancelHandler) {
+    window.removeEventListener('pointercancel', viewportState.boundPointerCancelHandler);
+  }
+}
+
+function bindViewportEvents({
+  container,
+  canvasResize,
+  drawAll,
+  updateVisibleWindow,
+  applyLayoutSizing,
+  centerOnYards,
+  config,
+  setScrollPosX,
+  setScrollPosY
+}) {
+  if (!container) return;
+
+  // Redraw ruler when viewport resizes
+  viewportState.boundResizeHandler = () => {
+    canvasResize();
+    drawAll();
+  };
+  window.addEventListener('resize', viewportState.boundResizeHandler);
+
+  // Update scroll position with windowed scrolling support
+  viewportState.boundContainer = container;
+
+  // Recenter window only when the user releases the mouse button near an edge.
+  // This avoids unexpected snapping while the user is still scrolling.
+  viewportState.boundPointerDownHandler = (e) => {
+    if (e.pointerType === 'mouse' && e.button === 0) {
+      viewportState.isMouseDownInDiagram = true;
+    }
+  };
+  viewportState.boundPointerUpHandler = (e) => {
+    if (e.pointerType !== 'mouse') return;
+    if (!viewportState.isMouseDownInDiagram) return;
+    viewportState.isMouseDownInDiagram = false;
+
+    if (viewportState.lastNearEdge && Number.isFinite(viewportState.lastVisibleCenterYards)) {
+      updateVisibleWindow(viewportState.lastVisibleCenterYards);
+      applyLayoutSizing(false);
+      // Maintain view by keeping the same yards under the viewport center
+      centerOnYards(viewportState.lastVisibleCenterYards, false);
+    }
+  };
+  viewportState.boundPointerCancelHandler = () => {
+    viewportState.isMouseDownInDiagram = false;
+  };
+
+  container.addEventListener('pointerdown', viewportState.boundPointerDownHandler);
+  window.addEventListener('pointerup', viewportState.boundPointerUpHandler);
+  window.addEventListener('pointercancel', viewportState.boundPointerCancelHandler);
+
+  viewportState.boundScrollHandler = () => {
+    const scrollX = container.scrollLeft;
+    const scrollY = container.scrollTop;
+    setScrollPosX(scrollX);
+    setScrollPosY(scrollY);
+    viewportState.lastScrollTopPx = scrollY;
+    viewportState.lastScrollLeftPx = scrollX;
+    drawAll();
+
+    // Calculate current visible center in yards
+    const visibleCenterX = scrollX + (container.clientWidth / 2);
+    const visibleCenterYards = config.showFromYards + (visibleCenterX * config.yardsPerPixel);
+    viewportState.lastCenterYards = visibleCenterYards;
+    viewportState.lastVisibleCenterYards = visibleCenterYards;
+    viewportState.lastShowFromYards = config.showFromYards;
+    viewportState.lastYardsPerPixel = config.yardsPerPixel;
+
+    // Check if near edges of window (within 20% from either side)
+    const windowMargin = config.windowSizeYards * WINDOW_EDGE_MARGIN_RATIO;
+    const distanceFromStart = visibleCenterYards - config.showFromYards;
+    const distanceFromEnd = config.showToYards - visibleCenterYards;
+    viewportState.lastNearEdge = distanceFromStart < windowMargin || distanceFromEnd < windowMargin;
+  };
+
+  container.addEventListener('scroll', viewportState.boundScrollHandler);
+}
+
+function drawStationsLayer({
+  ctx,
+  route,
+  config,
+  tracksByTid,
+  withCanvasState,
+  getVisibleBounds,
+  getRangeMinMax,
+  segmentOverlapsRange,
+  getYAtJunction,
+  getX,
+  getY
+}) {
+  if (!route?.stations?.length) return;
+
+  withCanvasState(() => {
+    const {
+      leftYards: visibleLeftLimitYards,
+      rightYards: visibleRightLimitYards,
+      topGridY: visibleTopLimitY,
+      bottomGridY: visibleBottomLimitY
+    } = getVisibleBounds();
+
+    // Most labels in this diagram are placed by their center.
+    ctx.textBaseline = 'middle';
+
+    route.stations.forEach(station => {
+      // Find the min and max platform extents for this station
+      let stationMinYard = null;
+      let stationMaxYard = null;
+
+      station.platforms.forEach(platform => {
+        if (stationMinYard === null || platform.from < stationMinYard) {
+          stationMinYard = platform.from;
+        }
+        if (stationMaxYard === null || platform.to > stationMaxYard) {
+          stationMaxYard = platform.to;
+        }
+      });
+
+      // Check if any platform is within horizontal viewport bounds
+      if (stationMinYard === null || stationMaxYard === null ||
+        stationMaxYard < visibleLeftLimitYards || stationMinYard > visibleRightLimitYards) {
+        return; // Skip station if no platforms are in horizontal viewport
+      }
+
+      // Label the station name at the top of the diagram
+      const stationX = getX(station.at);
+      ctx.font = '16px Arial';
+      ctx.fillStyle = 'blue';
+      ctx.textAlign = 'center';
+      ctx.fillText(station.name, stationX, 15);
+
+      // Draw each platform
+      station.platforms.forEach(platform => {
+        const candidates = tracksByTid.get(platform.track) || [];
+        const track = candidates.find(t => {
+          // Check if any segment overlaps with platform
+          const { min: platMin, max: platMax } = getRangeMinMax(platform.from, platform.to);
+          return t.shape.some(seg => {
+            return segmentOverlapsRange(seg, platMin, platMax);
+          });
+        });
+        if (!track) return;
+        // Get the tracks vertical grid number
+        const platformMid = (platform.from + platform.to) / 2;
+        const trackY = getYAtJunction(platform.track, platformMid, platform.elr);
+        if (trackY === null) return;
+
+        // Check if platform is within vertical viewport bounds
+        if (trackY < visibleTopLimitY || trackY > visibleBottomLimitY) {
+          return; // Skip platform if outside vertical viewport
+        }
+
+        // Get the platforms start and end X positions
+        const platformStartX = getX(platform.from);
+        const platformEndX = getX(platform.to);
+        // Draw the platform above or below the track in the first 1/3 or last 1/3 of the horizontal grid spacing
+        const trackYPos = getY(trackY, false);
+        let platformYPos;
+        if (platform.position === 'above') {
+          platformYPos = trackYPos;
+        } else {
+          platformYPos = trackYPos + ((config.horizontalGridSpacing / 3) * 2);
+        }
+        ctx.fillStyle = 'red';
+        ctx.fillRect(platformStartX, platformYPos, platformEndX - platformStartX, (config.horizontalGridSpacing / 3));
+        // Label the platform with platform number
+        ctx.font = '10px Arial';
+        ctx.fillStyle = 'white';
+        ctx.fillText(`P${platform.platformNo}`, platformStartX + (platformEndX - platformStartX) / 2, platformYPos + (config.horizontalGridSpacing / 6));
+      });
+    });
+  });
+}
+
+function computeOverlayCenterYards(urlOverlay, computeAbsoluteYardsFn) {
+  if (!urlOverlay || typeof computeAbsoluteYardsFn !== 'function') {
+    return { centerYards: null, startRes: null, endRes: null, usedFallback: false };
+  }
+
+  const startRes = computeAbsoluteYardsFn(urlOverlay.elr, urlOverlay.mileFrom, urlOverlay.yardFrom);
+  const endRes = computeAbsoluteYardsFn(urlOverlay.elr, urlOverlay.mileTo, urlOverlay.yardTo);
+
+  if (startRes?.value !== null && endRes?.value !== null) {
+    return {
+      centerYards: (startRes.value + endRes.value) / 2,
+      startRes,
+      endRes,
+      usedFallback: false
+    };
+  }
+
+  const startYards = (urlOverlay.mileFrom * YARDS_PER_MILE) + urlOverlay.yardFrom;
+  const endYards = (urlOverlay.mileTo * YARDS_PER_MILE) + urlOverlay.yardTo;
+  return {
+    centerYards: (startYards + endYards) / 2,
+    startRes,
+    endRes,
+    usedFallback: true
+  };
 }
 
 function dispatchRouteLoaded() {
@@ -75,9 +429,10 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
   const currentCode = route?.code ? String(route.code).trim() : '';
   if (requestedCode && currentCode && requestedCode !== currentCode) {
     // Switching routes: don't carry over the previous route's viewport.
-    lastCenterYards = null;
-    lastScrollTopPx = null;
-    lastScrollLeftPx = null;
+    viewportState.lastCenterYards = null;
+    viewportState.lastVisibleCenterYards = null;
+    viewportState.lastScrollTopPx = null;
+    viewportState.lastScrollLeftPx = null;
   } else {
     captureViewportStateFromDom();
   }
@@ -118,185 +473,59 @@ function initializeApp() {
   }
 
   // Pre-index common lookups to reduce repeated full scans during rendering.
-  // Note: This index is rebuilt on every route load (initializeApp call).
-  const tracksByTid = new Map();
-  if (Array.isArray(route.tracks)) {
-    route.tracks.forEach(track => {
-      const tid = track?.tid;
-      if (tid === null || tid === undefined) return;
-      const bucket = tracksByTid.get(tid);
-      if (bucket) {
-        bucket.push(track);
-      } else {
-        tracksByTid.set(tid, [track]);
-      }
-    });
-  }
-
-  const sectionsByElr = new Map();
-  if (Array.isArray(route.sections)) {
-    route.sections.forEach(section => {
-      const normElr = normalizeElr(section?.elr);
-      if (!normElr) return;
-      if (!sectionsByElr.has(normElr)) {
-        sectionsByElr.set(normElr, section);
-      }
-    });
-  }
+  // Note: These indexes are rebuilt on every route load (initializeApp call).
+  const tracksByTid = buildTracksByTid(route);
+  const sectionsByElr = buildSectionsByElr(route);
 
   // Configuration for logical distances (mutable so UI changes can tweak values)
-  const config = {
-    totalYards: route.length_yards,
-    yardsPerPixel: DEFAULT_YARDS_PER_PIXEL,
-    horizontalGridSpacing: DEFAULT_GRID_SPACING,
-    horizontalGridLinesNo: 100,
-    windowSizeYards: DEFAULT_WINDOW_MILES * YARDS_PER_MILE,
-    showFromYards: 0,
-    showToYards: DEFAULT_WINDOW_MILES * YARDS_PER_MILE,
-    showArrayOverlays: true,
-    showUrlOverlays: true
-  };
+  const config = createDefaultConfig(route);
 
   // Keep a minimal copy of the viewport-related config in globals so loadRoute()
   // can capture the current center even if a scroll event hasn't fired recently.
-  lastYardsPerPixel = config.yardsPerPixel;
-  lastShowFromYards = config.showFromYards;
+  viewportState.lastYardsPerPixel = config.yardsPerPixel;
+  viewportState.lastShowFromYards = config.showFromYards;
 
   // Track current center position in full route for windowed scrolling
   // Keep the previous center when reloading the route to avoid "snap back".
-  function getInitialTargetYards() {
-    return Number.isFinite(lastCenterYards)
-      ? lastCenterYards
-      : (((YARDS_PER_MILE * 0) + 0 + 331782) || (config.windowSizeYards / 2));
-  }
+  let initialTargetYards = computeInitialTargetYards(viewportState, config);
 
-  let initialTargetYards = getInitialTargetYards();
+  const urlOverlay = consumeUrlOverlayFromLocation(route.code);
 
-  function clearUrlOverlayQueryParams() {
-    try {
-      if (typeof window === 'undefined') return;
-      if (!window.location) return;
-      if (!window.history || typeof window.history.replaceState !== 'function') return;
-
-      const url = new URL(window.location.href);
-      const params = url.searchParams;
-
-      // Keep routeCode, but clear overlay-related params so they don't keep re-centering
-      // on subsequent loadRoute() calls (e.g. after Save).
-      const overlayKeys = ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'];
-      let changed = false;
-      overlayKeys.forEach(key => {
-        if (params.has(key)) {
-          params.delete(key);
-          changed = true;
-        }
-      });
-
-      if (!changed) return;
-      url.search = params.toString();
-      window.history.replaceState(null, '', url.toString());
-    } catch {
-      // ignore
-    }
-  }
-
-  function addOverlayIfMissing(overlay, isDuplicateFn) {
-    if (typeof overlayData !== 'undefined') {
-      const exists = typeof isDuplicateFn === 'function'
-        ? overlayData.some(isDuplicateFn)
-        : false;
-      if (!exists) {
-        overlayData.push(overlay);
-      }
-      return;
-    }
-
-    // Preserve existing behavior: overwrite window.overlayData when overlayData is undefined.
-    window.overlayData = [overlay];
-  }
-
-  function applyUrlOverlayFromQuery() {
-    // Check for URL query params for overlay
-    const urlParams = new URLSearchParams(window.location.search);
-    const qRouteCode = urlParams.get('routeCode');
-    const qElr = urlParams.get('elr');
-    const qTid = urlParams.get('tid');
-    const qMileFrom = urlParams.get('mileFrom');
-    const qYardFrom = urlParams.get('yardFrom');
-    const qMileTo = urlParams.get('mileTo');
-    const qYardTo = urlParams.get('yardTo');
-    const qText = urlParams.get('text');
-
-    if (!(qRouteCode && qElr && qTid && qMileFrom !== null && qYardFrom !== null && qMileTo !== null && qYardTo !== null)) {
-      return null;
-    }
-
-    debugLog('URL Params detected:', { qRouteCode, qElr, qTid, qMileFrom, qYardFrom, qMileTo, qYardTo });
-    if (qRouteCode !== route.code) {
-      return null;
-    }
-
-    // One-shot: remove overlay params from the URL once consumed, so future route reloads
-    // (e.g. triggered by Save) don't keep forcing a recenter.
-    clearUrlOverlayQueryParams();
-
-    const overlay = {
-      group: 'URL Overlay',
-      routeCode: qRouteCode,
-      elr: qElr,
-      tid: parseInt(qTid),
-      mileFrom: parseFloat(qMileFrom),
-      yardFrom: parseFloat(qYardFrom),
-      mileTo: parseFloat(qMileTo),
-      yardTo: parseFloat(qYardTo),
-      text: qText || ''
-    };
-    debugLog('Created overlay object:', overlay);
+  // URL overlays: if present in the URL, add to overlay data and center the initial view.
+  // Parsing/clearing is done in consumeUrlOverlayFromLocation() so it acts one-shot.
+  if (urlOverlay) {
+    debugLog('URL Params detected:', urlOverlay);
+    debugLog('Created overlay object:', urlOverlay);
 
     addOverlayIfMissing(
-      overlay,
+      urlOverlay,
       o => o.group === 'URL Overlay' &&
-        o.tid === overlay.tid &&
-        o.mileFrom === overlay.mileFrom &&
-        o.yardFrom === overlay.yardFrom
+        o.tid === urlOverlay.tid &&
+        o.mileFrom === urlOverlay.mileFrom &&
+        o.yardFrom === urlOverlay.yardFrom
     );
 
     // Calculate center based on ELR offset if available
     debugLog('Attempting to compute absolute yards for centering...');
     debugLog('Route sections available:', route.sections ? route.sections.length : 'None');
 
-    const startRes = computeAbsoluteYards(overlay.elr, overlay.mileFrom, overlay.yardFrom);
-    const endRes = computeAbsoluteYards(overlay.elr, overlay.mileTo, overlay.yardTo);
-
+    const { centerYards, startRes, endRes, usedFallback } = computeOverlayCenterYards(urlOverlay, computeAbsoluteYards);
     debugLog('Compute results:', { start: startRes, end: endRes });
 
-    if (startRes.value !== null && endRes.value !== null) {
-      const centerYards = (startRes.value + endRes.value) / 2;
-      lastCenterYards = centerYards;
-      debugLog('Centered on overlay at absolute yards:', centerYards);
-      return centerYards;
+    if (Number.isFinite(centerYards)) {
+      viewportState.lastCenterYards = centerYards;
+      initialTargetYards = centerYards;
+      if (usedFallback) {
+        console.warn('Could not compute absolute yards for overlay centering', startRes?.error, endRes?.error);
+        debugLog('Fallback centering at:', centerYards);
+      } else {
+        debugLog('Centered on overlay at absolute yards:', centerYards);
+      }
     }
-
-    console.warn('Could not compute absolute yards for overlay centering', startRes.error, endRes.error);
-    // Fallback to absolute calculation if ELR lookup fails
-    const startYards = (overlay.mileFrom * YARDS_PER_MILE) + overlay.yardFrom;
-    const endYards = (overlay.mileTo * YARDS_PER_MILE) + overlay.yardTo;
-    const centerYards = (startYards + endYards) / 2;
-    lastCenterYards = centerYards;
-    debugLog('Fallback centering at:', centerYards);
-    return centerYards;
-  }
-
-  const urlOverlayCenterYards = applyUrlOverlayFromQuery();
-  if (Number.isFinite(urlOverlayCenterYards)) {
-    initialTargetYards = urlOverlayCenterYards;
   }
 
   // DOM references
-  const container = document.getElementById('container');
-  const logicalSize = document.getElementById('logicalSize');
-  const rulerCanvas = document.getElementById('rulerCanvas');
-  const dpr = window.devicePixelRatio || 1;
+  const { container, logicalSize, rulerCanvas, dpr } = getDiagramDomRefs();
 
   // Programmatically set spacer size
   function centerOnRow(rowIndex = 50) {
@@ -305,7 +534,7 @@ function initializeApp() {
     const centerY = container.clientHeight / 2;
     scrollPosY = Math.max(0, targetY - centerY);
     container.scrollTop = scrollPosY;
-    lastScrollTopPx = scrollPosY;
+    viewportState.lastScrollTopPx = scrollPosY;
   }
 
   function updateVisibleWindow(centerYards) {
@@ -325,16 +554,16 @@ function initializeApp() {
     config.showFromYards = newFrom;
     config.showToYards = newTo;
     currentCenterYards = (newFrom + newTo) / 2;
-    lastCenterYards = currentCenterYards;
-    lastShowFromYards = config.showFromYards;
-    lastYardsPerPixel = config.yardsPerPixel;
+    viewportState.lastCenterYards = currentCenterYards;
+    viewportState.lastShowFromYards = config.showFromYards;
+    viewportState.lastYardsPerPixel = config.yardsPerPixel;
   }
 
   function centerOnYards(yards, updateWindow = true) {
     if (!container) return;
 
     if (Number.isFinite(yards)) {
-      lastCenterYards = yards;
+      viewportState.lastCenterYards = yards;
     }
 
     if (updateWindow) {
@@ -350,7 +579,7 @@ function initializeApp() {
     const nextScrollX = Math.min(Math.max(0, targetX - centerX), maxScrollX);
     scrollPosX = nextScrollX;
     container.scrollLeft = nextScrollX;
-    lastScrollLeftPx = nextScrollX;
+    viewportState.lastScrollLeftPx = nextScrollX;
     drawAll();
   }
 
@@ -917,84 +1146,18 @@ function initializeApp() {
 
   // Draw stations
   function drawStations() {
-    withCanvasState(() => {
-      const {
-        leftYards: visibleLeftLimitYards,
-        rightYards: visibleRightLimitYards,
-        topGridY: visibleTopLimitY,
-        bottomGridY: visibleBottomLimitY
-      } = getVisibleBounds();
-
-      // Most labels in this diagram are placed by their center.
-      ctx.textBaseline = 'middle';
-
-      route.stations.forEach(station => {
-        // Find the min and max platform extents for this station
-        let stationMinYard = null;
-        let stationMaxYard = null;
-
-        station.platforms.forEach(platform => {
-          if (stationMinYard === null || platform.from < stationMinYard) {
-            stationMinYard = platform.from;
-          }
-          if (stationMaxYard === null || platform.to > stationMaxYard) {
-            stationMaxYard = platform.to;
-          }
-        });
-
-        // Check if any platform is within horizontal viewport bounds
-        if (stationMinYard === null || stationMaxYard === null ||
-          stationMaxYard < visibleLeftLimitYards || stationMinYard > visibleRightLimitYards) {
-          return; // Skip station if no platforms are in horizontal viewport
-        }
-
-        // Label the station name at the top of the diagram
-        const stationX = getX(station.at);
-        ctx.font = '16px Arial';
-        ctx.fillStyle = 'blue';
-        ctx.textAlign = 'center';
-        ctx.fillText(station.name, stationX, 15);
-
-        // Draw each platform
-        station.platforms.forEach(platform => {
-          const candidates = tracksByTid.get(platform.track) || [];
-          const track = candidates.find(t => {
-            // Check if any segment overlaps with platform
-            const { min: platMin, max: platMax } = getRangeMinMax(platform.from, platform.to);
-            return t.shape.some(seg => {
-              return segmentOverlapsRange(seg, platMin, platMax);
-            });
-          });
-          if (!track) return;
-          // Get the tracks vertical grid number
-          const platformMid = (platform.from + platform.to) / 2;
-          const trackY = getYAtJunction(platform.track, platformMid, platform.elr);
-          if (trackY === null) return;
-
-          // Check if platform is within vertical viewport bounds
-          if (trackY < visibleTopLimitY || trackY > visibleBottomLimitY) {
-            return; // Skip platform if outside vertical viewport
-          }
-
-          // Get the platforms start and end X positions
-          const platformStartX = getX(platform.from);
-          const platformEndX = getX(platform.to);
-          // Draw the platform above or below the track in the first 1/3 or last 1/3 of the horizontal grid spacing
-          const trackYPos = getY(trackY, false);
-          let platformYPos;
-          if (platform.position === 'above') {
-            platformYPos = trackYPos;
-          } else {
-            platformYPos = trackYPos + ((config.horizontalGridSpacing / 3) * 2);
-          }
-          ctx.fillStyle = 'red';
-          ctx.fillRect(platformStartX, platformYPos, platformEndX - platformStartX, (config.horizontalGridSpacing / 3));
-          // Label the platform with platform number
-          ctx.font = '10px Arial';
-          ctx.fillStyle = 'white';
-          ctx.fillText(`P${platform.platformNo}`, platformStartX + (platformEndX - platformStartX) / 2, platformYPos + (config.horizontalGridSpacing / 6));
-        });
-      });
+    drawStationsLayer({
+      ctx,
+      route,
+      config,
+      tracksByTid,
+      withCanvasState,
+      getVisibleBounds,
+      getRangeMinMax,
+      segmentOverlapsRange,
+      getYAtJunction,
+      getX,
+      getY
     });
   }
 
@@ -1393,7 +1556,7 @@ function initializeApp() {
     }
 
     config.yardsPerPixel = value;
-    lastYardsPerPixel = value;
+    viewportState.lastYardsPerPixel = value;
     applyLayoutSizing(false);
 
     if (preserveCenter && centerYards !== null && container) {
@@ -1401,7 +1564,7 @@ function initializeApp() {
       const newScrollX = newCenterX - (container.clientWidth / 2);
       scrollPosX = Math.max(0, newScrollX);
       container.scrollLeft = scrollPosX;
-      lastScrollLeftPx = scrollPosX;
+      viewportState.lastScrollLeftPx = scrollPosX;
       drawAll();
     }
   }
@@ -1712,113 +1875,43 @@ function initializeApp() {
   // Use initialTargetYards to set the window bounds, but don't let updateVisibleWindow overwrite our target
   updateVisibleWindow(initialTargetYards);
   applyLayoutSizing(false);
+
+  function applyInitialScrollAndRedraw() {
+    centerOnYards(initialTargetYards, false);
+
+    // Preserve vertical scroll position across route reloads (e.g. after saving a station/structure).
+    // Only fall back to the default row centering on a full page refresh (when lastScrollTopPx is null).
+    if (Number.isFinite(viewportState.lastScrollTopPx)) {
+      const maxScrollY = Math.max(0, container.scrollHeight - container.clientHeight);
+      const nextScrollTop = Math.min(Math.max(0, viewportState.lastScrollTopPx), maxScrollY);
+      scrollPosY = nextScrollTop;
+      container.scrollTop = nextScrollTop;
+    } else {
+      centerOnRow(50);
+    }
+
+    drawAll();
+  }
   
   // Force scroll after a brief delay to override browser scroll restoration
   // Pass initialTargetYards explicitly to ensure we center on the requested location, 
   // not the center of the clamped window.
   setTimeout(() => {
-      centerOnYards(initialTargetYards, false);
-
-      // Preserve vertical scroll position across route reloads (e.g. after saving a station/structure).
-      // Only fall back to the default row centering on a full page refresh (when lastScrollTopPx is null).
-      if (Number.isFinite(lastScrollTopPx)) {
-        const maxScrollY = Math.max(0, container.scrollHeight - container.clientHeight);
-        const nextScrollTop = Math.min(Math.max(0, lastScrollTopPx), maxScrollY);
-        scrollPosY = nextScrollTop;
-        container.scrollTop = nextScrollTop;
-      } else {
-        centerOnRow(50);
-      }
-
-      drawAll();
+      applyInitialScrollAndRedraw();
   }, 10);
 
-  function unbindEvents() {
-    // Avoid accumulating event listeners on repeated loadRoute() calls
-    if (boundContainer && boundScrollHandler) {
-      boundContainer.removeEventListener('scroll', boundScrollHandler);
-    }
-    if (boundResizeHandler) {
-      window.removeEventListener('resize', boundResizeHandler);
-    }
-    if (boundContainer && boundPointerDownHandler) {
-      boundContainer.removeEventListener('pointerdown', boundPointerDownHandler);
-    }
-    if (boundPointerUpHandler) {
-      window.removeEventListener('pointerup', boundPointerUpHandler);
-    }
-    if (boundPointerCancelHandler) {
-      window.removeEventListener('pointercancel', boundPointerCancelHandler);
-    }
-  }
-
-  function bindEvents() {
-    // Redraw ruler when viewport resizes
-    boundResizeHandler = () => {
-      canvasResize();
-      drawAll();
-    };
-    window.addEventListener('resize', boundResizeHandler);
-
-    // Update scroll position with windowed scrolling support
-    boundContainer = container;
-
-    // Recenter window only when the user releases the mouse button near an edge.
-    // This avoids unexpected snapping while the user is still scrolling.
-    boundPointerDownHandler = (e) => {
-      if (e.pointerType === 'mouse' && e.button === 0) {
-        isMouseDownInDiagram = true;
-      }
-    };
-    boundPointerUpHandler = (e) => {
-      if (e.pointerType !== 'mouse') return;
-      if (!isMouseDownInDiagram) return;
-      isMouseDownInDiagram = false;
-
-      if (lastNearEdge && Number.isFinite(lastVisibleCenterYards)) {
-        updateVisibleWindow(lastVisibleCenterYards);
-        applyLayoutSizing(false);
-        // Maintain view by keeping the same yards under the viewport center
-        centerOnYards(lastVisibleCenterYards, false);
-      }
-    };
-    boundPointerCancelHandler = () => {
-      isMouseDownInDiagram = false;
-    };
-
-    container.addEventListener('pointerdown', boundPointerDownHandler);
-    window.addEventListener('pointerup', boundPointerUpHandler);
-    window.addEventListener('pointercancel', boundPointerCancelHandler);
-
-    boundScrollHandler = () => {
-      scrollPosX = container.scrollLeft;
-      scrollPosY = container.scrollTop;
-      lastScrollTopPx = scrollPosY;
-      lastScrollLeftPx = scrollPosX;
-      drawAll();
-
-      // Calculate current visible center in yards
-      const visibleCenterX = scrollPosX + (container.clientWidth / 2);
-      const visibleCenterYards = config.showFromYards + (visibleCenterX * config.yardsPerPixel);
-      lastCenterYards = visibleCenterYards;
-      lastVisibleCenterYards = visibleCenterYards;
-
-      lastShowFromYards = config.showFromYards;
-      lastYardsPerPixel = config.yardsPerPixel;
-
-      // Check if near edges of window (within 20% from either side)
-      const windowMargin = config.windowSizeYards * WINDOW_EDGE_MARGIN_RATIO;
-      const distanceFromStart = visibleCenterYards - config.showFromYards;
-      const distanceFromEnd = config.showToYards - visibleCenterYards;
-
-      lastNearEdge = distanceFromStart < windowMargin || distanceFromEnd < windowMargin;
-    };
-
-    container.addEventListener('scroll', boundScrollHandler);
-  }
-
-  unbindEvents();
-  bindEvents();
+  unbindViewportEvents();
+  bindViewportEvents({
+    container,
+    canvasResize,
+    drawAll,
+    updateVisibleWindow,
+    applyLayoutSizing,
+    centerOnYards,
+    config,
+    setScrollPosX: (v) => { scrollPosX = v; },
+    setScrollPosY: (v) => { scrollPosY = v; }
+  });
 }
 
 // Load route when page loads
