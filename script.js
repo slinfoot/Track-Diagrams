@@ -101,10 +101,13 @@ function buildSectionsByElr(nextRoute) {
 }
 
 function getDiagramDomRefs() {
+  const diagramCanvas = document.getElementById('diagramCanvas') || document.getElementById('rulerCanvas');
   return {
     container: document.getElementById('container'),
     logicalSize: document.getElementById('logicalSize'),
-    rulerCanvas: document.getElementById('rulerCanvas'),
+    diagramCanvas,
+    // Back-compat alias (older markup used this id/name)
+    rulerCanvas: diagramCanvas,
     dpr: window.devicePixelRatio || 1
   };
 }
@@ -393,7 +396,7 @@ function drawStationsLayer({
 
 function drawRulerLayer({
   ctx,
-  rulerCanvas,
+  diagramCanvas,
   route,
   config,
   withCanvasState,
@@ -403,11 +406,11 @@ function drawRulerLayer({
   yardsToMiles_text
 }) {
   withCanvasState(() => {
-    ctx.clearRect(0, 0, rulerCanvas.width, rulerCanvas.height);
+    ctx.clearRect(0, 0, diagramCanvas.width, diagramCanvas.height);
 
     const { leftYards: visibleLeftLimitYards, rightYards: visibleRightLimitYards } = getVisibleBounds();
 
-    drawLine(0, 0, rulerCanvas.clientWidth, 0, 4, 'black');
+    drawLine(0, 0, diagramCanvas.clientWidth, 0, 4, 'black');
 
     for (let yard = 0; yard <= config.totalYards; yard++) {
       if (yard < visibleLeftLimitYards || yard > visibleRightLimitYards) {
@@ -428,7 +431,7 @@ function drawRulerLayer({
         ctx.font = '12px Arial';
         ctx.fillStyle = 'black';
         ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 40);
-        drawLine(screenX, 30, screenX, rulerCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.2)');
+        drawLine(screenX, 30, screenX, diagramCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.2)');
       }
 
       if (adjustedYard % RULER_TICK_MEDIUM_YARDS === 0 && adjustedYard % RULER_TICK_MAJOR_YARDS !== 0) {
@@ -436,15 +439,15 @@ function drawRulerLayer({
         ctx.font = '12px Arial';
         ctx.fillStyle = 'black';
         ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 30);
-        drawLine(screenX, 20, screenX, rulerCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.3)');
+        drawLine(screenX, 20, screenX, diagramCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.3)');
       }
 
       if (adjustedYard % RULER_TICK_MINOR_YARDS === 0 && adjustedYard % RULER_TICK_MEDIUM_YARDS !== 0) {
-        drawLine(screenX, 0, screenX, rulerCanvas.clientHeight, 1, 'rgba(0, 0, 255, 0.3)');
+        drawLine(screenX, 0, screenX, diagramCanvas.clientHeight, 1, 'rgba(0, 0, 255, 0.3)');
       }
 
       if (adjustedYard % RULER_TICK_MICRO_YARDS === 0 && adjustedYard % RULER_TICK_MINOR_YARDS !== 0) {
-        drawLine(screenX, 0, screenX, rulerCanvas.clientHeight, 1, 'rgba(0, 0, 0, 0.2)');
+        drawLine(screenX, 0, screenX, diagramCanvas.clientHeight, 1, 'rgba(0, 0, 0, 0.2)');
       }
 
       route.sections.forEach(s => {
@@ -458,7 +461,7 @@ function drawRulerLayer({
 
           if (s.from >= visibleLeftLimitYards && s.from <= visibleRightLimitYards) {
             const interfaceX = getX(s.from);
-            drawLine(interfaceX, 0, interfaceX, rulerCanvas.clientHeight, 5, 'rgba(0, 150, 0, 0.2)');
+            drawLine(interfaceX, 0, interfaceX, diagramCanvas.clientHeight, 5, 'rgba(0, 150, 0, 0.2)');
           }
         }
       });
@@ -469,7 +472,7 @@ function drawRulerLayer({
 function drawHorizontalGridLinesLayer({
   ctx,
   config,
-  rulerCanvas,
+  diagramCanvas,
   withCanvasState,
   drawLine,
   getY
@@ -487,8 +490,8 @@ function drawHorizontalGridLinesLayer({
 
     for (let i = 0; i < numberOfLines; i++) {
       const y = getY(i, false);
-      if (y >= 0 && y <= rulerCanvas.clientHeight) {
-        drawLine(0, y, rulerCanvas.clientWidth, y, 1, 'rgba(0, 0, 0, 0.75)');
+      if (y >= 0 && y <= diagramCanvas.clientHeight) {
+        drawLine(0, y, diagramCanvas.clientWidth, y, 1, 'rgba(0, 0, 0, 0.75)');
         ctx.fillText(i, 10, y + (gridSpacing / 2));
       }
     }
@@ -1441,7 +1444,12 @@ function initializeApp() {
   }
 
   // DOM references
-  const { container, logicalSize, rulerCanvas, dpr } = getDiagramDomRefs();
+  const { container, logicalSize, diagramCanvas, dpr } = getDiagramDomRefs();
+
+  if (!container || !logicalSize || !diagramCanvas) {
+    console.error('Required DOM elements not found:', { container, logicalSize, diagramCanvas });
+    return;
+  }
 
   // Programmatically set spacer size
   function centerOnRow(rowIndex = 50) {
@@ -1537,7 +1545,7 @@ function initializeApp() {
   let scrollPosY = 0;
 
   // Get canvas drawing context
-  const ctx = rulerCanvas.getContext('2d');
+  const ctx = diagramCanvas.getContext('2d');
 
   function withCanvasState(drawFn) {
     ctx.save();
@@ -1550,8 +1558,8 @@ function initializeApp() {
 
   // Resize canvas
   function canvasResize() {
-    rulerCanvas.width = rulerCanvas.clientWidth * dpr;
-    rulerCanvas.height = rulerCanvas.clientHeight * dpr;
+    diagramCanvas.width = diagramCanvas.clientWidth * dpr;
+    diagramCanvas.height = diagramCanvas.clientHeight * dpr;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
   }
@@ -1739,9 +1747,9 @@ function initializeApp() {
 
   function getVisibleBounds() {
     const leftYards = config.showFromYards + (scrollPosX * config.yardsPerPixel);
-    const rightYards = config.showFromYards + ((scrollPosX + rulerCanvas.clientWidth) * config.yardsPerPixel);
+    const rightYards = config.showFromYards + ((scrollPosX + diagramCanvas.clientWidth) * config.yardsPerPixel);
     const topGridY = (scrollPosY / config.horizontalGridSpacing);
-    const bottomGridY = ((scrollPosY + rulerCanvas.clientHeight) / config.horizontalGridSpacing);
+    const bottomGridY = ((scrollPosY + diagramCanvas.clientHeight) / config.horizontalGridSpacing);
     return { leftYards, rightYards, topGridY, bottomGridY };
   }
 
@@ -1834,7 +1842,7 @@ function initializeApp() {
   function drawRuler() {
     drawRulerLayer({
       ctx,
-      rulerCanvas,
+      diagramCanvas,
       route,
       config,
       withCanvasState,
@@ -1850,7 +1858,7 @@ function initializeApp() {
     drawHorizontalGridLinesLayer({
       ctx,
       config,
-      rulerCanvas,
+      diagramCanvas,
       withCanvasState,
       drawLine,
       getY
@@ -2236,6 +2244,84 @@ function initializeApp() {
     return midPoint;
   }
 
+  function drawSideDiagram() {
+    const sideCanvas = document.getElementById('sideDiagramCanvas');
+    if (!sideCanvas) return;
+
+    const sideCtx = sideCanvas.getContext('2d');
+    const sideDpr = window.devicePixelRatio || 1;
+
+    // Set canvas resolution
+    sideCanvas.width = sideCanvas.clientWidth * sideDpr;
+    sideCanvas.height = sideCanvas.clientHeight * sideDpr;
+    sideCtx.setTransform(1, 0, 0, 1, 0, 0);
+    sideCtx.scale(sideDpr, sideDpr);
+
+    // Clear canvas
+    sideCtx.clearRect(0, 0, sideCanvas.clientWidth, sideCanvas.clientHeight);
+
+    const padding = 20;
+    const lineX = sideCanvas.clientWidth / 2;
+    const topY = padding;
+    const bottomY = sideCanvas.clientHeight - padding;
+    const routeHeight = bottomY - topY;
+
+    // Draw vertical line representing the route
+    sideCtx.strokeStyle = '#0f172a';
+    sideCtx.lineWidth = 3;
+    sideCtx.beginPath();
+    sideCtx.moveTo(lineX, topY);
+    sideCtx.lineTo(lineX, bottomY);
+    sideCtx.stroke();
+
+    // Draw viewport indicator rectangle
+    // Calculate actual visible yards in the viewport (not windowSizeYards which is scrollable area)
+    const { leftYards, rightYards } = getVisibleBounds();
+    const visibleStartYards = leftYards;
+    const visibleEndYards = rightYards;
+    
+    const startRatio = visibleStartYards / config.totalYards;
+    const endRatio = visibleEndYards / config.totalYards;
+    
+    const rectTop = bottomY - (endRatio * routeHeight);
+    const rectBottom = bottomY - (startRatio * routeHeight);
+    const rectHeight = rectBottom - rectTop;
+    
+    sideCtx.fillStyle = 'rgba(37, 99, 235, 0.2)';
+    sideCtx.strokeStyle = '#2563eb';
+    sideCtx.lineWidth = 2;
+    sideCtx.fillRect(0, rectTop, sideCanvas.clientWidth, rectHeight);
+    sideCtx.strokeRect(0, rectTop, sideCanvas.clientWidth, rectHeight);
+
+    // Draw stations as circles
+    if (route.stations && route.stations.length > 0) {
+      route.stations.forEach(station => {
+        // Only draw if sideDiagramVisible is true
+        if (station.sideDiagramVisible !== true) return;
+        
+        // Calculate position on the line (bottom = low yardage, top = high yardage)
+        const ratio = station.at / config.totalYards;
+        const y = bottomY - (ratio * routeHeight);
+
+        // Draw station circle
+        sideCtx.fillStyle = '#2563eb';
+        sideCtx.strokeStyle = '#ffffff';
+        sideCtx.lineWidth = 2;
+        sideCtx.beginPath();
+        sideCtx.arc(lineX, y, 5, 0, 2 * Math.PI);
+        sideCtx.fill();
+        sideCtx.stroke();
+
+        // Draw station name (to the right of the line)
+        sideCtx.fillStyle = '#0f172a';
+        sideCtx.font = '10px Arial';
+        sideCtx.textAlign = 'left';
+        sideCtx.textBaseline = 'middle';
+        sideCtx.fillText(station.name, lineX + 12, y);
+      });
+    }
+  }
+
   function drawOverlays() {
     drawOverlaysLayer({
       ctx,
@@ -2262,6 +2348,7 @@ function initializeApp() {
     drawStations();
     drawStructures();
     drawOverlays();
+    drawSideDiagram();
   }
 
   // Expose handlers for UI layer

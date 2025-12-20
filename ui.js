@@ -62,6 +62,7 @@ const stationModalSaveBtn = document.getElementById('stationModalSaveBtn');
 const stationEditForm = document.getElementById('stationEditForm');
 const formStationName = document.getElementById('formStationName');
 const formStationAt = document.getElementById('formStationAt');
+const formStationSideDiagramVisible = document.getElementById('formStationSideDiagramVisible');
 const platformsTableBody = document.getElementById('platformsTableBody');
 const addPlatformBtn = document.getElementById('addPlatformBtn');
 
@@ -1122,6 +1123,7 @@ function showStationModal(station, isNew) {
   
   if (formStationName) formStationName.value = station.name || '';
   if (formStationAt) formStationAt.value = station.at ?? '';
+  if (formStationSideDiagramVisible) formStationSideDiagramVisible.checked = station.sideDiagramVisible === true;
   
   renderPlatformsTable();
   stationEditModal.hidden = false;
@@ -1235,6 +1237,11 @@ async function saveStationFromForm() {
       return;
     }
     selectedStation.at = atVal;
+
+    // Update sideDiagramVisible from checkbox
+    if (formStationSideDiagramVisible) {
+      selectedStation.sideDiagramVisible = formStationSideDiagramVisible.checked;
+    }
 
     // Validate platforms
     const platforms = selectedStation.platforms || [];

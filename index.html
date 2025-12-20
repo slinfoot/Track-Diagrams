@@ -73,14 +73,19 @@
     </label>
     <button id="centerButton" type="button">Center</button>
   </div>
-  <div id="container-wrapper">
-    <!-- Overlay canvas for ruler -->
-    <canvas id="rulerCanvas"></canvas>
+  <div class="diagram-container">
+    <div id="container-wrapper">
+      <!-- Overlay canvas for ruler -->
+      <canvas id="diagramCanvas"></canvas>
 
-    <!-- Scrollable container -->
-    <div id="container">
-      <!-- Spacer element sized in JS to define scrollbars -->
-      <div id="logicalSize"></div>
+      <!-- Scrollable container -->
+      <div id="container">
+        <!-- Spacer element sized in JS to define scrollbars -->
+        <div id="logicalSize"></div>
+      </div>
+    </div>
+    <div id="side-diagram-wrapper"> 
+      <canvas id="sideDiagramCanvas"></canvas>
     </div>
   </div>
   <div id="editPanel" class="edit-panel">
@@ -427,6 +432,10 @@
                 <input type="number" id="formStationAt" required placeholder="Yards">
                 <button type="button" class="btn-calc" data-target="formStationAt" title="Calculate from ELR/Mile/Yard">📍</button>
               </div>
+            </label>
+            <label class="form-field">
+              <span>Side Diagram Visible</span>
+              <input type="checkbox" id="formStationSideDiagramVisible">
             </label>
           </div>
 
