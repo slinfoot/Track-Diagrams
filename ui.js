@@ -58,10 +58,12 @@ const formFromType = document.getElementById('formFromType');
 const formFromSc = document.getElementById('formFromSc');
 const formFromTrack = document.getElementById('formFromTrack');
 const formFromAt = document.getElementById('formFromAt');
+const formFromElr = document.getElementById('formFromElr');
 const formToType = document.getElementById('formToType');
 const formToSc = document.getElementById('formToSc');
 const formToTrack = document.getElementById('formToTrack');
 const formToAt = document.getElementById('formToAt');
+const formToElr = document.getElementById('formToElr');
 const formAltRouteElr = document.getElementById('formAltRouteElr');
 const shapeTableModalBody = document.getElementById('shapeTableModalBody');
 const addShapeBtn = document.getElementById('addShapeBtn');
@@ -138,6 +140,9 @@ let isSavingAltYardage = false;
 
 let editingShapeIndex = null;
 let calcTargetInput = null;
+let calcSourceMainYards = null;
+let calcAutofillEnabled = false;
+let calcProgrammaticUpdate = false;
 
 function updateTrackActionButtons() {
   if (!editSelectedTrackBtn) return;
@@ -725,10 +730,12 @@ function showTrackModal(track, isNew = false) {
   if (formFromSc) formFromSc.value = track.fromConnection?.sc_name ?? '';
   if (formFromTrack) formFromTrack.value = track.fromConnection?.track ?? '';
   if (formFromAt) formFromAt.value = track.fromConnection?.at ?? '';
+  if (formFromElr) formFromElr.value = track.fromConnection?.elr ?? '';
   if (formToType) formToType.value = track.toConnection?.type ?? '';
   if (formToSc) formToSc.value = track.toConnection?.sc_name ?? '';
   if (formToTrack) formToTrack.value = track.toConnection?.track ?? '';
   if (formToAt) formToAt.value = track.toConnection?.at ?? '';
+  if (formToElr) formToElr.value = track.toConnection?.elr ?? '';
   if (formAltRouteElr) formAltRouteElr.value = track.altRoute?.elr ?? '';
 
   renderShapeTable();
@@ -794,6 +801,8 @@ async function saveTrackFromForm() {
     if (fromTrackVal) fromConn.track = Number(fromTrackVal);
     const fromAtVal = (formFromAt?.value || '').trim();
     if (fromAtVal) fromConn.at = Number(fromAtVal);
+    const fromElrVal = (formFromElr?.value || '').trim();
+    if (fromElrVal) fromConn.elr = fromElrVal;
     selectedTrack.fromConnection = fromConn;
   } else {
     delete selectedTrack.fromConnection;
@@ -813,6 +822,8 @@ async function saveTrackFromForm() {
     if (toTrackVal) toConn.track = Number(toTrackVal);
     const toAtVal = (formToAt?.value || '').trim();
     if (toAtVal) toConn.at = Number(toAtVal);
+    const toElrVal = (formToElr?.value || '').trim();
+    if (toElrVal) toConn.elr = toElrVal;
     selectedTrack.toConnection = toConn;
   } else {
     delete selectedTrack.toConnection;
@@ -1143,6 +1154,9 @@ function showYardsCalc(targetInput) {
   const currentYards = Number(targetInput.value);
   const route = window.TrackDiagramApp?.getRoute();
   const hasAltRoute = selectedTrack?.altRoute?.elr;
+
+  calcSourceMainYards = Number.isFinite(currentYards) ? currentYards : null;
+  calcAutofillEnabled = Number.isFinite(currentYards);
   
   // Reset form
   if (calcElr) calcElr.value = '';
@@ -1150,24 +1164,17 @@ function showYardsCalc(targetInput) {
   if (calcYards) calcYards.value = '';
   
   // If there's already a yardage value, reverse-calculate
-  if (Number.isFinite(currentYards) && currentYards !== 0) {
+  if (Number.isFinite(currentYards)) {
     if (hasAltRoute) {
-      // Use altRoute ELR, but don't calculate miles/yards
       if (calcElr) calcElr.value = selectedTrack.altRoute.elr;
+      // If possible, compute the alt-route miles/yards for this location.
+      tryFillMilesYardsFromMainYards(currentYards, calcElr?.value, route);
     } else if (route?.sections?.length) {
       // Find the section that contains this yardage (including boundary for last section)
       const section = route.sections.find(s => currentYards >= s.from && currentYards <= s.to);
       if (section) {
-        // Set ELR from section
         if (calcElr) calcElr.value = section.elr;
-        
-        // Calculate miles and yards relative to section offset
-        const relativeYards = currentYards - (section.offset || 0);
-        const miles = Math.floor(relativeYards / 1760);
-        const yards = relativeYards % 1760;
-        
-        if (calcMiles) calcMiles.value = miles;
-        if (calcYards) calcYards.value = Math.round(yards);
+        tryFillMilesYardsFromMainYards(currentYards, calcElr?.value, route);
       }
     }
   }
@@ -1180,6 +1187,125 @@ function hideYardsCalc() {
   if (yardsCalcModal) yardsCalcModal.hidden = true;
   if (yardsCalcForm) yardsCalcForm.reset();
   calcTargetInput = null;
+  calcSourceMainYards = null;
+  calcAutofillEnabled = false;
+  calcProgrammaticUpdate = false;
+}
+
+function normalizeElrForCompare(value) {
+  return String(value || '').trim().toUpperCase();
+}
+
+function findAltRouteYardageSegment(route, elr, altYards) {
+  const elrNorm = normalizeElrForCompare(elr);
+  const list = Array.isArray(route?.altRouteYardageMap) ? route.altRouteYardageMap : [];
+
+  for (const seg of list) {
+    if (normalizeElrForCompare(seg?.elr) !== elrNorm) continue;
+    const fromAlt = Number(seg?.fromYardageAltRoute);
+    const toAlt = Number(seg?.toYardageAltRoute);
+    const fromMain = Number(seg?.fromYardageMainRoute);
+    const toMain = Number(seg?.toYardageMainRoute);
+
+    if (![fromAlt, toAlt, fromMain, toMain].every(Number.isFinite)) continue;
+
+    const minAlt = Math.min(fromAlt, toAlt);
+    const maxAlt = Math.max(fromAlt, toAlt);
+    if (altYards >= minAlt && altYards <= maxAlt) return seg;
+  }
+  return null;
+}
+
+function mapAltYardsToMainYards(seg, altYards) {
+  const fromAlt = Number(seg?.fromYardageAltRoute);
+  const toAlt = Number(seg?.toYardageAltRoute);
+  const fromMain = Number(seg?.fromYardageMainRoute);
+  const toMain = Number(seg?.toYardageMainRoute);
+
+  if (![fromAlt, toAlt, fromMain, toMain, altYards].every(Number.isFinite)) return null;
+  const denom = (toAlt - fromAlt);
+  if (denom === 0) return null;
+
+  // Works for both same-direction and reverse-direction mappings.
+  const t = (altYards - fromAlt) / denom;
+  return fromMain + t * (toMain - fromMain);
+}
+
+function findAltRouteYardageSegmentForMain(route, elr, mainYards) {
+  const elrNorm = normalizeElrForCompare(elr);
+  const list = Array.isArray(route?.altRouteYardageMap) ? route.altRouteYardageMap : [];
+
+  for (const seg of list) {
+    if (normalizeElrForCompare(seg?.elr) !== elrNorm) continue;
+    const fromAlt = Number(seg?.fromYardageAltRoute);
+    const toAlt = Number(seg?.toYardageAltRoute);
+    const fromMain = Number(seg?.fromYardageMainRoute);
+    const toMain = Number(seg?.toYardageMainRoute);
+
+    if (![fromAlt, toAlt, fromMain, toMain].every(Number.isFinite)) continue;
+
+    const minMain = Math.min(fromMain, toMain);
+    const maxMain = Math.max(fromMain, toMain);
+    if (mainYards >= minMain && mainYards <= maxMain) return seg;
+  }
+  return null;
+}
+
+function mapMainYardsToAltYards(seg, mainYards) {
+  const fromAlt = Number(seg?.fromYardageAltRoute);
+  const toAlt = Number(seg?.toYardageAltRoute);
+  const fromMain = Number(seg?.fromYardageMainRoute);
+  const toMain = Number(seg?.toYardageMainRoute);
+
+  if (![fromAlt, toAlt, fromMain, toMain, mainYards].every(Number.isFinite)) return null;
+  const denom = (toMain - fromMain);
+  if (denom === 0) return null;
+
+  // Works for both same-direction and reverse-direction mappings.
+  const t = (mainYards - fromMain) / denom;
+  return fromAlt + t * (toAlt - fromAlt);
+}
+
+function setCalcMilesYardsFromAbsoluteYards(absYards) {
+  if (!calcMiles || !calcYards) return;
+  if (!Number.isFinite(absYards)) return;
+  const miles = Math.floor(absYards / 1760);
+  const remainder = absYards - (miles * 1760);
+  const yards = Math.round(remainder);
+
+  calcProgrammaticUpdate = true;
+  calcMiles.value = String(miles);
+  calcYards.value = String(yards);
+  // Trigger chain recalculation (and any other listeners)
+  calcYards.dispatchEvent(new Event('input', { bubbles: true }));
+  calcProgrammaticUpdate = false;
+}
+
+function tryFillMilesYardsFromMainYards(mainYards, elrValue, route) {
+  if (!Number.isFinite(mainYards)) return false;
+  const elrNorm = normalizeElrForCompare(elrValue);
+  if (!elrNorm) return false;
+
+  const r = route || window.TrackDiagramApp?.getRoute();
+  if (!r) return false;
+
+  // 1) If ELR is in sections, show miles/yards within that ELR by offset.
+  if (Array.isArray(r.sections) && r.sections.length) {
+    const section = r.sections.find(s => normalizeElrForCompare(s?.elr) === elrNorm);
+    if (section) {
+      const offset = Number(section.offset) || 0;
+      setCalcMilesYardsFromAbsoluteYards(mainYards - offset);
+      return true;
+    }
+  }
+
+  // 2) Otherwise, use altRouteYardageMap to compute alt yards at this main yardage.
+  const seg = findAltRouteYardageSegmentForMain(r, elrNorm, mainYards);
+  if (!seg) return false;
+  const altYards = mapMainYardsToAltYards(seg, mainYards);
+  if (!Number.isFinite(altYards)) return false;
+  setCalcMilesYardsFromAbsoluteYards(altYards);
+  return true;
 }
 
 function calculateAndSetYards() {
@@ -1195,18 +1321,37 @@ function calculateAndSetYards() {
   }
   
   const route = window.TrackDiagramApp?.getRoute();
-  let offset = 0;
-  
-  // Find section with matching ELR to get offset
+  const inputElr = elr;
+  const inputElrNorm = normalizeElrForCompare(inputElr);
+  const inputAltYards = (miles * 1760) + yards;
+
+  let totalYards = null;
+
+  // 1) Try normal section-based mapping first.
   if (route?.sections?.length) {
-    const section = route.sections.find(s => s.elr === elr);
+    const section = route.sections.find(s => normalizeElrForCompare(s?.elr) === inputElrNorm);
     if (section) {
-      offset = section.offset || 0;
+      const offset = Number(section.offset) || 0;
+      totalYards = inputAltYards + offset;
     }
   }
-  
-  // Calculate total yards: (miles * 1760) + yards + offset
-  const totalYards = (miles * 1760) + yards + offset;
+
+  // 2) If ELR is not in sections, try altRouteYardageMap.
+  if (totalYards == null) {
+    const seg = findAltRouteYardageSegment(route, inputElr, inputAltYards);
+    if (!seg) {
+      window.alert('ELR not found in route sections, and no matching Alt Yardage mapping covers that mileage/yardage.');
+      return;
+    }
+    const mapped = mapAltYardsToMainYards(seg, inputAltYards);
+    if (!Number.isFinite(mapped)) {
+      window.alert('Alt Yardage mapping is invalid (cannot compute mapping).');
+      return;
+    }
+    totalYards = mapped;
+  }
+
+  totalYards = Math.round(totalYards);
   
   // Set the target input value
   calcTargetInput.value = totalYards;
@@ -1754,6 +1899,31 @@ if (yardsCalcForm) {
   yardsCalcForm.addEventListener('submit', (e) => {
     e.preventDefault();
     calculateAndSetYards();
+  });
+}
+
+// When the calculator is opened from an existing yardage value, allow switching ELR
+// to see the equivalent miles/yards (including altRoute mappings). Once the user
+// starts typing miles/yards, stop auto-filling.
+if (calcElr) {
+  calcElr.addEventListener('input', () => {
+    if (!calcAutofillEnabled) return;
+    if (!Number.isFinite(calcSourceMainYards)) return;
+    tryFillMilesYardsFromMainYards(calcSourceMainYards, calcElr.value, window.TrackDiagramApp?.getRoute());
+  });
+}
+
+if (calcMiles) {
+  calcMiles.addEventListener('input', () => {
+    if (calcProgrammaticUpdate) return;
+    calcAutofillEnabled = false;
+  });
+}
+
+if (calcYards) {
+  calcYards.addEventListener('input', () => {
+    if (calcProgrammaticUpdate) return;
+    calcAutofillEnabled = false;
   });
 }
 

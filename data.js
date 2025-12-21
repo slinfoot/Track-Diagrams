@@ -767,7 +767,8 @@ const routes = [
                 "toConnection": null,
                 "tid": 3804,
                 "altRoute": {
-                    "elr": "YMS"
+                    "elr": "YMS",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -1126,7 +1127,8 @@ const routes = [
             {
                 "tid": 3300,
                 "altRoute": {
-                    "elr": "CRF1"
+                    "elr": "CRF1",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": {
@@ -1147,7 +1149,8 @@ const routes = [
             {
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "CBI"
+                    "elr": "CBI",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -1172,7 +1175,8 @@ const routes = [
             {
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "CBI"
+                    "elr": "CBI",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": {
@@ -1193,7 +1197,8 @@ const routes = [
             {
                 "tid": 2100,
                 "altRoute": {
-                    "elr": "CBI"
+                    "elr": "CBI",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": {
@@ -1409,7 +1414,8 @@ const routes = [
             {
                 "tid": 2100,
                 "altRoute": {
-                    "elr": "HDB"
+                    "elr": "HDB",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -1570,7 +1576,8 @@ const routes = [
             {
                 "tid": 2100,
                 "altRoute": {
-                    "elr": "MEB1"
+                    "elr": "MEB1",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": null,
@@ -1587,7 +1594,8 @@ const routes = [
             {
                 "tid": 2100,
                 "altRoute": {
-                    "elr": "CFP"
+                    "elr": "CFP",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": null,
@@ -1604,7 +1612,8 @@ const routes = [
             {
                 "tid": 3700,
                 "altRoute": {
-                    "elr": "CFP"
+                    "elr": "CFP",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": null,
@@ -1663,7 +1672,8 @@ const routes = [
             {
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "MEB1"
+                    "elr": "MEB1",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": {
@@ -1692,7 +1702,8 @@ const routes = [
             {
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "CFP"
+                    "elr": "CFP",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": {
@@ -1745,7 +1756,8 @@ const routes = [
             {
                 "tid": 3700,
                 "altRoute": {
-                    "elr": "CFP"
+                    "elr": "CFP",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -2011,7 +2023,8 @@ const routes = [
             {
                 "tid": 3901,
                 "altRoute": {
-                    "elr": "HDS"
+                    "elr": "HDS",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": null,
@@ -2269,7 +2282,8 @@ const routes = [
             {
                 "tid": 3902,
                 "altRoute": {
-                    "elr": "HDS"
+                    "elr": "HDS",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "buffer"
@@ -2928,7 +2942,8 @@ const routes = [
             {
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "NOC"
+                    "elr": "NOC",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -2956,7 +2971,8 @@ const routes = [
                 "fromConnection": null,
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "NOC"
+                    "elr": "NOC",
+                    "showAltRuler": false
                 },
                 "toConnection": {
                     "type": "junction",
@@ -2978,7 +2994,8 @@ const routes = [
                 "fromConnection": null,
                 "tid": 2100,
                 "altRoute": {
-                    "elr": "NOC"
+                    "elr": "NOC",
+                    "showAltRuler": false
                 },
                 "toConnection": {
                     "type": "junction",
@@ -3006,7 +3023,8 @@ const routes = [
             {
                 "tid": 1150,
                 "altRoute": {
-                    "elr": "NOC"
+                    "elr": "NOC",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": null,
@@ -3023,7 +3041,8 @@ const routes = [
             {
                 "tid": 2150,
                 "altRoute": {
-                    "elr": "NOC"
+                    "elr": "NOC",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": null,
@@ -4007,7 +4026,8 @@ const routes = [
             {
                 "tid": 3100,
                 "altRoute": {
-                    "elr": "HAY1"
+                    "elr": "HAY1",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -4030,7 +4050,8 @@ const routes = [
                 "fromConnection": null,
                 "tid": 2200,
                 "altRoute": {
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "showAltRuler": false
                 },
                 "toConnection": {
                     "type": "junction",
@@ -4066,7 +4087,8 @@ const routes = [
                 "fromConnection": null,
                 "tid": 2901,
                 "altRoute": {
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "showAltRuler": false
                 },
                 "toConnection": {
                     "type": "junction",
@@ -4109,7 +4131,8 @@ const routes = [
                 "fromConnection": null,
                 "tid": 1200,
                 "altRoute": {
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "showAltRuler": false
                 },
                 "toConnection": {
                     "type": "junction",
@@ -4576,7 +4599,8 @@ const routes = [
                 "toConnection": null,
                 "tid": 3100,
                 "altRoute": {
-                    "elr": "TCW1"
+                    "elr": "TCW1",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -4630,7 +4654,8 @@ const routes = [
                 "toConnection": null,
                 "tid": 2100,
                 "altRoute": {
-                    "elr": "HSC"
+                    "elr": "HSC",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -4652,7 +4677,8 @@ const routes = [
                 "toConnection": null,
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "HSC"
+                    "elr": "HSC",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -4673,7 +4699,8 @@ const routes = [
             {
                 "tid": 3100,
                 "altRoute": {
-                    "elr": "HNC"
+                    "elr": "HNC",
+                    "showAltRuler": false
                 },
                 "fromConnection": null,
                 "toConnection": {
@@ -4696,7 +4723,8 @@ const routes = [
                 "toConnection": null,
                 "tid": 3100,
                 "altRoute": {
-                    "elr": "YMS"
+                    "elr": "YMS",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -4732,7 +4760,8 @@ const routes = [
                 "toConnection": null,
                 "tid": 2200,
                 "altRoute": {
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -4754,7 +4783,8 @@ const routes = [
                 "toConnection": null,
                 "tid": 1200,
                 "altRoute": {
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "showAltRuler": false
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -5703,6 +5733,109 @@ const routes = [
                     {
                         "from": 134970,
                         "to": 135047,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "fromConnection": null,
+                "toConnection": null,
+                "tid": 2150,
+                "altRoute": {
+                    "elr": "PMJ",
+                    "showAltRuler": false
+                },
+                "shape": [
+                    {
+                        "from": 134672,
+                        "to": 138682,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "fromConnection": null,
+                "toConnection": null,
+                "tid": 1150,
+                "altRoute": {
+                    "elr": "PMJ",
+                    "showAltRuler": false
+                },
+                "shape": [
+                    {
+                        "from": 134786,
+                        "to": 135467,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 135467,
+                        "to": 138682,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": {
+                    "elr": "PMJ",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 134883,
+                    "track": 1150,
+                    "sc_name": "1235A",
+                    "elr": "PMJ"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 134995,
+                    "track": 2150,
+                    "sc_name": "1235B",
+                    "elr": "PMJ"
+                },
+                "shape": [
+                    {
+                        "from": 134883,
+                        "to": 134995,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": {
+                    "elr": "PMJ",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135014,
+                    "track": 2150,
+                    "sc_name": "1237A",
+                    "elr": "PMJ"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 135110,
+                    "track": 1150,
+                    "sc_name": "1237B",
+                    "elr": "PMJ"
+                },
+                "shape": [
+                    {
+                        "from": 135014,
+                        "to": 135110,
                         "yFrom": null,
                         "yTo": null,
                         "electrification": "overhead"

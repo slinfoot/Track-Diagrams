@@ -25,7 +25,7 @@ const DEFAULT_GRID_SPACING = 50;
 const DEFAULT_SCROLL_SIZE_MILES = 10;
 
 // Default initial centering (historically York area). Used when no prior viewport state exists.
-const DEFAULT_INITIAL_TARGET_YARDS = 331782;
+const DEFAULT_INITIAL_TARGET_YARDS = 134786;
 
 // Layout/label defaults
 const WINDOW_EDGE_MARGIN_RATIO = 0.2;
@@ -529,7 +529,8 @@ function drawTracksLayer({
             const endYPos = getY(endY, true);
 
             if (track.altRoute) {
-              drawLine(startX, startYPos, endX, endYPos, 3, 'gray');
+              const altColor = segment.electrification === 'none' ? 'gray' : 'lightcoral';
+              drawLine(startX, startYPos, endX, endYPos, 3, altColor);
             } else {
               const color = segment.electrification === 'none' ? 'black' : 'red';
               drawLine(startX, startYPos, endX, endYPos, 3, color);
