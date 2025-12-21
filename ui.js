@@ -1198,6 +1198,9 @@ function findAltRouteYardageSegment(route, elr, altYards) {
   const elrNorm = normalizeElrForCompare(elr);
   const list = Array.isArray(route?.altRouteYardageMap) ? route.altRouteYardageMap : [];
 
+  let nearestSeg = null;
+  let nearestDist = Infinity;
+
   for (const seg of list) {
     if (normalizeElrForCompare(seg?.elr) !== elrNorm) continue;
     const fromAlt = Number(seg?.fromYardageAltRoute);
@@ -1210,8 +1213,19 @@ function findAltRouteYardageSegment(route, elr, altYards) {
     const minAlt = Math.min(fromAlt, toAlt);
     const maxAlt = Math.max(fromAlt, toAlt);
     if (altYards >= minAlt && altYards <= maxAlt) return seg;
+
+    // Extrapolation support: if outside all segments, use the nearest segment endpoint.
+    if (Number.isFinite(altYards)) {
+      const dist = altYards < minAlt
+        ? (minAlt - altYards)
+        : (altYards > maxAlt ? (altYards - maxAlt) : 0);
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearestSeg = seg;
+      }
+    }
   }
-  return null;
+  return nearestSeg;
 }
 
 function mapAltYardsToMainYards(seg, altYards) {
@@ -1233,6 +1247,9 @@ function findAltRouteYardageSegmentForMain(route, elr, mainYards) {
   const elrNorm = normalizeElrForCompare(elr);
   const list = Array.isArray(route?.altRouteYardageMap) ? route.altRouteYardageMap : [];
 
+  let nearestSeg = null;
+  let nearestDist = Infinity;
+
   for (const seg of list) {
     if (normalizeElrForCompare(seg?.elr) !== elrNorm) continue;
     const fromAlt = Number(seg?.fromYardageAltRoute);
@@ -1245,8 +1262,19 @@ function findAltRouteYardageSegmentForMain(route, elr, mainYards) {
     const minMain = Math.min(fromMain, toMain);
     const maxMain = Math.max(fromMain, toMain);
     if (mainYards >= minMain && mainYards <= maxMain) return seg;
+
+    // Extrapolation support: if outside all segments, use the nearest segment endpoint.
+    if (Number.isFinite(mainYards)) {
+      const dist = mainYards < minMain
+        ? (minMain - mainYards)
+        : (mainYards > maxMain ? (mainYards - maxMain) : 0);
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearestSeg = seg;
+      }
+    }
   }
-  return null;
+  return nearestSeg;
 }
 
 function mapMainYardsToAltYards(seg, mainYards) {
@@ -1338,7 +1366,7 @@ function calculateAndSetYards() {
   if (totalYards == null) {
     const seg = findAltRouteYardageSegment(route, inputElr, inputAltYards);
     if (!seg) {
-      window.alert('ELR not found in route sections, and no matching Alt Yardage mapping covers that mileage/yardage.');
+      window.alert('ELR not found in route sections, and no Alt Yardage mapping exists for that ELR.');
       return;
     }
     const mapped = mapAltYardsToMainYards(seg, inputAltYards);

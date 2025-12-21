@@ -474,6 +474,76 @@ function drawRulerLayer({
       return seg.fromMain + ratio * (seg.toMain - seg.fromMain);
     }
 
+    function findBestAltMapSegmentForMain(elrNorm, mainYards) {
+      const segments = getAltMapSegmentsForElr(elrNorm);
+      if (!segments.length || !Number.isFinite(mainYards)) return null;
+
+      // Prefer a segment that contains the main yardage.
+      for (const seg of segments) {
+        const segMinMain = Math.min(seg.fromMain, seg.toMain);
+        const segMaxMain = Math.max(seg.fromMain, seg.toMain);
+        if (mainYards >= segMinMain && mainYards <= segMaxMain) return seg;
+      }
+
+      // Otherwise pick the nearest endpoint across all segments.
+      let best = null;
+      let bestDist = Infinity;
+      for (const seg of segments) {
+        const a = seg.fromMain;
+        const b = seg.toMain;
+        const segMinMain = Math.min(a, b);
+        const segMaxMain = Math.max(a, b);
+        const dist = mainYards < segMinMain
+          ? (segMinMain - mainYards)
+          : (mainYards > segMaxMain ? (mainYards - segMaxMain) : 0);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = seg;
+        }
+      }
+      return best;
+    }
+
+    function findBestAltMapSegmentForAlt(elrNorm, altYards) {
+      const segments = getAltMapSegmentsForElr(elrNorm);
+      if (!segments.length || !Number.isFinite(altYards)) return null;
+
+      for (const seg of segments) {
+        const segMinAlt = Math.min(seg.fromAlt, seg.toAlt);
+        const segMaxAlt = Math.max(seg.fromAlt, seg.toAlt);
+        if (altYards >= segMinAlt && altYards <= segMaxAlt) return seg;
+      }
+
+      let best = null;
+      let bestDist = Infinity;
+      for (const seg of segments) {
+        const a = seg.fromAlt;
+        const b = seg.toAlt;
+        const segMinAlt = Math.min(a, b);
+        const segMaxAlt = Math.max(a, b);
+        const dist = altYards < segMinAlt
+          ? (segMinAlt - altYards)
+          : (altYards > segMaxAlt ? (altYards - segMaxAlt) : 0);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = seg;
+        }
+      }
+      return best;
+    }
+
+    function mapMainToAltExtrapolated(elrNorm, mainYards) {
+      const seg = findBestAltMapSegmentForMain(elrNorm, mainYards);
+      if (!seg) return null;
+      return mapMainToAltOnSegment(seg, mainYards);
+    }
+
+    function mapAltToMainExtrapolated(elrNorm, altYards) {
+      const seg = findBestAltMapSegmentForAlt(elrNorm, altYards);
+      if (!seg) return null;
+      return mapAltToMainOnSegment(seg, altYards);
+    }
+
     function mergeRanges(ranges) {
       const sorted = [...ranges].sort((a, b) => a.from - b.from);
       const merged = [];
@@ -493,39 +563,35 @@ function drawRulerLayer({
     }
 
     function collectQuarterMileTicks(elrNorm, mainFrom, mainTo) {
+      // Extrapolates beyond the mapped segments using the nearest segment slope.
+      // This allows alt rulers to extend when a selected alt track exceeds the mapping extents.
       const segments = getAltMapSegmentsForElr(elrNorm);
       if (!segments.length) return [];
 
-      const ticksByMain = new Map();
       const minMain = Math.min(mainFrom, mainTo);
       const maxMain = Math.max(mainFrom, mainTo);
+
+      const altAtFrom = mapMainToAltExtrapolated(elrNorm, mainFrom);
+      const altAtTo = mapMainToAltExtrapolated(elrNorm, mainTo);
+      if (!Number.isFinite(altAtFrom) || !Number.isFinite(altAtTo)) return [];
+
+      const minAlt = Math.min(altAtFrom, altAtTo);
+      const maxAlt = Math.max(altAtFrom, altAtTo);
+
+      const firstTickAlt = Math.ceil(minAlt / RULER_TICK_MEDIUM_YARDS) * RULER_TICK_MEDIUM_YARDS;
+      const lastTickAlt = Math.floor(maxAlt / RULER_TICK_MEDIUM_YARDS) * RULER_TICK_MEDIUM_YARDS;
+
+      const ticksByMain = new Map();
       const EPS = 1e-6;
 
-      for (const seg of segments) {
-        const segMinMain = Math.min(seg.fromMain, seg.toMain);
-        const segMaxMain = Math.max(seg.fromMain, seg.toMain);
-        const overlapFrom = Math.max(minMain, segMinMain);
-        const overlapTo = Math.min(maxMain, segMaxMain);
-        if (overlapFrom > overlapTo) continue;
+      for (let altTick = firstTickAlt; altTick <= lastTickAlt; altTick += RULER_TICK_MEDIUM_YARDS) {
+        const mainTick = mapAltToMainExtrapolated(elrNorm, altTick);
+        if (!Number.isFinite(mainTick)) continue;
+        if (mainTick + EPS < minMain || mainTick - EPS > maxMain) continue;
 
-        const altAtFrom = mapMainToAltOnSegment(seg, overlapFrom);
-        const altAtTo = mapMainToAltOnSegment(seg, overlapTo);
-        if (!Number.isFinite(altAtFrom) || !Number.isFinite(altAtTo)) continue;
-
-        const minAlt = Math.min(altAtFrom, altAtTo);
-        const maxAlt = Math.max(altAtFrom, altAtTo);
-        const firstTickAlt = Math.ceil(minAlt / RULER_TICK_MEDIUM_YARDS) * RULER_TICK_MEDIUM_YARDS;
-        const lastTickAlt = Math.floor(maxAlt / RULER_TICK_MEDIUM_YARDS) * RULER_TICK_MEDIUM_YARDS;
-
-        for (let altTick = firstTickAlt; altTick <= lastTickAlt; altTick += RULER_TICK_MEDIUM_YARDS) {
-          const mainTick = mapAltToMainOnSegment(seg, altTick);
-          if (!Number.isFinite(mainTick)) continue;
-          if (mainTick + EPS < overlapFrom || mainTick - EPS > overlapTo) continue;
-          // Round to reduce duplicate ticks caused by floating point arithmetic.
-          const mainKey = Math.round(mainTick * 1000) / 1000;
-          if (!ticksByMain.has(mainKey)) {
-            ticksByMain.set(mainKey, altTick);
-          }
+        const mainKey = Math.round(mainTick * 1000) / 1000;
+        if (!ticksByMain.has(mainKey)) {
+          ticksByMain.set(mainKey, altTick);
         }
       }
 
