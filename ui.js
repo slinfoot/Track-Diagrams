@@ -26,6 +26,25 @@ const addTrackBtn = document.getElementById('addTrackBtn');
 const editSelectedTrackBtn = document.getElementById('editSelectedTrackBtn');
 const editTabButtons = Array.from(document.querySelectorAll('.edit-tab-button'));
 const editTabPanels = Array.from(document.querySelectorAll('.edit-tab-content'));
+// Alt Yardage Elements
+const altYardageTableBody = document.getElementById('altYardageTableBody');
+const altElrFilter = document.getElementById('altElrFilter');
+const addAltYardageBtn = document.getElementById('addAltYardageBtn');
+const editSelectedAltYardageBtn = document.getElementById('editSelectedAltYardageBtn');
+
+// Alt Yardage Modal Elements
+const altYardageEditModal = document.getElementById('altYardageEditModal');
+const altYardageModalTitle = document.getElementById('altYardageModalTitle');
+const altYardageModalCloseBtn = document.getElementById('altYardageModalCloseBtn');
+const altYardageModalCancelBtn = document.getElementById('altYardageModalCancelBtn');
+const altYardageModalSaveBtn = document.getElementById('altYardageModalSaveBtn');
+const altYardageEditForm = document.getElementById('altYardageEditForm');
+const formAltElr = document.getElementById('formAltElr');
+const formFromMain = document.getElementById('formFromMain');
+const formToMain = document.getElementById('formToMain');
+const formFromAlt = document.getElementById('formFromAlt');
+const formToAlt = document.getElementById('formToAlt');
+const formShowAltRuler = document.getElementById('formShowAltRuler');
 
 // Modal elements
 const trackEditModal = document.getElementById('trackEditModal');
@@ -110,6 +129,12 @@ let selectedStructure = null;
 let selectedStructureId = null;
 let isAddingNewStructure = false;
 let isSavingStructure = false;
+
+// Alt Yardage state
+let selectedAltYardage = null;
+let selectedAltYardageIndex = null;
+let isAddingNewAltYardage = false;
+let isSavingAltYardage = false;
 
 let editingShapeIndex = null;
 let calcTargetInput = null;
@@ -277,6 +302,9 @@ window.addEventListener('diagram:routeLoaded', () => {
     }
     renderTracksTable(tidFilter?.value ?? '');
     renderStationsTable(stationFilter?.value ?? '');
+    if (typeof renderAltYardageTable === 'function') {
+      renderAltYardageTable(altElrFilter?.value ?? '');
+    }
   }
 });
 
@@ -846,6 +874,8 @@ function setActiveEditTab(tabName) {
       if (typeof renderStationsTable === 'function') renderStationsTable(stationFilter?.value || '');
   } else if (tabName === 'structures') {
       if (typeof renderStructuresTable === 'function') renderStructuresTable(structureFilter?.value || '');
+    } else if (tabName === 'altyardage') {
+      if (typeof renderAltYardageTable === 'function') renderAltYardageTable(altElrFilter?.value || '');
   }
 }
 
@@ -962,6 +992,147 @@ if (editTabButtons.length) {
 
 if (addShapeBtn) {
   addShapeBtn.addEventListener('click', addShapeSegment);
+}
+
+// Alt Yardage Rendering
+function renderAltYardageTable(filterElr = '') {
+  if (!altYardageTableBody) return;
+  const r = window.TrackDiagramApp?.getRoute();
+  const list = Array.isArray(r?.altRouteYardageMap) ? r.altRouteYardageMap : [];
+
+  // Filter by alt ELR
+  let filtered = list;
+  if (filterElr.trim()) {
+    const term = filterElr.trim().toLowerCase();
+    filtered = list.filter(item => String(item.elr || '').toLowerCase().includes(term));
+  }
+
+  if (!filtered.length) {
+    altYardageTableBody.innerHTML = '<tr><td colspan="7" class="table-empty">No mappings found.</td></tr>';
+    selectedAltYardage = null;
+    selectedAltYardageIndex = null;
+    updateAltYardageActionButtons();
+    return;
+  }
+
+  const rows = filtered.map((item, idx) => {
+    const show = item.showAltRuler ? 'Yes' : 'No';
+    return `<tr class="alt-yardage-row" data-index="${idx}">
+      <td>${item.elr || '-'}</td>
+      <td>${Number.isFinite(item.fromYardageMainRoute) ? item.fromYardageMainRoute : '-'}</td>
+      <td>${Number.isFinite(item.toYardageMainRoute) ? item.toYardageMainRoute : '-'}</td>
+      <td>${Number.isFinite(item.fromYardageAltRoute) ? item.fromYardageAltRoute : '-'}</td>
+      <td>${Number.isFinite(item.toYardageAltRoute) ? item.toYardageAltRoute : '-'}</td>
+      <td>${show}</td>
+      <td><button type="button" class="btn-shape-action btn-shape-delete btn-alt-yardage-delete" data-index="${idx}" title="Delete this mapping">Delete</button></td>
+    </tr>`;
+  }).join('');
+  altYardageTableBody.innerHTML = rows;
+
+  // Selection
+  altYardageTableBody.querySelectorAll('.alt-yardage-row').forEach((row, visibleIdx) => {
+    row.addEventListener('click', () => {
+      altYardageTableBody.querySelectorAll('.alt-yardage-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      selectedAltYardage = filtered[visibleIdx];
+      selectedAltYardageIndex = r.altRouteYardageMap.indexOf(selectedAltYardage);
+      updateAltYardageActionButtons();
+    });
+  });
+
+  // Delete handlers
+  altYardageTableBody.querySelectorAll('.btn-alt-yardage-delete').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const route = window.TrackDiagramApp?.getRoute();
+      if (!route) return;
+      const idx = Number(e.currentTarget.dataset.index);
+      const ok = window.confirm('Delete this alt yardage mapping?');
+      if (!ok) return;
+      const current = Array.isArray(route.altRouteYardageMap) ? [...route.altRouteYardageMap] : [];
+      const filteredCurrent = current.filter((_, i) => i !== idx);
+      try {
+        await saveAltYardageMapToApi(route._id, filteredCurrent);
+        window.TrackDiagramApp?.loadRoute(route.code);
+      } catch (err) {
+        console.error('Error deleting alt yardage:', err);
+        window.alert('Error deleting alt yardage: ' + (err?.message || String(err)));
+      }
+    });
+  });
+}
+
+function updateAltYardageActionButtons() {
+  if (!editSelectedAltYardageBtn) return;
+  editSelectedAltYardageBtn.disabled = !selectedAltYardage;
+}
+
+function showAltYardageModal(item, isNew) {
+  if (!altYardageEditModal) return;
+  isAddingNewAltYardage = isNew;
+  selectedAltYardage = item || null;
+  if (altYardageModalTitle) altYardageModalTitle.textContent = isNew ? 'Add Alt Yardage' : 'Edit Alt Yardage';
+  formAltElr.value = item?.elr || '';
+  formFromMain.value = item?.fromYardageMainRoute ?? '';
+  formToMain.value = item?.toYardageMainRoute ?? '';
+  formFromAlt.value = item?.fromYardageAltRoute ?? '';
+  formToAlt.value = item?.toYardageAltRoute ?? '';
+  formShowAltRuler.checked = item?.showAltRuler === true;
+  altYardageEditModal.hidden = false;
+}
+
+function hideAltYardageModal() {
+  if (altYardageEditModal) altYardageEditModal.hidden = true;
+  if (altYardageEditForm) altYardageEditForm.reset();
+}
+
+async function saveAltYardageFromForm() {
+  try {
+    const route = window.TrackDiagramApp?.getRoute();
+    if (!route) return;
+    const obj = {
+      elr: formAltElr.value.trim(),
+      fromYardageMainRoute: Number(formFromMain.value),
+      toYardageMainRoute: Number(formToMain.value),
+      fromYardageAltRoute: Number(formFromAlt.value),
+      toYardageAltRoute: Number(formToAlt.value),
+      showAltRuler: formShowAltRuler.checked
+    };
+
+    if (!obj.elr) { window.alert('Alt ELR is required.'); return; }
+    const nums = [obj.fromYardageMainRoute, obj.toYardageMainRoute, obj.fromYardageAltRoute, obj.toYardageAltRoute];
+    if (!nums.every(n => Number.isFinite(n))) { window.alert('All yardage fields must be numeric.'); return; }
+
+    const current = Array.isArray(route.altRouteYardageMap) ? [...route.altRouteYardageMap] : [];
+    if (isAddingNewAltYardage || selectedAltYardageIndex == null) {
+      current.push(obj);
+    } else {
+      current[selectedAltYardageIndex] = obj;
+    }
+
+    await saveAltYardageMapToApi(route._id, current);
+    hideAltYardageModal();
+    isAddingNewAltYardage = false;
+    window.TrackDiagramApp?.loadRoute(route.code);
+  } catch (err) {
+    console.error('Error saving alt yardage:', err);
+    window.alert('Error saving alt yardage: ' + (err?.message || String(err)));
+  }
+}
+
+async function saveAltYardageMapToApi(routeId, altMapArray) {
+  const safeId = encodeURIComponent(String(routeId || ''));
+  const url = `${apiUrl}/${safeId}`;
+  const resp = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ altRouteYardageMap: altMapArray })
+  });
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`HTTP ${resp.status} - ${txt}`);
+  }
+  return await resp.json();
 }
 
 // Yards Calculator
@@ -1740,6 +1911,58 @@ if (structureEditModal) {
 
 if (addStructureTrackBtn) {
   addStructureTrackBtn.addEventListener('click', addStructureTrack);
+}
+
+// Alt Yardage Event Listeners
+if (altElrFilter) {
+  altElrFilter.addEventListener('input', () => {
+    renderAltYardageTable(altElrFilter.value);
+  });
+}
+
+if (addAltYardageBtn) {
+  addAltYardageBtn.addEventListener('click', () => {
+    selectedAltYardageIndex = null;
+    showAltYardageModal({}, true);
+  });
+}
+
+if (editSelectedAltYardageBtn) {
+  editSelectedAltYardageBtn.addEventListener('click', () => {
+    if (selectedAltYardage) showAltYardageModal(selectedAltYardage, false);
+  });
+  updateAltYardageActionButtons();
+}
+
+if (altYardageModalCloseBtn) {
+  altYardageModalCloseBtn.addEventListener('click', hideAltYardageModal);
+}
+
+if (altYardageModalCancelBtn) {
+  altYardageModalCancelBtn.addEventListener('click', hideAltYardageModal);
+}
+
+if (altYardageEditForm) {
+  altYardageEditForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSavingAltYardage) return;
+    isSavingAltYardage = true;
+    if (altYardageModalSaveBtn) altYardageModalSaveBtn.disabled = true;
+    try {
+      await saveAltYardageFromForm();
+    } finally {
+      isSavingAltYardage = false;
+      if (altYardageModalSaveBtn) altYardageModalSaveBtn.disabled = false;
+    }
+  });
+}
+
+if (altYardageEditModal) {
+  altYardageEditModal.addEventListener('click', (e) => {
+    if (e.target === altYardageEditModal || e.target.classList.contains('modal-overlay')) {
+      hideAltYardageModal();
+    }
+  });
 }
 
 // Yards/Chains Conversion Event Listeners

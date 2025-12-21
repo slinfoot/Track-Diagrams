@@ -22,7 +22,7 @@ const RULER_TICK_MICRO_YARDS = 22;
 const DEFAULT_ROUTE_CODE = 'ECML';
 const DEFAULT_YARDS_PER_PIXEL = 1;
 const DEFAULT_GRID_SPACING = 50;
-const DEFAULT_WINDOW_MILES = 10;
+const DEFAULT_SCROLL_SIZE_MILES = 10;
 
 // Default initial centering (historically York area). Used when no prior viewport state exists.
 const DEFAULT_INITIAL_TARGET_YARDS = 331782;
@@ -185,7 +185,7 @@ function addOverlayIfMissing(overlay, isDuplicateFn) {
 
 function computeInitialTargetYards({ lastCenterYards }, config) {
   if (Number.isFinite(lastCenterYards)) return lastCenterYards;
-  return DEFAULT_INITIAL_TARGET_YARDS || (config.windowSizeYards / 2);
+  return DEFAULT_INITIAL_TARGET_YARDS || (config.scrollSizeYards / 2);
 }
 
 function createDefaultConfig(nextRoute) {
@@ -194,9 +194,9 @@ function createDefaultConfig(nextRoute) {
     yardsPerPixel: DEFAULT_YARDS_PER_PIXEL,
     horizontalGridSpacing: DEFAULT_GRID_SPACING,
     horizontalGridLinesNo: 100,
-    windowSizeYards: DEFAULT_WINDOW_MILES * YARDS_PER_MILE,
+    scrollSizeYards: DEFAULT_SCROLL_SIZE_MILES * YARDS_PER_MILE,
     showFromYards: 0,
-    showToYards: DEFAULT_WINDOW_MILES * YARDS_PER_MILE,
+    showToYards: DEFAULT_SCROLL_SIZE_MILES * YARDS_PER_MILE,
     showArrayOverlays: true,
     showUrlOverlays: true
   };
@@ -289,7 +289,7 @@ function bindViewportEvents({
     viewportState.lastYardsPerPixel = config.yardsPerPixel;
 
     // Check if near edges of window (within 20% from either side)
-    const windowMargin = config.windowSizeYards * WINDOW_EDGE_MARGIN_RATIO;
+    const windowMargin = config.scrollSizeYards * WINDOW_EDGE_MARGIN_RATIO;
     const distanceFromStart = visibleCenterYards - config.showFromYards;
     const distanceFromEnd = config.showToYards - visibleCenterYards;
     viewportState.lastNearEdge = distanceFromStart < windowMargin || distanceFromEnd < windowMargin;
@@ -1462,17 +1462,17 @@ function initializeApp() {
   }
 
   function updateVisibleWindow(centerYards) {
-    const halfWindow = config.windowSizeYards / 2;
+    const halfWindow = config.scrollSizeYards / 2;
     let newFrom = centerYards - halfWindow;
     let newTo = centerYards + halfWindow;
 
     // Clamp to route bounds
     if (newFrom < 0) {
       newFrom = 0;
-      newTo = Math.min(config.windowSizeYards, config.totalYards);
+      newTo = Math.min(config.scrollSizeYards, config.totalYards);
     } else if (newTo > config.totalYards) {
       newTo = config.totalYards;
-      newFrom = Math.max(0, config.totalYards - config.windowSizeYards);
+      newFrom = Math.max(0, config.totalYards - config.scrollSizeYards);
     }
 
     config.showFromYards = newFrom;
@@ -2035,7 +2035,7 @@ function initializeApp() {
 
   function setWindowSizeMiles(miles) {
     if (!Number.isFinite(miles) || miles <= 0) return;
-    config.windowSizeYards = miles * YARDS_PER_MILE;
+    config.scrollSizeYards = miles * YARDS_PER_MILE;
     updateVisibleWindow(currentCenterYards);
     applyLayoutSizing(false);
     centerOnYards(currentCenterYards, false);
@@ -2275,7 +2275,7 @@ function initializeApp() {
     sideCtx.stroke();
 
     // Draw viewport indicator rectangle
-    // Calculate actual visible yards in the viewport (not windowSizeYards which is scrollable area)
+    // Calculate actual visible yards in the viewport (not scrollSizeYards which is scrollable area)
     const { leftYards, rightYards } = getVisibleBounds();
     const visibleStartYards = leftYards;
     const visibleEndYards = rightYards;

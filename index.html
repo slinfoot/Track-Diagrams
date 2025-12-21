@@ -114,6 +114,7 @@
           <button class="sidebar-button edit-tab-button" type="button" data-tab="sections">Sections</button>
           <button class="sidebar-button edit-tab-button" type="button" data-tab="stations">Stations</button>
           <button class="sidebar-button edit-tab-button" type="button" data-tab="structures">Structures</button>
+          <button class="sidebar-button edit-tab-button" type="button" data-tab="altyardage">Alt Yardage</button>
         </div>
       </div>
       <div class="edit-body">
@@ -275,6 +276,60 @@
                   </colgroup>
                   <tbody id="structuresTableBody">
                     <tr><td colspan="5" class="table-empty">No structures loaded.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="edit-tab-content" data-tab="altyardage">
+            <div class="tracks-table-wrapper">
+              <div class="tracks-filter">
+                <label for="altElrFilter">
+                  <span>Filter by Alt ELR:</span>
+                  <input type="text" id="altElrFilter" placeholder="Enter ELR...">
+                </label>
+                <div class="tracks-filter-actions">
+                  <button type="button" id="addAltYardageBtn" class="sidebar-button">Add Alt Yardage</button>
+                  <button type="button" id="editSelectedAltYardageBtn" class="sidebar-button" disabled>Edit Selected</button>
+                </div>
+              </div>
+              <div class="tracks-table-header">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 120px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Alt ELR</th>
+                      <th>From (Main)</th>
+                      <th>To (Main)</th>
+                      <th>From (Alt)</th>
+                      <th>To (Alt)</th>
+                      <th>Show Ruler</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="tracks-table-body" aria-label="Alt yardage table rows">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 120px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
+                    <col style="width: 100px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <tbody id="altYardageTableBody">
+                    <tr><td colspan="7" class="table-empty">No alt yardage mappings loaded.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -534,6 +589,64 @@
           <div class="modal-actions">
             <button type="button" id="structureModalCancelBtn" class="btn-secondary">Cancel</button>
             <button type="submit" id="structureModalSaveBtn" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alt Yardage Edit Modal -->
+  <div id="altYardageEditModal" class="modal" hidden>
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="altYardageModalTitle">Edit Alt Yardage</h3>
+        <button type="button" id="altYardageModalCloseBtn" class="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="altYardageEditForm">
+          <div class="form-row">
+            <label class="form-field" style="flex: 1 1 100%">
+              <span>Alt ELR</span>
+              <input type="text" id="formAltElr" required placeholder="e.g., ECM1">
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="form-field">
+              <span>From (Main)</span>
+              <div class="input-with-calc">
+                <input type="number" id="formFromMain" required placeholder="Yards">
+                <button type="button" class="btn-calc" data-target="formFromMain" title="Calculate from ELR/Mile/Yard">📍</button>
+              </div>
+            </label>
+            <label class="form-field">
+              <span>To (Main)</span>
+              <div class="input-with-calc">
+                <input type="number" id="formToMain" required placeholder="Yards">
+                <button type="button" class="btn-calc" data-target="formToMain" title="Calculate from ELR/Mile/Yard">📍</button>
+              </div>
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="form-field">
+              <span>From (Alt)</span>
+              <input type="number" id="formFromAlt" required placeholder="Yards">
+            </label>
+            <label class="form-field">
+              <span>To (Alt)</span>
+              <input type="number" id="formToAlt" required placeholder="Yards">
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Show Alt Ruler</span>
+              <input type="checkbox" id="formShowAltRuler">
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="altYardageModalCancelBtn" class="btn-secondary">Cancel</button>
+            <button type="submit" id="altYardageModalSaveBtn" class="btn-primary">Save</button>
           </div>
         </form>
       </div>
