@@ -311,7 +311,6 @@
                       <th>To (Main)</th>
                       <th>From (Alt)</th>
                       <th>To (Alt)</th>
-                      <th>Show Ruler</th>
                       <th>Delete</th>
                     </tr>
                   </thead>
@@ -325,11 +324,10 @@
                     <col style="width: 140px">
                     <col style="width: 140px">
                     <col style="width: 140px">
-                    <col style="width: 100px">
                     <col style="width: 80px">
                   </colgroup>
                   <tbody id="altYardageTableBody">
-                    <tr><td colspan="7" class="table-empty">No alt yardage mappings loaded.</td></tr>
+                    <tr><td colspan="6" class="table-empty">No alt yardage mappings loaded.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -363,6 +361,12 @@
               <label class="form-field">
                 <span>ELR</span>
                 <input type="text" id="formAltRouteElr" placeholder="e.g., ECM1">
+              </label>
+            </div>
+            <div class="form-row">
+              <label class="form-field">
+                <span>Show Alt Ruler</span>
+                <input type="checkbox" id="formAltRouteShowRuler">
               </label>
             </div>
           </div>
@@ -649,12 +653,7 @@
               <input type="number" id="formToAlt" required placeholder="Yards">
             </label>
           </div>
-          <div class="form-row">
-            <label class="form-field">
-              <span>Show Alt Ruler</span>
-              <input type="checkbox" id="formShowAltRuler">
-            </label>
-          </div>
+
 
           <div class="modal-actions">
             <button type="button" id="altYardageModalCancelBtn" class="btn-secondary">Cancel</button>

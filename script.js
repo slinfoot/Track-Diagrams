@@ -412,6 +412,194 @@ function drawRulerLayer({
 
     drawLine(0, 0, diagramCanvas.clientWidth, 0, 4, 'black');
 
+    // --- Alt-route ruler (optional) ---
+    // Draws a simple secondary ruler beneath the main ruler when a track has
+    // altRoute.showAltRuler=true and its altRoute ELR exists in altRouteYardageMap.
+    // The ruler spans the merged extents of selected TIDs (merge if overlapping or end-to-end)
+    // and renders only the baseline + quarter-mile tick marks (440 yards) using alt-route yardage.
+
+    // Multiple alt ELRs can be shown; each ELR gets its own "lane" stacked vertically.
+    const ALT_RULER_FIRST_BASELINE_Y = 105;
+    const ALT_RULER_LANE_SPACING_PX = 50;
+    const ALT_RULER_TICK_HEIGHT_PX = 10;
+    const ALT_RULER_LINE_WIDTH_PX = 2;
+    const ALT_RULER_MERGE_EPS_YARDS = 0; // treat exact end-to-end as merge
+    const ALT_RULER_COLOR = 'gray';
+    const ALT_RULER_LABEL_COLOR = 'rgba(128, 128, 128, 0.85)';
+
+    function computeTrackExtentYards(track) {
+      const shape = Array.isArray(track?.shape) ? track.shape : [];
+      let minYard = null;
+      let maxYard = null;
+      for (const seg of shape) {
+        const from = Number(seg?.from);
+        const to = Number(seg?.to);
+        if (!Number.isFinite(from) || !Number.isFinite(to)) continue;
+        const segMin = Math.min(from, to);
+        const segMax = Math.max(from, to);
+        if (minYard === null || segMin < minYard) minYard = segMin;
+        if (maxYard === null || segMax > maxYard) maxYard = segMax;
+      }
+      if (minYard === null || maxYard === null) return null;
+      return { from: minYard, to: maxYard };
+    }
+
+    function getAltMapSegmentsForElr(elrNorm) {
+      const list = Array.isArray(route?.altRouteYardageMap) ? route.altRouteYardageMap : [];
+      return list
+        .filter(seg => normalizeElr(seg?.elr) === elrNorm)
+        .map(seg => {
+          const fromMain = Number(seg?.fromYardageMainRoute);
+          const toMain = Number(seg?.toYardageMainRoute);
+          const fromAlt = Number(seg?.fromYardageAltRoute);
+          const toAlt = Number(seg?.toYardageAltRoute);
+          if (![fromMain, toMain, fromAlt, toAlt].every(Number.isFinite)) return null;
+          if (fromMain === toMain || fromAlt === toAlt) return null;
+          return { fromMain, toMain, fromAlt, toAlt };
+        })
+        .filter(Boolean);
+    }
+
+    function mapMainToAltOnSegment(seg, mainYards) {
+      const denom = (seg.toMain - seg.fromMain);
+      if (!Number.isFinite(denom) || denom === 0) return null;
+      const ratio = (mainYards - seg.fromMain) / denom;
+      return seg.fromAlt + ratio * (seg.toAlt - seg.fromAlt);
+    }
+
+    function mapAltToMainOnSegment(seg, altYards) {
+      const denom = (seg.toAlt - seg.fromAlt);
+      if (!Number.isFinite(denom) || denom === 0) return null;
+      const ratio = (altYards - seg.fromAlt) / denom;
+      return seg.fromMain + ratio * (seg.toMain - seg.fromMain);
+    }
+
+    function mergeRanges(ranges) {
+      const sorted = [...ranges].sort((a, b) => a.from - b.from);
+      const merged = [];
+      for (const r of sorted) {
+        if (!merged.length) {
+          merged.push({ from: r.from, to: r.to });
+          continue;
+        }
+        const last = merged[merged.length - 1];
+        if (r.from > last.to + ALT_RULER_MERGE_EPS_YARDS) {
+          merged.push({ from: r.from, to: r.to });
+        } else {
+          last.to = Math.max(last.to, r.to);
+        }
+      }
+      return merged;
+    }
+
+    function collectQuarterMileTicks(elrNorm, mainFrom, mainTo) {
+      const segments = getAltMapSegmentsForElr(elrNorm);
+      if (!segments.length) return [];
+
+      const ticksByMain = new Map();
+      const minMain = Math.min(mainFrom, mainTo);
+      const maxMain = Math.max(mainFrom, mainTo);
+      const EPS = 1e-6;
+
+      for (const seg of segments) {
+        const segMinMain = Math.min(seg.fromMain, seg.toMain);
+        const segMaxMain = Math.max(seg.fromMain, seg.toMain);
+        const overlapFrom = Math.max(minMain, segMinMain);
+        const overlapTo = Math.min(maxMain, segMaxMain);
+        if (overlapFrom > overlapTo) continue;
+
+        const altAtFrom = mapMainToAltOnSegment(seg, overlapFrom);
+        const altAtTo = mapMainToAltOnSegment(seg, overlapTo);
+        if (!Number.isFinite(altAtFrom) || !Number.isFinite(altAtTo)) continue;
+
+        const minAlt = Math.min(altAtFrom, altAtTo);
+        const maxAlt = Math.max(altAtFrom, altAtTo);
+        const firstTickAlt = Math.ceil(minAlt / RULER_TICK_MEDIUM_YARDS) * RULER_TICK_MEDIUM_YARDS;
+        const lastTickAlt = Math.floor(maxAlt / RULER_TICK_MEDIUM_YARDS) * RULER_TICK_MEDIUM_YARDS;
+
+        for (let altTick = firstTickAlt; altTick <= lastTickAlt; altTick += RULER_TICK_MEDIUM_YARDS) {
+          const mainTick = mapAltToMainOnSegment(seg, altTick);
+          if (!Number.isFinite(mainTick)) continue;
+          if (mainTick + EPS < overlapFrom || mainTick - EPS > overlapTo) continue;
+          // Round to reduce duplicate ticks caused by floating point arithmetic.
+          const mainKey = Math.round(mainTick * 1000) / 1000;
+          if (!ticksByMain.has(mainKey)) {
+            ticksByMain.set(mainKey, altTick);
+          }
+        }
+      }
+
+      return Array.from(ticksByMain.entries())
+        .map(([mainYards, altYards]) => ({ mainYards, altYards }))
+        .sort((a, b) => a.mainYards - b.mainYards);
+    }
+
+    function drawAltRulersIfAny() {
+      const tracks = Array.isArray(route?.tracks) ? route.tracks : [];
+      const selectedAlt = tracks
+        .filter(t => t?.altRoute?.showAltRuler === true)
+        .map(t => ({
+          elrNorm: normalizeElr(t?.altRoute?.elr),
+          extent: computeTrackExtentYards(t)
+        }))
+        .filter(x => x.elrNorm && x.extent);
+
+      if (!selectedAlt.length) return;
+
+      const byElr = new Map();
+      for (const item of selectedAlt) {
+        const bucket = byElr.get(item.elrNorm) || [];
+        bucket.push(item.extent);
+        byElr.set(item.elrNorm, bucket);
+      }
+
+      const elrsInOrder = Array.from(byElr.keys()).sort((a, b) => a.localeCompare(b));
+      for (let laneIndex = 0; laneIndex < elrsInOrder.length; laneIndex++) {
+        const elrNorm = elrsInOrder[laneIndex];
+        const extents = byElr.get(elrNorm) || [];
+
+        const baselineY = ALT_RULER_FIRST_BASELINE_Y + (laneIndex * ALT_RULER_LANE_SPACING_PX);
+        const elrLabelY = baselineY - 18;
+        const tickLabelY = baselineY + ALT_RULER_TICK_HEIGHT_PX + 4;
+
+        // Only draw if we actually have a mapping for this alt ELR.
+        const segments = getAltMapSegmentsForElr(elrNorm);
+        if (!segments.length) continue;
+
+        const merged = mergeRanges(extents);
+        for (const r of merged) {
+          const clippedFrom = Math.max(r.from, visibleLeftLimitYards);
+          const clippedTo = Math.min(r.to, visibleRightLimitYards);
+          if (clippedFrom > clippedTo) continue;
+
+          const x1 = getX(clippedFrom);
+          const x2 = getX(clippedTo);
+          drawLine(x1, baselineY, x2, baselineY, ALT_RULER_LINE_WIDTH_PX, ALT_RULER_COLOR);
+
+          // ELR label centered over the alt ruler span.
+          const midX = getX((clippedFrom + clippedTo) / 2);
+          ctx.font = '14px Arial';
+          ctx.fillStyle = ALT_RULER_LABEL_COLOR;
+          ctx.textBaseline = 'top';
+          ctx.fillText(elrNorm, midX - 10, elrLabelY);
+
+          const ticks = collectQuarterMileTicks(elrNorm, r.from, r.to);
+          for (const tick of ticks) {
+            const mainTick = tick.mainYards;
+            if (mainTick < clippedFrom || mainTick > clippedTo) continue;
+            const x = getX(mainTick);
+            drawLine(x, baselineY, x, baselineY + ALT_RULER_TICK_HEIGHT_PX, 1, ALT_RULER_COLOR);
+
+            // Label tick with alt-route miles/yards.
+            ctx.font = '12px Arial';
+            ctx.fillStyle = ALT_RULER_LABEL_COLOR;
+            ctx.textBaseline = 'top';
+            ctx.fillText(yardsToMiles_text(tick.altYards), x + 2, tickLabelY);
+          }
+        }
+      }
+    }
+
     for (let yard = 0; yard <= config.totalYards; yard++) {
       if (yard < visibleLeftLimitYards || yard > visibleRightLimitYards) {
         continue;
@@ -466,6 +654,9 @@ function drawRulerLayer({
         }
       });
     }
+
+    // Draw after the main ruler so it sits visually beneath it.
+    drawAltRulersIfAny();
   });
 }
 

@@ -44,7 +44,6 @@ const formFromMain = document.getElementById('formFromMain');
 const formToMain = document.getElementById('formToMain');
 const formFromAlt = document.getElementById('formFromAlt');
 const formToAlt = document.getElementById('formToAlt');
-const formShowAltRuler = document.getElementById('formShowAltRuler');
 
 // Modal elements
 const trackEditModal = document.getElementById('trackEditModal');
@@ -65,6 +64,7 @@ const formToTrack = document.getElementById('formToTrack');
 const formToAt = document.getElementById('formToAt');
 const formToElr = document.getElementById('formToElr');
 const formAltRouteElr = document.getElementById('formAltRouteElr');
+const formAltRouteShowRuler = document.getElementById('formAltRouteShowRuler');
 const shapeTableModalBody = document.getElementById('shapeTableModalBody');
 const addShapeBtn = document.getElementById('addShapeBtn');
 
@@ -737,6 +737,7 @@ function showTrackModal(track, isNew = false) {
   if (formToAt) formToAt.value = track.toConnection?.at ?? '';
   if (formToElr) formToElr.value = track.toConnection?.elr ?? '';
   if (formAltRouteElr) formAltRouteElr.value = track.altRoute?.elr ?? '';
+  if (formAltRouteShowRuler) formAltRouteShowRuler.checked = track.altRoute?.showAltRuler === true;
 
   renderShapeTable();
   trackEditModal.hidden = false;
@@ -834,6 +835,7 @@ async function saveTrackFromForm() {
   if (altElrVal) {
     if (!selectedTrack.altRoute) selectedTrack.altRoute = {};
     selectedTrack.altRoute.elr = altElrVal;
+    selectedTrack.altRoute.showAltRuler = formAltRouteShowRuler?.checked === true;
   } else {
     delete selectedTrack.altRoute;
   }
@@ -1027,14 +1029,12 @@ function renderAltYardageTable(filterElr = '') {
   }
 
   const rows = filtered.map((item, idx) => {
-    const show = item.showAltRuler ? 'Yes' : 'No';
     return `<tr class="alt-yardage-row" data-index="${idx}">
       <td>${item.elr || '-'}</td>
       <td>${Number.isFinite(item.fromYardageMainRoute) ? item.fromYardageMainRoute : '-'}</td>
       <td>${Number.isFinite(item.toYardageMainRoute) ? item.toYardageMainRoute : '-'}</td>
       <td>${Number.isFinite(item.fromYardageAltRoute) ? item.fromYardageAltRoute : '-'}</td>
       <td>${Number.isFinite(item.toYardageAltRoute) ? item.toYardageAltRoute : '-'}</td>
-      <td>${show}</td>
       <td><button type="button" class="btn-shape-action btn-shape-delete btn-alt-yardage-delete" data-index="${idx}" title="Delete this mapping">Delete</button></td>
     </tr>`;
   }).join('');
@@ -1088,7 +1088,6 @@ function showAltYardageModal(item, isNew) {
   formToMain.value = item?.toYardageMainRoute ?? '';
   formFromAlt.value = item?.fromYardageAltRoute ?? '';
   formToAlt.value = item?.toYardageAltRoute ?? '';
-  formShowAltRuler.checked = item?.showAltRuler === true;
   altYardageEditModal.hidden = false;
 }
 
@@ -1106,8 +1105,7 @@ async function saveAltYardageFromForm() {
       fromYardageMainRoute: Number(formFromMain.value),
       toYardageMainRoute: Number(formToMain.value),
       fromYardageAltRoute: Number(formFromAlt.value),
-      toYardageAltRoute: Number(formToAlt.value),
-      showAltRuler: formShowAltRuler.checked
+      toYardageAltRoute: Number(formToAlt.value)
     };
 
     if (!obj.elr) { window.alert('Alt ELR is required.'); return; }

@@ -5745,7 +5745,7 @@ const routes = [
                 "tid": 2150,
                 "altRoute": {
                     "elr": "PMJ",
-                    "showAltRuler": false
+                    "showAltRuler": true
                 },
                 "shape": [
                     {
@@ -5763,7 +5763,7 @@ const routes = [
                 "tid": 1150,
                 "altRoute": {
                     "elr": "PMJ",
-                    "showAltRuler": false
+                    "showAltRuler": true
                 },
                 "shape": [
                     {
