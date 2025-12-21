@@ -7282,7 +7282,6 @@ const routes = [
                 ]
             },
             {
-                "sideDiagramVisible": true,
                 "name": "Thirsk",
                 "at": 370832,
                 "platforms": [
@@ -7300,7 +7299,8 @@ const routes = [
                         "to": 370936,
                         "position": "below"
                     }
-                ]
+                ],
+                "sideDiagramVisible": false
             },
             {
                 "sideDiagramVisible": true,
@@ -7479,6 +7479,83 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "Newark North Gate",
+                "at": 211376,
+                "sideDiagramVisible": true,
+                "platforms": [
+                    {
+                        "track": 2100,
+                        "platformNo": 1,
+                        "from": 211288,
+                        "to": 211574,
+                        "position": "above",
+                        "elr": ""
+                    },
+                    {
+                        "track": 1100,
+                        "platformNo": 2,
+                        "from": 211288,
+                        "to": 211574,
+                        "position": "below",
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Retford",
+                "at": 243958,
+                "sideDiagramVisible": true,
+                "platforms": []
+            },
+            {
+                "name": "Darlington",
+                "at": 409442,
+                "sideDiagramVisible": true,
+                "platforms": []
+            },
+            {
+                "name": "Durham",
+                "at": 448228,
+                "sideDiagramVisible": true,
+                "platforms": []
+            },
+            {
+                "name": "Chester-le-Street",
+                "at": 458326,
+                "sideDiagramVisible": false,
+                "platforms": []
+            },
+            {
+                "name": "Newcastle",
+                "at": 472930,
+                "sideDiagramVisible": true,
+                "platforms": []
+            },
+            {
+                "name": "Morpeth",
+                "at": 502190,
+                "sideDiagramVisible": true,
+                "platforms": []
+            },
+            {
+                "name": "Alnmouth",
+                "at": 534288,
+                "sideDiagramVisible": true,
+                "platforms": []
+            },
+            {
+                "name": "Berwick upon Tweed",
+                "at": 590850,
+                "sideDiagramVisible": true,
+                "platforms": []
+            },
+            {
+                "name": "Chathill",
+                "at": 553912,
+                "sideDiagramVisible": true,
+                "platforms": []
             }
         ],
         "structures": [
@@ -8798,6 +8875,63 @@ const routes = [
                     {
                         "from": 189750,
                         "to": 190718,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Newark Dyke (River Trent)",
+                "type": "underbridge",
+                "structureNo": "ECM1-278",
+                "trackLocation": [
+                    {
+                        "from": 212806,
+                        "to": 212916,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 212806,
+                        "to": 212916,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Muskham Viaduct (River Trent)",
+                "type": "underbridge",
+                "structureNo": "ECM1-280",
+                "trackLocation": [
+                    {
+                        "from": 213334,
+                        "to": 213642,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 213334,
+                        "to": 213642,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Church Lane LC CCTV",
+                "type": "level_crossing",
+                "structureNo": "No. 167",
+                "trackLocation": [
+                    {
+                        "from": 214874,
+                        "to": 214884,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 214874,
+                        "to": 214884,
                         "tid": 1100,
                         "elr": ""
                     }

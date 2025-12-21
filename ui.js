@@ -144,6 +144,78 @@ let calcSourceMainYards = null;
 let calcAutofillEnabled = false;
 let calcProgrammaticUpdate = false;
 
+// Side diagram click -> center mapping
+const sideDiagramCanvas = document.getElementById('sideDiagramCanvas');
+if (sideDiagramCanvas) {
+  sideDiagramCanvas.addEventListener('dblclick', (ev) => {
+    try {
+      const route = window.TrackDiagramApp?.getRoute();
+      if (!route) return;
+      const totalYards = Number(route.length_yards) || Number(route.totalYards) || 0;
+      if (!Number.isFinite(totalYards) || totalYards <= 0) return;
+
+      const rect = sideDiagramCanvas.getBoundingClientRect();
+      const clientY = ev.clientY - rect.top;
+
+      const padding = 20; // must match drawSideDiagram padding
+      const topY = padding;
+      const bottomY = rect.height - padding;
+      const routeHeight = bottomY - topY;
+      if (routeHeight <= 0) return;
+
+      // convert canvas client coordinate (y) to ratio along route
+      // bottom corresponds to 0 yards, top corresponds to totalYards
+      let ratio = (bottomY - clientY) / routeHeight;
+      if (!Number.isFinite(ratio)) return;
+      ratio = Math.max(0, Math.min(1, ratio));
+
+      const mainYards = ratio * totalYards;
+      if (!Number.isFinite(mainYards)) return;
+
+      window.TrackDiagramApp?.centerOnYards?.(mainYards, true);
+    } catch (err) {
+      console.error('Error handling side diagram dblclick:', err);
+    }
+  });
+}
+
+// Helper to normalize ELR for comparison
+function normalizeElrForComparison(elr) {
+  return elr ? String(elr).toUpperCase().trim() : '';
+}
+
+// Find which route contains a given ELR (in sections or altRouteYardageMap)
+async function findRouteCodeForElr(elr) {
+  if (!elr) return null;
+  const normElr = normalizeElrForComparison(elr);
+  
+  try {
+    const res = await fetch(apiUrl);
+    if (!res.ok) return null;
+    
+    const routes = await res.json();
+    if (!Array.isArray(routes)) return null;
+    
+    for (const route of routes) {
+      // Check main sections
+      if (route.sections && Array.isArray(route.sections)) {
+        const found = route.sections.some(s => normalizeElrForComparison(s.elr) === normElr);
+        if (found) return route.code;
+      }
+      
+      // Check alt route yardage map
+      if (route.altRouteYardageMap && Array.isArray(route.altRouteYardageMap)) {
+        const found = route.altRouteYardageMap.some(m => normalizeElrForComparison(m.elr) === normElr);
+        if (found) return route.code;
+      }
+    }
+  } catch (err) {
+    console.error('Error finding route for ELR:', err);
+  }
+  
+  return null;
+}
+
 function updateTrackActionButtons() {
   if (!editSelectedTrackBtn) return;
   editSelectedTrackBtn.disabled = !selectedTrack;
@@ -313,7 +385,52 @@ window.addEventListener('diagram:routeLoaded', () => {
   }
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+  // Check if there's an overlay in the URL that requires auto-loading a route
+  try {
+    const url = new URL(window.location.href);
+    const params = url.searchParams;
+    const overlayElr = params.get('elr');
+    
+    console.log('DOMContentLoaded: Checking for URL overlay...');
+    console.log('URL params:', {
+      elr: params.get('elr'),
+      tid: params.get('tid'),
+      mileFrom: params.get('mileFrom'),
+      yardFrom: params.get('yardFrom'),
+      mileTo: params.get('mileTo'),
+      yardTo: params.get('yardTo'),
+      text: params.get('text')
+    });
+    
+    if (overlayElr) {
+      console.log('Found overlay ELR:', overlayElr);
+      // Find which route contains this ELR
+      const routeCode = await findRouteCodeForElr(overlayElr);
+      console.log('Route code for ELR:', routeCode);
+      
+      if (routeCode) {
+        // Populate route selector first
+        await populateRouteSelector();
+        if (routeSelector) {
+          routeSelector.value = routeCode;
+        }
+        console.log('Loading route:', routeCode);
+        // Load the route - this will trigger consumeUrlOverlayFromLocation in script.js
+        window.TrackDiagramApp?.loadRoute(routeCode);
+        return; // Early return - route loaded
+      } else {
+        console.warn('Could not find route for ELR:', overlayElr);
+      }
+    } else {
+      console.log('No overlay ELR found in URL');
+    }
+  } catch (err) {
+    console.error('Error auto-loading route from URL overlay:', err);
+  }
+  
+  // No URL overlay or couldn't find route, do normal initialization
+  console.log('Normal initialization - populating route selector');
   populateRouteSelector();
 });
 
@@ -367,6 +484,60 @@ function getTrackELR(track, route) {
   const midpoint = (extents.minFrom + extents.maxFrom) / 2;
   const section = route.sections.find(s => midpoint >= s.from && midpoint < s.to);
   return section?.elr ?? '-';
+}
+
+// Given a main-route absolute yards value, determine the ELR and the
+// corresponding relative yardage (within that ELR) using sections or
+// the altRouteYardageMap. Returns { elr, relativeYards } where
+// relativeYards is the yardage to display (or null if unavailable).
+function getElrAndRelativeYardsForMainYards(route, mainYards) {
+  if (!route) return { elr: '-', relativeYards: null };
+  if (!Number.isFinite(mainYards)) return { elr: '-', relativeYards: null };
+
+  // 1) Look in sections (preferred)
+  if (Array.isArray(route.sections) && route.sections.length) {
+    const section = route.sections.find(s => mainYards >= s.from && mainYards < s.to);
+    if (section) {
+      const offset = Number(section.offset) || 0;
+      return { elr: section.elr ?? '-', relativeYards: mainYards - offset };
+    }
+  }
+
+  // 2) Try altRouteYardageMap: find a segment that covers this main yards
+  const list = Array.isArray(route.altRouteYardageMap) ? route.altRouteYardageMap : [];
+  for (const seg of list) {
+    const extracted = validateAndExtractSegment(seg);
+    if (!extracted) continue;
+    const { fromMain, toMain } = extracted;
+    const min = Math.min(fromMain, toMain);
+    const max = Math.max(fromMain, toMain);
+    if (mainYards >= min && mainYards <= max) {
+      const altYards = mapMainYardsToAltYards(seg, mainYards);
+      if (Number.isFinite(altYards)) return { elr: seg.elr ?? '-', relativeYards: altYards };
+    }
+  }
+
+  // 3) If not inside any segment, pick the nearest alt segment and extrapolate
+  let nearest = null;
+  let nearestDist = Infinity;
+  for (const seg of list) {
+    const extracted = validateAndExtractSegment(seg);
+    if (!extracted) continue;
+    const { fromMain, toMain } = extracted;
+    const min = Math.min(fromMain, toMain);
+    const max = Math.max(fromMain, toMain);
+    const dist = mainYards < min ? (min - mainYards) : (mainYards > max ? (mainYards - max) : 0);
+    if (dist < nearestDist) {
+      nearestDist = dist;
+      nearest = seg;
+    }
+  }
+  if (nearest) {
+    const altYards = mapMainYardsToAltYards(nearest, mainYards);
+    if (Number.isFinite(altYards)) return { elr: nearest.elr ?? '-', relativeYards: altYards };
+  }
+
+  return { elr: '-', relativeYards: null };
 }
 
 function renderTracksTable(filterTid = '') {
@@ -577,7 +748,7 @@ function renderStationsTable(filterName = '') {
   if (!stationsTableBody) return;
   const r = window.TrackDiagramApp?.getRoute();
   if (!r?.stations?.length) {
-    stationsTableBody.innerHTML = '<tr><td colspan="4" class="table-empty">No stations available.</td></tr>';
+    stationsTableBody.innerHTML = '<tr><td colspan="5" class="table-empty">No stations available.</td></tr>';
     selectedStation = null;
     selectedStationId = null;
     updateStationActionButtons();
@@ -591,7 +762,7 @@ function renderStationsTable(filterName = '') {
   }
 
   if (!stations.length) {
-    stationsTableBody.innerHTML = '<tr><td colspan="4" class="table-empty">No stations match the filter.</td></tr>';
+    stationsTableBody.innerHTML = '<tr><td colspan="5" class="table-empty">No stations match the filter.</td></tr>';
     selectedStation = null;
     selectedStationId = null;
     updateStationActionButtons();
@@ -602,14 +773,28 @@ function renderStationsTable(filterName = '') {
   const sortedStations = [...stations].sort((a, b) => (a.at || 0) - (b.at || 0));
 
   const rows = sortedStations.map((station, index) => {
-    const atParts = yardsToMilesParts(station.at);
-    const atFormatted = (atParts.miles !== '-' && atParts.yards !== '-')
-      ? `${String(atParts.miles).padStart(3, '0')}M ${String(atParts.yards).padStart(4, '0')}Y`
-      : '-';
-    const platformCount = station.platforms?.length || 0;
     const stationIdVal = station._id ?? '';
+    const platformCount = station.platforms?.length || 0;
+
+    // Determine ELR and relative yards for display (use sections first, then altRouteYardageMap)
+    const loc = getElrAndRelativeYardsForMainYards(r, station.at);
+    const elrDisplay = loc.elr ?? '-';
+    let atFormatted = '-';
+    if (Number.isFinite(loc.relativeYards)) {
+      const parts = yardsToMilesParts(loc.relativeYards);
+      if (parts.miles !== '-' && parts.yards !== '-') {
+        atFormatted = `${String(parts.miles).padStart(3, '0')}M ${String(parts.yards).padStart(4, '0')}Y`;
+      }
+    } else {
+      // Fallback: show absolute yards converted to miles/yards
+      const parts = yardsToMilesParts(station.at);
+      if (parts.miles !== '-' && parts.yards !== '-') {
+        atFormatted = `${String(parts.miles).padStart(3, '0')}M ${String(parts.yards).padStart(4, '0')}Y`;
+      }
+    }
 
     return '<tr data-station-index="' + index + '" data-station-id="' + String(stationIdVal) + '" class="station-row">' +
+      `<td>${elrDisplay}</td>` +
       `<td>${station.name ?? ''}</td>` +
       `<td>${atFormatted}</td>` +
       `<td>${platformCount}</td>` +

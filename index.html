@@ -10,7 +10,7 @@
 <body>
   <div id="topBar">
     <div id="titleBar">Track Diagrams</div>
-    <div id="titleWarning">Not to be used for any safety-critical applications or official purposes</div>
+    <div id="titleWarning">Not to be used for any safety-critical processes or official purposes</div>
     <button id="hamburgerMenu" class="hamburger" aria-label="Toggle menu">
       <span></span>
       <span></span>
@@ -203,13 +203,15 @@
               <div class="tracks-table-header">
                 <table class="tracks-table">
                   <colgroup>
-                    <col style="width: 200px">
+                    <col style="width: 150px">
+                    <col style="width: 150px">
                     <col style="width: 150px">
                     <col style="width: 100px">
                     <col style="width: 80px">
                   </colgroup>
                   <thead>
                     <tr>
+                      <th>ELR</th>
                       <th>Name</th>
                       <th>At (Location)</th>
                       <th>Platforms</th>
@@ -221,13 +223,14 @@
               <div class="tracks-table-body" aria-label="Stations table rows">
                 <table class="tracks-table">
                   <colgroup>
-                    <col style="width: 200px">
+                    <col style="width: 150px">
+                    <col style="width: 150px">
                     <col style="width: 150px">
                     <col style="width: 100px">
                     <col style="width: 80px">
                   </colgroup>
                   <tbody id="stationsTableBody">
-                    <tr><td colspan="4" class="table-empty">No stations loaded.</td></tr>
+                    <tr><td colspan="5" class="table-empty">No stations loaded.</td></tr>
                   </tbody>
                 </table>
               </div>

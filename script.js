@@ -112,13 +112,12 @@ function getDiagramDomRefs() {
   };
 }
 
-function consumeUrlOverlayFromLocation(expectedRouteCode) {
+function consumeUrlOverlayFromLocation() {
   try {
     if (typeof window === 'undefined' || !window.location) return null;
 
     const url = new URL(window.location.href);
     const params = url.searchParams;
-    const qRouteCode = params.get('routeCode');
     const qElr = params.get('elr');
     const qTid = params.get('tid');
     const qMileFrom = params.get('mileFrom');
@@ -127,18 +126,15 @@ function consumeUrlOverlayFromLocation(expectedRouteCode) {
     const qYardTo = params.get('yardTo');
     const qText = params.get('text');
 
-    if (!(qRouteCode && qElr && qTid && qMileFrom !== null && qYardFrom !== null && qMileTo !== null && qYardTo !== null)) {
-      return null;
-    }
-
-    if (qRouteCode !== expectedRouteCode) {
+    // No longer require routeCode - we'll auto-discover the route from the ELR
+    if (!(qElr && qTid && qMileFrom !== null && qYardFrom !== null && qMileTo !== null && qYardTo !== null)) {
       return null;
     }
 
     // One-shot: remove overlay params from the URL once consumed, so future route reloads
     // (e.g. triggered by Save) don't keep forcing a recenter.
     if (window.history && typeof window.history.replaceState === 'function') {
-      const overlayKeys = ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'];
+      const overlayKeys = ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text', 'routeCode'];
       let changed = false;
       overlayKeys.forEach(key => {
         if (params.has(key)) {
@@ -154,7 +150,6 @@ function consumeUrlOverlayFromLocation(expectedRouteCode) {
 
     return {
       group: 'URL Overlay',
-      routeCode: qRouteCode,
       elr: qElr,
       tid: parseInt(qTid),
       mileFrom: parseFloat(qMileFrom),
@@ -1529,7 +1524,7 @@ function drawOverlaysLayer({
 
       matchingTracks.forEach(track => {
         const offset = config.horizontalGridSpacing * 0.25;
-        const paths = buildOverlayPathsForTrack(track, overlay.tid, minOverlay, maxOverlay);
+        const paths = buildOverlayPathsForTrack(track, overlay.tid, minOverlay, maxOverlay, overlay.elr);
 
         paths.forEach(path => {
           if (path.length < 2) return;
@@ -1666,7 +1661,7 @@ function initializeApp() {
   // Keep the previous center when reloading the route to avoid "snap back".
   let initialTargetYards = computeInitialTargetYards(viewportState, config);
 
-  const urlOverlay = consumeUrlOverlayFromLocation(route.code);
+  const urlOverlay = consumeUrlOverlayFromLocation();
 
   // URL overlays: if present in the URL, add to overlay data and center the initial view.
   // Parsing/clearing is done in consumeUrlOverlayFromLocation() so it acts one-shot.
@@ -2413,7 +2408,7 @@ function initializeApp() {
     };
   }
 
-  function buildOverlayPathsForTrack(track, tid, minOverlay, maxOverlay) {
+  function buildOverlayPathsForTrack(track, tid, minOverlay, maxOverlay, overlayElr) {
     const paths = [];
     let currentPath = [];
 
@@ -2426,9 +2421,9 @@ function initializeApp() {
       const clipFrom = clipped.from;
       const clipTo = clipped.to;
 
-      // Preserve existing behavior: overlay path lookup uses tid only (no ELR).
-      const yFromGrid = getYAtJunction(tid, clipFrom);
-      const yToGrid = getYAtJunction(tid, clipTo);
+      // Use overlay ELR when resolving junctions so alt-route tracks are supported
+      const yFromGrid = getYAtJunction(tid, clipFrom, overlayElr);
+      const yToGrid = getYAtJunction(tid, clipTo, overlayElr);
       if (yFromGrid === null || yToGrid === null) return;
 
       const p1 = { x: getX(clipFrom), y: getY(yFromGrid, true) };
