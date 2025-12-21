@@ -1770,22 +1770,70 @@ function initializeApp() {
     const normElr = normalizeElr(elrCode);
     if (!normElr) return { value: null, error: 'ELR is required' };
 
-    const section = sectionsByElr.get(normElr);
-    if (!section) {
-        const availableElrs = route.sections.map(s => s.elr).join(', ');
-        return { value: null, error: `ELR ${normElr} not found in sections. Available: ${availableElrs}` };
-    }
-
     // Ensure inputs are numbers
     const m = typeof miles === 'string' ? parseFloat(miles) : miles;
     const y = typeof yards === 'string' ? parseFloat(yards) : yards;
-
     const milesVal = Number.isFinite(m) ? m : 0;
     const yardsVal = Number.isFinite(y) ? y : 0;
-    const relativeYards = (milesVal * YARDS_PER_MILE) + yardsVal;
-    const absoluteYards = relativeYards + (section.offset || 0);
+    const altYardage = (milesVal * YARDS_PER_MILE) + yardsVal;
 
-    return { value: absoluteYards, section, relativeYards };
+    const section = sectionsByElr.get(normElr);
+    if (section) {
+      // ELR found in main route sections
+      const absoluteYards = altYardage + (section.offset || 0);
+      return { value: absoluteYards, section, relativeYards: altYardage };
+    }
+
+    // ELR not in main route sections, try alt route yardage mapping
+    if (route.altRouteYardageMap && Array.isArray(route.altRouteYardageMap)) {
+      // Find segment(s) for this ELR
+      const segments = route.altRouteYardageMap.filter(seg => normalizeElr(seg.elr) === normElr);
+      if (segments.length > 0) {
+        // Try to map the alt yardage to main route yardage
+        for (const seg of segments) {
+          const segFromAlt = Number(seg.fromYardageAltRoute);
+          const segToAlt = Number(seg.toYardageAltRoute);
+          if (Number.isFinite(segFromAlt) && Number.isFinite(segToAlt) &&
+              altYardage >= Math.min(segFromAlt, segToAlt) && 
+              altYardage <= Math.max(segFromAlt, segToAlt)) {
+            // Within segment range, interpolate using linear formula
+            const mainFrom = Number(seg.fromYardageMainRoute);
+            const mainTo = Number(seg.toYardageMainRoute);
+            if (Number.isFinite(mainFrom) && Number.isFinite(mainTo)) {
+              // Standard linear interpolation: works with forward and reverse directions
+              const fraction = (altYardage - segFromAlt) / (segToAlt - segFromAlt);
+              const mainYards = mainFrom + fraction * (mainTo - mainFrom);
+              return { value: mainYards, relativeYards: altYardage, fromAltRoute: true };
+            }
+          }
+        }
+        // Not within any segment range, try nearest segment for extrapolation
+        let bestSeg = segments[0];
+        let bestDist = Math.abs(altYardage - Number(bestSeg.fromYardageAltRoute));
+        for (let i = 1; i < segments.length; i++) {
+          const segFromAlt = Number(segments[i].fromYardageAltRoute);
+          const dist = Math.abs(altYardage - segFromAlt);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestSeg = segments[i];
+          }
+        }
+        const segFromAlt = Number(bestSeg.fromYardageAltRoute);
+        const segToAlt = Number(bestSeg.toYardageAltRoute);
+        const mainFrom = Number(bestSeg.fromYardageMainRoute);
+        const mainTo = Number(bestSeg.toYardageMainRoute);
+        if (Number.isFinite(segFromAlt) && Number.isFinite(segToAlt) &&
+            Number.isFinite(mainFrom) && Number.isFinite(mainTo) &&
+            Math.abs(segToAlt - segFromAlt) > 0) {
+          const fraction = (altYardage - segFromAlt) / (segToAlt - segFromAlt);
+          const mainYards = mainFrom + fraction * (mainTo - mainFrom);
+          return { value: mainYards, relativeYards: altYardage, fromAltRoute: true };
+        }
+      }
+    }
+
+    const availableElrs = route.sections.map(s => s.elr).join(', ');
+    return { value: null, error: `ELR ${normElr} not found in sections. Available: ${availableElrs}` };
   }
 
   function applyLayoutSizing(recenter = false) {

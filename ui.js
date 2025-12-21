@@ -1194,31 +1194,48 @@ function normalizeElrForCompare(value) {
   return String(value || '').trim().toUpperCase();
 }
 
-function findAltRouteYardageSegment(route, elr, altYards) {
+// Helper: validate and extract segment fields
+function validateAndExtractSegment(seg) {
+  const fromAlt = Number(seg?.fromYardageAltRoute);
+  const toAlt = Number(seg?.toYardageAltRoute);
+  const fromMain = Number(seg?.fromYardageMainRoute);
+  const toMain = Number(seg?.toYardageMainRoute);
+  
+  if (![fromAlt, toAlt, fromMain, toMain].every(Number.isFinite)) return null;
+  return { fromAlt, toAlt, fromMain, toMain };
+}
+
+// Helper: linear interpolation
+function linearInterpolate(value, fromInput, toInput, fromOutput, toOutput) {
+  if (!Number.isFinite(value)) return null;
+  const denom = toInput - fromInput;
+  if (denom === 0) return null;
+  const t = (value - fromInput) / denom;
+  return fromOutput + t * (toOutput - fromOutput);
+}
+
+// Helper: generic segment finder with extrapolation support
+function findAltRouteYardageSegmentGeneric(route, elr, value, getRangeFn) {
   const elrNorm = normalizeElrForCompare(elr);
   const list = Array.isArray(route?.altRouteYardageMap) ? route.altRouteYardageMap : [];
-
+  
   let nearestSeg = null;
   let nearestDist = Infinity;
 
   for (const seg of list) {
     if (normalizeElrForCompare(seg?.elr) !== elrNorm) continue;
-    const fromAlt = Number(seg?.fromYardageAltRoute);
-    const toAlt = Number(seg?.toYardageAltRoute);
-    const fromMain = Number(seg?.fromYardageMainRoute);
-    const toMain = Number(seg?.toYardageMainRoute);
-
-    if (![fromAlt, toAlt, fromMain, toMain].every(Number.isFinite)) continue;
-
-    const minAlt = Math.min(fromAlt, toAlt);
-    const maxAlt = Math.max(fromAlt, toAlt);
-    if (altYards >= minAlt && altYards <= maxAlt) return seg;
-
+    
+    const extracted = validateAndExtractSegment(seg);
+    if (!extracted) continue;
+    
+    const range = getRangeFn(extracted);
+    const { min, max } = range;
+    
+    if (value >= min && value <= max) return seg;
+    
     // Extrapolation support: if outside all segments, use the nearest segment endpoint.
-    if (Number.isFinite(altYards)) {
-      const dist = altYards < minAlt
-        ? (minAlt - altYards)
-        : (altYards > maxAlt ? (altYards - maxAlt) : 0);
+    if (Number.isFinite(value)) {
+      const dist = value < min ? (min - value) : (value > max ? (value - max) : 0);
       if (dist < nearestDist) {
         nearestDist = dist;
         nearestSeg = seg;
@@ -1228,68 +1245,34 @@ function findAltRouteYardageSegment(route, elr, altYards) {
   return nearestSeg;
 }
 
-function mapAltYardsToMainYards(seg, altYards) {
-  const fromAlt = Number(seg?.fromYardageAltRoute);
-  const toAlt = Number(seg?.toYardageAltRoute);
-  const fromMain = Number(seg?.fromYardageMainRoute);
-  const toMain = Number(seg?.toYardageMainRoute);
-
-  if (![fromAlt, toAlt, fromMain, toMain, altYards].every(Number.isFinite)) return null;
-  const denom = (toAlt - fromAlt);
-  if (denom === 0) return null;
-
-  // Works for both same-direction and reverse-direction mappings.
-  const t = (altYards - fromAlt) / denom;
-  return fromMain + t * (toMain - fromMain);
+function findAltRouteYardageSegment(route, elr, altYards) {
+  return findAltRouteYardageSegmentGeneric(route, elr, altYards, 
+    ({ fromAlt, toAlt }) => ({ min: Math.min(fromAlt, toAlt), max: Math.max(fromAlt, toAlt) })
+  );
 }
 
 function findAltRouteYardageSegmentForMain(route, elr, mainYards) {
-  const elrNorm = normalizeElrForCompare(elr);
-  const list = Array.isArray(route?.altRouteYardageMap) ? route.altRouteYardageMap : [];
+  return findAltRouteYardageSegmentGeneric(route, elr, mainYards, 
+    ({ fromMain, toMain }) => ({ min: Math.min(fromMain, toMain), max: Math.max(fromMain, toMain) })
+  );
+}
 
-  let nearestSeg = null;
-  let nearestDist = Infinity;
-
-  for (const seg of list) {
-    if (normalizeElrForCompare(seg?.elr) !== elrNorm) continue;
-    const fromAlt = Number(seg?.fromYardageAltRoute);
-    const toAlt = Number(seg?.toYardageAltRoute);
-    const fromMain = Number(seg?.fromYardageMainRoute);
-    const toMain = Number(seg?.toYardageMainRoute);
-
-    if (![fromAlt, toAlt, fromMain, toMain].every(Number.isFinite)) continue;
-
-    const minMain = Math.min(fromMain, toMain);
-    const maxMain = Math.max(fromMain, toMain);
-    if (mainYards >= minMain && mainYards <= maxMain) return seg;
-
-    // Extrapolation support: if outside all segments, use the nearest segment endpoint.
-    if (Number.isFinite(mainYards)) {
-      const dist = mainYards < minMain
-        ? (minMain - mainYards)
-        : (mainYards > maxMain ? (mainYards - maxMain) : 0);
-      if (dist < nearestDist) {
-        nearestDist = dist;
-        nearestSeg = seg;
-      }
-    }
-  }
-  return nearestSeg;
+function mapAltYardsToMainYards(seg, altYards) {
+  const extracted = validateAndExtractSegment(seg);
+  if (!extracted) return null;
+  const { fromAlt, toAlt, fromMain, toMain } = extracted;
+  
+  // Works for both same-direction and reverse-direction mappings.
+  return linearInterpolate(altYards, fromAlt, toAlt, fromMain, toMain);
 }
 
 function mapMainYardsToAltYards(seg, mainYards) {
-  const fromAlt = Number(seg?.fromYardageAltRoute);
-  const toAlt = Number(seg?.toYardageAltRoute);
-  const fromMain = Number(seg?.fromYardageMainRoute);
-  const toMain = Number(seg?.toYardageMainRoute);
-
-  if (![fromAlt, toAlt, fromMain, toMain, mainYards].every(Number.isFinite)) return null;
-  const denom = (toMain - fromMain);
-  if (denom === 0) return null;
-
+  const extracted = validateAndExtractSegment(seg);
+  if (!extracted) return null;
+  const { fromAlt, toAlt, fromMain, toMain } = extracted;
+  
   // Works for both same-direction and reverse-direction mappings.
-  const t = (mainYards - fromMain) / denom;
-  return fromAlt + t * (toAlt - fromAlt);
+  return linearInterpolate(mainYards, fromMain, toMain, fromAlt, toAlt);
 }
 
 function setCalcMilesYardsFromAbsoluteYards(absYards) {
@@ -1678,40 +1661,114 @@ function renderStructuresTable(filterText = '') {
   });
 
   if (filtered.length === 0) {
-    structuresTableBody.innerHTML = '<tr><td colspan="5" class="table-empty">No structures found.</td></tr>';
+    structuresTableBody.innerHTML = '<tr><td colspan="6" class="table-empty">No structures found.</td></tr>';
     return;
   }
 
-  structuresTableBody.innerHTML = filtered.map((s, idx) => {
-    const isSelected = selectedStructure === s; // Object reference equality
+  // Sort by minimum from yardage
+  const sortedStructures = [...filtered].sort((a, b) => {
+    const minFromA = Math.min(...(a.trackLocation || []).map(t => t.from || Infinity));
+    const minFromB = Math.min(...(b.trackLocation || []).map(t => t.from || Infinity));
+    return minFromA - minFromB;
+  });
+
+  structuresTableBody.innerHTML = sortedStructures.map((s, idx) => {
+    const isSelected = selectedStructure === s;
     const trackCount = s.trackLocation ? s.trackLocation.length : 0;
+    
+    // Compute min from and max to across all trackLocation entries
+    let minFrom = Infinity;
+    let maxTo = -Infinity;
+    if (s.trackLocation && s.trackLocation.length > 0) {
+      s.trackLocation.forEach(t => {
+        const from = Number(t.from);
+        const to = Number(t.to);
+        if (Number.isFinite(from) && from < minFrom) minFrom = from;
+        if (Number.isFinite(to) && to > maxTo) maxTo = to;
+      });
+    }
+    
+    let fromFormatted = '-';
+    let toFormatted = '-';
+    
+    if (Number.isFinite(minFrom) && minFrom !== Infinity && route?.sections?.length) {
+      const fromSection = route.sections.find(sec => minFrom >= sec.from && minFrom < sec.to);
+      if (fromSection) {
+        const relativeYards = minFrom - (fromSection.offset || 0);
+        const fromParts = yardsToMilesParts(relativeYards);
+        if (fromParts.miles !== '-' && fromParts.yards !== '-') {
+          fromFormatted = `${String(fromParts.miles).padStart(3, '0')}M ${String(fromParts.yards).padStart(4, '0')}Y`;
+        }
+      }
+    }
+    
+    if (Number.isFinite(maxTo) && maxTo !== -Infinity && route?.sections?.length) {
+      const toSection = route.sections.find(sec => maxTo >= sec.from && maxTo < sec.to);
+      if (toSection) {
+        const relativeYards = maxTo - (toSection.offset || 0);
+        const toParts = yardsToMilesParts(relativeYards);
+        if (toParts.miles !== '-' && toParts.yards !== '-') {
+          toFormatted = `${String(toParts.miles).padStart(3, '0')}M ${String(toParts.yards).padStart(4, '0')}Y`;
+        }
+      }
+    }
+    
     return `<tr class="${isSelected ? 'selected' : ''}" data-idx="${idx}">
       <td>${s.name || '-'}</td>
       <td>${s.type || '-'}</td>
       <td>${s.structureNo || '-'}</td>
-      <td>${trackCount} tracks</td>
-      <td><button class="btn-delete-row" data-idx="${idx}">Delete</button></td>
+      <td>${fromFormatted}</td>
+      <td>${toFormatted}</td>
+      <td><button type="button" class="btn-shape-action btn-shape-delete btn-structure-delete" data-structure-id="${String(s._id || '')}" title="Delete this structure">Delete</button></td>
     </tr>`;
   }).join('');
 
-  // Row selection
+  // Row selection and double-click centering
   structuresTableBody.querySelectorAll('tr').forEach((row, i) => {
     row.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON') return; // Ignore delete button clicks
+      if (e.target && e.target.classList && e.target.classList.contains('btn-structure-delete')) {
+        return;
+      }
       const idx = parseInt(row.dataset.idx);
-      selectedStructure = filtered[idx];
+      selectedStructure = sortedStructures[idx];
       selectedStructureId = selectedStructure._id;
-      renderStructuresTable(filterText); // Re-render to update selection highlight
+      renderStructuresTable(filterText);
       updateStructureActionButtons();
+    });
+    
+    // Double-click to center
+    row.addEventListener('dblclick', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('btn-structure-delete')) {
+        return;
+      }
+      const idx = parseInt(row.dataset.idx);
+      const structure = sortedStructures[idx];
+      
+      if (structure && structure.trackLocation && structure.trackLocation.length > 0) {
+        let minFrom = Infinity;
+        let maxTo = -Infinity;
+        structure.trackLocation.forEach(t => {
+          const from = Number(t.from);
+          const to = Number(t.to);
+          if (Number.isFinite(from) && from < minFrom) minFrom = from;
+          if (Number.isFinite(to) && to > maxTo) maxTo = to;
+        });
+        
+        if (Number.isFinite(minFrom) && Number.isFinite(maxTo) && minFrom !== Infinity && maxTo !== -Infinity) {
+          const centerYards = (minFrom + maxTo) / 2;
+          window.TrackDiagramApp?.centerOnYards?.(centerYards, true);
+        }
+      }
     });
   });
 
   // Delete button
-  structuresTableBody.querySelectorAll('.btn-delete-row').forEach(btn => {
+  structuresTableBody.querySelectorAll('.btn-structure-delete').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const idx = parseInt(btn.dataset.idx);
-      const s = filtered[idx];
+      const structureId = btn.dataset.structureId;
+      const idx = parseInt(btn.closest('tr').dataset.idx);
+      const s = sortedStructures[idx];
       if (window.confirm(`Are you sure you want to delete structure "${s.name}"?`)) {
         // TODO: Implement delete API
         // For now, just remove from array and save? No, should use API.

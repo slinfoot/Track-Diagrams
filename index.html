@@ -114,7 +114,7 @@
           <button class="sidebar-button edit-tab-button" type="button" data-tab="sections">Sections</button>
           <button class="sidebar-button edit-tab-button" type="button" data-tab="stations">Stations</button>
           <button class="sidebar-button edit-tab-button" type="button" data-tab="structures">Structures</button>
-          <button class="sidebar-button edit-tab-button" type="button" data-tab="altyardage">Alt Yardage</button>
+          <button class="sidebar-button edit-tab-button" type="button" data-tab="altyardage">Alt ELR Mapping</button>
         </div>
       </div>
       <div class="edit-body">
@@ -248,10 +248,11 @@
               <div class="tracks-table-header">
                 <table class="tracks-table">
                   <colgroup>
-                    <col style="width: 200px">
-                    <col style="width: 100px">
-                    <col style="width: 100px">
+                    <col style="width: 150px">
                     <col style="width: 80px">
+                    <col style="width: 80px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
                     <col style="width: 80px">
                   </colgroup>
                   <thead>
@@ -259,7 +260,8 @@
                       <th>Name</th>
                       <th>Type</th>
                       <th>No.</th>
-                      <th>Tracks</th>
+                      <th>From</th>
+                      <th>To</th>
                       <th>Delete</th>
                     </tr>
                   </thead>
@@ -268,14 +270,15 @@
               <div class="tracks-table-body" aria-label="Structures table rows">
                 <table class="tracks-table">
                   <colgroup>
-                    <col style="width: 200px">
-                    <col style="width: 100px">
-                    <col style="width: 100px">
+                    <col style="width: 150px">
                     <col style="width: 80px">
+                    <col style="width: 80px">
+                    <col style="width: 140px">
+                    <col style="width: 140px">
                     <col style="width: 80px">
                   </colgroup>
                   <tbody id="structuresTableBody">
-                    <tr><td colspan="5" class="table-empty">No structures loaded.</td></tr>
+                    <tr><td colspan="6" class="table-empty">No structures loaded.</td></tr>
                   </tbody>
                 </table>
               </div>
