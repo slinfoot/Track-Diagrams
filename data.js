@@ -2647,8 +2647,8 @@ const routes = [
                 ]
             },
             {
-                "tid": 1200,
                 "altRoute": null,
+                "tid": 1200,
                 "fromConnection": {
                     "type": "junction",
                     "at": 334252,
@@ -2752,8 +2752,8 @@ const routes = [
                 ]
             },
             {
-                "tid": 1200,
                 "altRoute": null,
+                "tid": 1200,
                 "fromConnection": {
                     "type": "junction",
                     "at": 337548,
@@ -4027,7 +4027,7 @@ const routes = [
                 "tid": 3100,
                 "altRoute": {
                     "elr": "HAY1",
-                    "showAltRuler": false
+                    "showAltRuler": true
                 },
                 "fromConnection": {
                     "type": "junction",
@@ -4035,134 +4035,29 @@ const routes = [
                     "track": 2200,
                     "sc_name": "842"
                 },
-                "toConnection": null,
                 "shape": [
                     {
                         "from": 334652,
-                        "to": 334752,
+                        "to": 334696,
                         "yFrom": null,
-                        "yTo": 45,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 334696,
+                        "to": 334832,
+                        "yFrom": 46,
+                        "yTo": 46,
                         "electrification": "none"
                     }
-                ]
-            },
-            {
-                "fromConnection": null,
-                "tid": 2200,
-                "altRoute": {
-                    "elr": "HOS",
-                    "showAltRuler": false
-                },
+                ],
                 "toConnection": {
                     "type": "junction",
-                    "at": 334611,
-                    "track": 2200,
-                    "sc_name": "834B"
-                },
-                "shape": [
-                    {
-                        "from": 333542,
-                        "to": 334356,
-                        "yFrom": 45,
-                        "yTo": 45,
-                        "electrification": "overhead"
-                    },
-                    {
-                        "from": 334356,
-                        "to": 334411,
-                        "yFrom": 45,
-                        "yTo": 47,
-                        "electrification": "overhead"
-                    },
-                    {
-                        "from": 334411,
-                        "to": 334611,
-                        "yFrom": 47,
-                        "yTo": null,
-                        "electrification": "overhead"
-                    }
-                ]
-            },
-            {
-                "fromConnection": null,
-                "tid": 2901,
-                "altRoute": {
-                    "elr": "HOS",
-                    "showAltRuler": false
-                },
-                "toConnection": {
-                    "type": "junction",
-                    "at": 334647,
-                    "track": 2200,
-                    "sc_name": "841B"
-                },
-                "shape": [
-                    {
-                        "from": 333542,
-                        "to": 334378,
-                        "yFrom": 44,
-                        "yTo": 44,
-                        "electrification": "overhead"
-                    },
-                    {
-                        "from": 334378,
-                        "to": 334422,
-                        "yFrom": 44,
-                        "yTo": 46,
-                        "electrification": "overhead"
-                    },
-                    {
-                        "from": 334422,
-                        "to": 334600,
-                        "yFrom": 46,
-                        "yTo": 46,
-                        "electrification": "overhead"
-                    },
-                    {
-                        "from": 334600,
-                        "to": 334647,
-                        "yFrom": 46,
-                        "yTo": null,
-                        "electrification": "overhead"
-                    }
-                ]
-            },
-            {
-                "fromConnection": null,
-                "tid": 1200,
-                "altRoute": {
-                    "elr": "HOS",
-                    "showAltRuler": false
-                },
-                "toConnection": {
-                    "type": "junction",
-                    "at": 334470,
-                    "track": 1200,
-                    "sc_name": "832B"
-                },
-                "shape": [
-                    {
-                        "from": 333542,
-                        "to": 334300,
-                        "yFrom": 46,
-                        "yTo": 46,
-                        "electrification": "overhead"
-                    },
-                    {
-                        "from": 334300,
-                        "to": 334446,
-                        "yFrom": 46,
-                        "yTo": 48,
-                        "electrification": "overhead"
-                    },
-                    {
-                        "from": 334446,
-                        "to": 334470,
-                        "yFrom": 48,
-                        "yTo": null,
-                        "electrification": "overhead"
-                    }
-                ]
+                    "at": 334832,
+                    "track": 1100,
+                    "sc_name": "845",
+                    "elr": "HAY1"
+                }
             },
             {
                 "altRoute": null,
@@ -6429,6 +6324,328 @@ const routes = [
                         "electrification": "overhead"
                     }
                 ]
+            },
+            {
+                "tid": 3800,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": false
+                },
+                "toConnection": {
+                    "type": "buffer_stop"
+                },
+                "shape": [
+                    {
+                        "from": 333682,
+                        "to": 333726,
+                        "yFrom": null,
+                        "yTo": 48,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 333726,
+                        "to": 334205,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "none"
+                    }
+                ],
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 333682,
+                    "track": 1802,
+                    "elr": "HOS"
+                }
+            },
+            {
+                "fromConnection": null,
+                "tid": 1802,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": true
+                },
+                "shape": [
+                    {
+                        "from": 333542,
+                        "to": 334302,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 334302,
+                    "track": 1801,
+                    "sc_name": "798",
+                    "elr": "HOS"
+                }
+            },
+            {
+                "tid": 1801,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": true
+                },
+                "shape": [
+                    {
+                        "from": 333646,
+                        "to": 333690,
+                        "yFrom": null,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 333690,
+                        "to": 334258,
+                        "yFrom": 46,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 334258,
+                        "to": 334302,
+                        "yFrom": 46,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 334302,
+                        "to": 334407,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 334407,
+                    "track": 1200,
+                    "sc_name": "833B",
+                    "elr": "HOS"
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 333646,
+                    "track": 1802,
+                    "sc_name": "57",
+                    "elr": "HOS"
+                }
+            },
+            {
+                "fromConnection": null,
+                "tid": 1200,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": true
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 334470,
+                    "track": 1200,
+                    "sc_name": "832B",
+                    "elr": "ECM1"
+                },
+                "shape": [
+                    {
+                        "from": 333542,
+                        "to": 334312,
+                        "yFrom": 45,
+                        "yTo": 45,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 334312,
+                        "to": 334407,
+                        "yFrom": 45,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 334407,
+                        "to": 334470,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "fromConnection": null,
+                "tid": 2200,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": false
+                },
+                "shape": [
+                    {
+                        "from": 333542,
+                        "to": 334334,
+                        "yFrom": 44,
+                        "yTo": 44,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 334334,
+                        "to": 334611,
+                        "yFrom": 44,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 334611,
+                    "track": 2200,
+                    "sc_name": "834B",
+                    "elr": "ECM5"
+                }
+            },
+            {
+                "fromConnection": null,
+                "tid": 2901,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": false
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 334647,
+                    "track": 2200,
+                    "sc_name": "841B",
+                    "elr": "ECM5"
+                },
+                "shape": [
+                    {
+                        "from": 333542,
+                        "to": 334356,
+                        "yFrom": 43,
+                        "yTo": 43,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 334356,
+                        "to": 334647,
+                        "yFrom": 43,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1100,
+                "altRoute": {
+                    "elr": "HAY1",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 334832,
+                    "track": 3100,
+                    "sc_name": "845",
+                    "elr": "HAY1"
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 334832,
+                        "to": 334928,
+                        "yFrom": 46,
+                        "yTo": 46,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "toConnection": null,
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "HAY1",
+                    "showAltRuler": true
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 334832,
+                    "track": 3100,
+                    "sc_name": "845",
+                    "elr": "HAY1"
+                },
+                "shape": [
+                    {
+                        "from": 334832,
+                        "to": 334876,
+                        "yFrom": 46,
+                        "yTo": 45,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 334876,
+                        "to": 334928,
+                        "yFrom": 45,
+                        "yTo": 45,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 333603,
+                    "track": 1200,
+                    "sc_name": "796A",
+                    "elr": "HOS"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 333659,
+                    "track": 2200,
+                    "sc_name": "796B",
+                    "elr": "HOS"
+                },
+                "shape": [
+                    {
+                        "from": 333603,
+                        "to": 333659,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2700,
+                "altRoute": {
+                    "elr": "HOS",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 333670,
+                    "track": 2200,
+                    "sc_name": "797A",
+                    "elr": "HOS"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 333723,
+                    "track": 2901,
+                    "sc_name": "797B",
+                    "elr": "HOS"
+                },
+                "shape": [
+                    {
+                        "from": 333670,
+                        "to": 333723,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
             }
         ],
         "stations": [
@@ -7537,13 +7754,47 @@ const routes = [
                 "name": "Morpeth",
                 "at": 502190,
                 "sideDiagramVisible": true,
-                "platforms": []
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 502091,
+                        "to": 502333,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 502091,
+                        "to": 502333,
+                        "position": "above",
+                        "elr": ""
+                    }
+                ]
             },
             {
                 "name": "Alnmouth",
                 "at": 534288,
                 "sideDiagramVisible": true,
-                "platforms": []
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 534266,
+                        "to": 534398,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 534266,
+                        "to": 534398,
+                        "position": "above",
+                        "elr": ""
+                    }
+                ]
             },
             {
                 "name": "Berwick upon Tweed",
@@ -7555,7 +7806,139 @@ const routes = [
                 "name": "Chathill",
                 "at": 553912,
                 "sideDiagramVisible": true,
-                "platforms": []
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 553890,
+                        "to": 554022,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 553890,
+                        "to": 554022,
+                        "position": "above",
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Acklington",
+                "at": 523156,
+                "sideDiagramVisible": false,
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 523090,
+                        "to": 523222,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 523090,
+                        "to": 523222,
+                        "position": "above",
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Widdrington",
+                "at": 513828,
+                "sideDiagramVisible": false,
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 513762,
+                        "to": 513894,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 513762,
+                        "to": 513894,
+                        "position": "above",
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Pegswood",
+                "at": 505578,
+                "sideDiagramVisible": false,
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 505545,
+                        "to": 505644,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 505545,
+                        "to": 505644,
+                        "position": "above",
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Cramlington",
+                "at": 490398,
+                "sideDiagramVisible": false,
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 490321,
+                        "to": 490442,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 490321,
+                        "to": 490442,
+                        "position": "above",
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Manors",
+                "at": 473942,
+                "sideDiagramVisible": false,
+                "platforms": [
+                    {
+                        "track": 1100,
+                        "platformNo": 1,
+                        "from": 473821,
+                        "to": 474030,
+                        "position": "above",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2100,
+                        "platformNo": 2,
+                        "from": 473821,
+                        "to": 474030,
+                        "position": "below",
+                        "elr": ""
+                    }
+                ]
             }
         ],
         "structures": [
@@ -8936,6 +9319,63 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "Chathill LC",
+                "type": "level_crossing",
+                "structureNo": "",
+                "trackLocation": [
+                    {
+                        "from": 553846,
+                        "to": 553856,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 553846,
+                        "to": 553856,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Underbridge",
+                "type": "underbridge",
+                "structureNo": "ECM5-13",
+                "trackLocation": [
+                    {
+                        "from": 337590,
+                        "to": 337600,
+                        "tid": 2200,
+                        "elr": ""
+                    },
+                    {
+                        "from": 337592,
+                        "to": 337600,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Stripe Lane, Skelton (Folly Bridge)",
+                "type": "underbridge",
+                "structureNo": "ECM5-14",
+                "trackLocation": [
+                    {
+                        "from": 338042,
+                        "to": 338052,
+                        "tid": 2200,
+                        "elr": ""
+                    },
+                    {
+                        "from": 338042,
+                        "to": 338052,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
             }
         ],
         "altRouteYardageMap": [
@@ -8962,6 +9402,22 @@ const routes = [
                 "toYardageMainRoute": 134663,
                 "toYardageAltRoute": 177831,
                 "_id": "6947ff1f310b22e497624212"
+            },
+            {
+                "elr": "HOS",
+                "fromYardageMainRoute": 333646,
+                "fromYardageAltRoute": 1856,
+                "toYardageMainRoute": 334470,
+                "toYardageAltRoute": 2731,
+                "_id": "6948f65957b7882b0dedbaef"
+            },
+            {
+                "elr": "HAY1",
+                "fromYardageMainRoute": 334652,
+                "fromYardageAltRoute": 2875,
+                "toYardageMainRoute": 334832,
+                "toYardageAltRoute": 3047,
+                "_id": "6949005e57b7882b0deed0da"
             }
         ]
     }

@@ -614,49 +614,79 @@ function drawRulerLayer({
         byElr.set(item.elrNorm, bucket);
       }
 
-      const elrsInOrder = Array.from(byElr.keys()).sort((a, b) => a.localeCompare(b));
-      for (let laneIndex = 0; laneIndex < elrsInOrder.length; laneIndex++) {
-        const elrNorm = elrsInOrder[laneIndex];
-        const extents = byElr.get(elrNorm) || [];
-
-        const baselineY = ALT_RULER_FIRST_BASELINE_Y + (laneIndex * ALT_RULER_LANE_SPACING_PX);
-        const elrLabelY = baselineY - 18;
-        const tickLabelY = baselineY + ALT_RULER_TICK_HEIGHT_PX + 4;
-
+      // Build spans array: each merged extent for an ELR becomes a span
+      const spans = [];
+      for (const [elrNorm, extents] of byElr.entries()) {
         // Only draw if we actually have a mapping for this alt ELR.
         const segments = getAltMapSegmentsForElr(elrNorm);
         if (!segments.length) continue;
 
         const merged = mergeRanges(extents);
         for (const r of merged) {
-          const clippedFrom = Math.max(r.from, visibleLeftLimitYards);
-          const clippedTo = Math.min(r.to, visibleRightLimitYards);
-          if (clippedFrom > clippedTo) continue;
+          spans.push({ elrNorm, from: r.from, to: r.to });
+        }
+      }
 
-          const x1 = getX(clippedFrom);
-          const x2 = getX(clippedTo);
-          drawLine(x1, baselineY, x2, baselineY, ALT_RULER_LINE_WIDTH_PX, ALT_RULER_COLOR);
+      if (!spans.length) return;
 
-          // ELR label centered over the alt ruler span.
-          const midX = getX((clippedFrom + clippedTo) / 2);
-          ctx.font = '14px Arial';
+      // Sort spans by start (shorter-first might help packing, but start order is fine)
+      spans.sort((a, b) => a.from - b.from || (a.to - a.from) - (b.to - b.from));
+
+      // Allocate lanes so that spans that don't overlap can share the top lane.
+      const lanes = [];
+      for (const s of spans) {
+        let placed = false;
+        for (let i = 0; i < lanes.length; i++) {
+          const lane = lanes[i];
+          // Check overlap against all spans already in this lane
+          const overlaps = lane.some(existing => (s.from < existing.to) && (s.to > existing.from));
+          if (!overlaps) {
+            lane.push(s);
+            s.laneIndex = i;
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) {
+          s.laneIndex = lanes.length;
+          lanes.push([s]);
+        }
+      }
+
+      // Draw each span at its assigned lane
+      for (const s of spans) {
+        const laneIndex = s.laneIndex || 0;
+        const baselineY = ALT_RULER_FIRST_BASELINE_Y + (laneIndex * ALT_RULER_LANE_SPACING_PX);
+        const elrLabelY = baselineY - 18;
+        const tickLabelY = baselineY + ALT_RULER_TICK_HEIGHT_PX + 4;
+
+        const clippedFrom = Math.max(s.from, visibleLeftLimitYards);
+        const clippedTo = Math.min(s.to, visibleRightLimitYards);
+        if (clippedFrom > clippedTo) continue;
+
+        const x1 = getX(clippedFrom);
+        const x2 = getX(clippedTo);
+        drawLine(x1, baselineY, x2, baselineY, ALT_RULER_LINE_WIDTH_PX, ALT_RULER_COLOR);
+
+        // ELR label centered over the alt ruler span.
+        const midX = getX((clippedFrom + clippedTo) / 2);
+        ctx.font = '14px Arial';
+        ctx.fillStyle = ALT_RULER_LABEL_COLOR;
+        ctx.textBaseline = 'top';
+        ctx.fillText(s.elrNorm, midX - 10, elrLabelY);
+
+        const ticks = collectQuarterMileTicks(s.elrNorm, s.from, s.to);
+        for (const tick of ticks) {
+          const mainTick = tick.mainYards;
+          if (mainTick < clippedFrom || mainTick > clippedTo) continue;
+          const x = getX(mainTick);
+          drawLine(x, baselineY, x, baselineY + ALT_RULER_TICK_HEIGHT_PX, 1, ALT_RULER_COLOR);
+
+          // Label tick with alt-route miles/yards.
+          ctx.font = '12px Arial';
           ctx.fillStyle = ALT_RULER_LABEL_COLOR;
           ctx.textBaseline = 'top';
-          ctx.fillText(elrNorm, midX - 10, elrLabelY);
-
-          const ticks = collectQuarterMileTicks(elrNorm, r.from, r.to);
-          for (const tick of ticks) {
-            const mainTick = tick.mainYards;
-            if (mainTick < clippedFrom || mainTick > clippedTo) continue;
-            const x = getX(mainTick);
-            drawLine(x, baselineY, x, baselineY + ALT_RULER_TICK_HEIGHT_PX, 1, ALT_RULER_COLOR);
-
-            // Label tick with alt-route miles/yards.
-            ctx.font = '12px Arial';
-            ctx.fillStyle = ALT_RULER_LABEL_COLOR;
-            ctx.textBaseline = 'top';
-            ctx.fillText(yardsToMiles_text(tick.altYards), x + 2, tickLabelY);
-          }
+          ctx.fillText(yardsToMiles_text(tick.altYards), x + 2, tickLabelY);
         }
       }
     }
