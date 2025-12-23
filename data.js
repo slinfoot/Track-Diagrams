@@ -2758,7 +2758,7 @@ const routes = [
                     "type": "junction",
                     "at": 337548,
                     "track": 1100,
-                    "sc_name": "832A"
+                    "sc_name": "855"
                 },
                 "toConnection": {
                     "type": "junction",
@@ -2866,24 +2866,24 @@ const routes = [
                 ]
             },
             {
-                "tid": 3700,
                 "altRoute": null,
+                "tid": 3700,
                 "fromConnection": {
                     "type": "junction",
-                    "at": 397502,
+                    "at": 397514,
                     "track": 1100,
                     "sc_name": "1121A"
                 },
                 "toConnection": {
                     "type": "junction",
-                    "at": 397600,
+                    "at": 397621,
                     "track": 2100,
                     "sc_name": "1121B"
                 },
                 "shape": [
                     {
-                        "from": 397502,
-                        "to": 397600,
+                        "from": 397514,
+                        "to": 397621,
                         "yFrom": null,
                         "yTo": null,
                         "electrification": "overhead"
@@ -7138,6 +7138,84 @@ const routes = [
                         "electrification": "none"
                     }
                 ]
+            },
+            {
+                "altRoute": null,
+                "tid": 2800,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 385888,
+                    "track": 2100,
+                    "sc_name": "897A"
+                },
+                "toConnection": {
+                    "type": "buffer_stop"
+                },
+                "shape": [
+                    {
+                        "from": 385888,
+                        "to": 385978,
+                        "yFrom": null,
+                        "yTo": 48,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 385978,
+                        "to": 386550,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "fromConnection": null,
+                "tid": 3100,
+                "altRoute": {
+                    "elr": "REB4",
+                    "showAltRuler": true
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 385978,
+                    "track": 2800,
+                    "sc_name": "897B",
+                    "elr": "ECM5"
+                },
+                "shape": [
+                    {
+                        "from": 385694,
+                        "to": 385978,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 397636,
+                    "track": 2100,
+                    "sc_name": "1120A"
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 397743,
+                    "track": 1100,
+                    "sc_name": "1120B"
+                },
+                "shape": [
+                    {
+                        "from": 397636,
+                        "to": 397743,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
             }
         ],
         "stations": [
@@ -10465,6 +10543,25 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "Zetland Road",
+                "type": "overbridge",
+                "structureNo": "ECM5-64",
+                "trackLocation": [
+                    {
+                        "from": 386199,
+                        "to": 386209,
+                        "tid": 2800,
+                        "elr": ""
+                    },
+                    {
+                        "from": 386199,
+                        "to": 386209,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
             }
         ],
         "altRouteYardageMap": [
@@ -10531,6 +10628,136 @@ const routes = [
                 "toYardageMainRoute": 385115,
                 "toYardageAltRoute": 75143,
                 "_id": "694adab857b7882b0df2c262"
+            },
+            {
+                "elr": "REB4",
+                "fromYardageMainRoute": 385694,
+                "fromYardageAltRoute": 197,
+                "toYardageMainRoute": 385978,
+                "toYardageAltRoute": -88,
+                "_id": "694ae45057b7882b0df37b96"
+            }
+        ],
+        "switchesAndCrossings": [
+            {
+                "sc_Name": "1121A",
+                "junctionGroup": "East Cowton Crossovers",
+                "_id": "694aead39f05575b73c7230a"
+            },
+            {
+                "sc_Name": "1121B",
+                "junctionGroup": "East Cowton Crossovers",
+                "_id": "694aeadd9f05575b73c72ca4"
+            },
+            {
+                "sc_Name": "1120A",
+                "junctionGroup": "East Cowton Crossovers",
+                "_id": "694aeae79f05575b73c73641"
+            },
+            {
+                "sc_Name": "1120B",
+                "junctionGroup": "East Cowton Crossovers",
+                "_id": "694aeaf39f05575b73c73fe1"
+            },
+            {
+                "sc_Name": "861A",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aed749f05575b73c75cc0"
+            },
+            {
+                "sc_Name": "861B",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aed7c9f05575b73c76666"
+            },
+            {
+                "sc_Name": "862A",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aed889f05575b73c7700f"
+            },
+            {
+                "sc_Name": "862B",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aed939f05575b73c779bb"
+            },
+            {
+                "sc_Name": "863A",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aed9d9f05575b73c7836a"
+            },
+            {
+                "sc_Name": "863B",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aeda89f05575b73c78d1c"
+            },
+            {
+                "sc_Name": "864A",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aedb49f05575b73c796d1"
+            },
+            {
+                "sc_Name": "864B",
+                "junctionGroup": "Tollerton South Junction",
+                "_id": "694aedbd9f05575b73c7a089"
+            },
+            {
+                "sc_Name": "866A",
+                "junctionGroup": "Tollerton North Junction",
+                "_id": "694aede39f05575b73c7aa44"
+            },
+            {
+                "sc_Name": "866B",
+                "junctionGroup": "Tollerton North Junction",
+                "_id": "694aeded9f05575b73c7b402"
+            },
+            {
+                "sc_Name": "865A",
+                "junctionGroup": "Tollerton North Junction",
+                "_id": "694aedf79f05575b73c7bdc3"
+            },
+            {
+                "sc_Name": "865B",
+                "junctionGroup": "Tollerton North Junction",
+                "_id": "694aedff9f05575b73c7c787"
+            },
+            {
+                "sc_Name": "851",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee4f9f05575b73c7d14e"
+            },
+            {
+                "sc_Name": "853A",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee569f05575b73c7db18"
+            },
+            {
+                "sc_Name": "853B",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee5e9f05575b73c7e4e5"
+            },
+            {
+                "sc_Name": "855",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee679f05575b73c7eeb5"
+            },
+            {
+                "sc_Name": "852A",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee7b9f05575b73c7f888"
+            },
+            {
+                "sc_Name": "852B",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee889f05575b73c8025e"
+            },
+            {
+                "sc_Name": "854A",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee929f05575b73c80c37"
+            },
+            {
+                "sc_Name": "854B",
+                "junctionGroup": "Skelton Bridge Junction",
+                "_id": "694aee9d9f05575b73c81613"
             }
         ]
     }

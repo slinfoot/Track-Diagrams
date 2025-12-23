@@ -35,6 +35,9 @@ const DEFAULT_LABEL_OVERLAP_PADDING_PX = 2;
 let route = null;
 let appAPI = null;
 
+// Cache for precomputed tick positions per-route (rebuilt on route load)
+let ticksCache = null;
+
 // Preserve viewport state across route reloads (save/edit/delete triggers loadRoute again)
 const viewportState = {
   lastCenterYards: null,
@@ -84,6 +87,51 @@ function buildTracksByTid(nextRoute) {
     });
   }
   return tracksByTid;
+}
+
+// Precompute tick positions for a route's sections to avoid per-yard loops during draw
+function computeTicksForRoute(nextRoute) {
+  const cache = {
+    major: [],
+    medium: [],
+    minor: [],
+    micro: [],
+    sections: []
+  };
+
+  if (!nextRoute || !Array.isArray(nextRoute.sections)) return cache;
+
+  for (const s of nextRoute.sections) {
+    const from = Number(s.from);
+    const to = Number(s.to);
+    const offset = Number(s.offset) || 0;
+    if (!Number.isFinite(from) || !Number.isFinite(to)) continue;
+
+    // store section summary
+    cache.sections.push({ from, to, offset, elr: s.elr });
+
+    // helper to generate ticks within this section
+    const gen = (spacing, targetArray, skipIfMajorMultiple = false) => {
+      const firstRel = Math.ceil((from - offset) / spacing) * spacing;
+      const lastRel = Math.floor((to - offset) / spacing) * spacing;
+      for (let rel = firstRel; rel <= lastRel; rel += spacing) {
+        if (skipIfMajorMultiple && (rel % RULER_TICK_MAJOR_YARDS === 0)) continue;
+        const mainY = rel + offset;
+        // relative yards inside ELR for labels
+        const relative = rel;
+        targetArray.push({ mainY, relative, section: s });
+      }
+    };
+
+    gen(RULER_TICK_MAJOR_YARDS, cache.major, false);
+    gen(RULER_TICK_MEDIUM_YARDS, cache.medium, true);
+    gen(RULER_TICK_MINOR_YARDS, cache.minor, false);
+    gen(RULER_TICK_MICRO_YARDS, cache.micro, false);
+  }
+
+  // Sort arrays just in case
+  ['major', 'medium', 'minor', 'micro'].forEach(k => cache[k].sort((a, b) => a.mainY - b.mainY));
+  return cache;
 }
 
 function buildSectionsByElr(nextRoute) {
@@ -716,115 +764,117 @@ function drawRulerLayer({
       }
     }
 
-    for (let yard = 0; yard <= config.totalYards; yard++) {
-      if (yard < visibleLeftLimitYards || yard > visibleRightLimitYards) {
-        continue;
-      }
-
-      let adjustedYard;
-      route.sections.forEach(s => {
-        if (yard >= s.from && yard < s.to) {
-          adjustedYard = yard - s.offset;
-        }
-      });
-
-      const screenX = getX(yard);
-
-      if (adjustedYard % RULER_TICK_MAJOR_YARDS === 0) {
+    // Draw ticks from precomputed cache (major/medium/minor/micro)
+    if (ticksCache) {
+      // Major ticks (full label)
+      for (const t of ticksCache.major) {
+        if (t.mainY < visibleLeftLimitYards || t.mainY > visibleRightLimitYards) continue;
+        const screenX = getX(t.mainY);
         drawLine(screenX, 0, screenX, 30, 2, 'black');
         ctx.font = '12px Arial';
         ctx.fillStyle = 'black';
-        ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 40);
+        ctx.fillText(yardsToMiles_text(Math.round(t.relative)), screenX + 2, 40);
         drawLine(screenX, 30, screenX, diagramCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.2)');
       }
 
-      if (adjustedYard % RULER_TICK_MEDIUM_YARDS === 0 && adjustedYard % RULER_TICK_MAJOR_YARDS !== 0) {
+      // Medium ticks (label, shorter)
+      for (const t of ticksCache.medium) {
+        if (t.mainY < visibleLeftLimitYards || t.mainY > visibleRightLimitYards) continue;
+        const screenX = getX(t.mainY);
         drawLine(screenX, 0, screenX, 20, 2, 'black');
         ctx.font = '12px Arial';
         ctx.fillStyle = 'black';
-        ctx.fillText(yardsToMiles_text(adjustedYard), screenX + 2, 30);
+        ctx.fillText(yardsToMiles_text(Math.round(t.relative)), screenX + 2, 30);
         drawLine(screenX, 20, screenX, diagramCanvas.clientHeight, 1, 'rgba(255, 0, 0, 0.3)');
       }
 
-      if (adjustedYard % RULER_TICK_MINOR_YARDS === 0 && adjustedYard % RULER_TICK_MEDIUM_YARDS !== 0) {
+      // Minor ticks (no label)
+      for (const t of ticksCache.minor) {
+        if (t.mainY < visibleLeftLimitYards || t.mainY > visibleRightLimitYards) continue;
+        const screenX = getX(t.mainY);
         drawLine(screenX, 0, screenX, diagramCanvas.clientHeight, 1, 'rgba(0, 0, 255, 0.3)');
       }
 
-    // Draw junction-group labels (fixed Y below main ruler)
-    try {
-      if (route && Array.isArray(route.switchesAndCrossings) && route.switchesAndCrossings.length) {
-        // Map junctionGroup -> array of yard locations found on track connections
-        const groups = new Map();
-        for (const sw of route.switchesAndCrossings) {
-          const group = (sw && sw.junctionGroup) ? String(sw.junctionGroup) : null;
-          if (!group) continue;
-          if (!groups.has(group)) groups.set(group, []);
-        }
-
-        if (groups.size > 0) {
-          const tracks = Array.isArray(route.tracks) ? route.tracks : [];
-          for (const t of tracks) {
-            ['fromConnection', 'toConnection'].forEach(key => {
-              const conn = t?.[key];
-              if (!conn || !conn.sc_name) return;
-              const scName = String(conn.sc_name);
-              // find switches that match this sc_name
-              const matches = route.switchesAndCrossings.filter(s => s.sc_Name === scName && s.junctionGroup);
-              if (!matches.length) return;
-              const atVal = Number(conn.at);
-              if (!Number.isFinite(atVal)) return;
-              for (const m of matches) {
-                const g = String(m.junctionGroup);
-                if (!groups.has(g)) groups.set(g, []);
-                groups.get(g).push(atVal);
-              }
-            });
-          }
-
-          // Draw label for each group using midpoint of min/max
-          const LABEL_Y = 60; // fixed Y (px) below main ruler
-          ctx.font = '12px Arial';
-          ctx.textBaseline = 'top';
-          for (const [group, arr] of groups.entries()) {
-            if (!arr || !arr.length) continue;
-            const finite = arr.filter(v => Number.isFinite(Number(v))).map(v => Number(v));
-            if (!finite.length) continue;
-            const minY = Math.min(...finite);
-            const maxY = Math.max(...finite);
-            const mid = (minY + maxY) / 2;
-
-            // Only draw if midpoint visible horizontally (with small margin)
-            if (mid < visibleLeftLimitYards - 1000 || mid > visibleRightLimitYards + 1000) continue;
-
-            const x = getX(mid);
-            const text = String(group);
-            const padding = 6;
-            const txtW = ctx.measureText(text).width;
-            const boxW = txtW + padding * 2;
-            const boxH = 18;
-            const boxX = x - (boxW / 2);
-            const boxY = LABEL_Y;
-
-            // Fill: light yellow, border: thin red, text: red
-            ctx.fillStyle = 'rgba(255, 255, 200, 0.95)';
-            ctx.fillRect(boxX, boxY, boxW, boxH);
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(boxX, boxY, boxW, boxH);
-            ctx.fillStyle = 'red';
-            ctx.fillText(text, boxX + padding, boxY + 3);
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Error drawing junction group labels:', err);
-    }
-
-    // Draw after the main ruler so it sits visually beneath it.
-    drawAltRulersIfAny();
-      if (adjustedYard % RULER_TICK_MICRO_YARDS === 0 && adjustedYard % RULER_TICK_MINOR_YARDS !== 0) {
+      // Micro ticks (very small, skip those that coincide with minor)
+      for (const t of ticksCache.micro) {
+        if (t.relative % RULER_TICK_MINOR_YARDS === 0) continue;
+        if (t.mainY < visibleLeftLimitYards || t.mainY > visibleRightLimitYards) continue;
+        const screenX = getX(t.mainY);
         drawLine(screenX, 0, screenX, diagramCanvas.clientHeight, 1, 'rgba(0, 0, 0, 0.2)');
       }
+
+      // Draw junction-group labels (fixed Y below main ruler)
+      try {
+        if (route && Array.isArray(route.switchesAndCrossings) && route.switchesAndCrossings.length) {
+          // Map junctionGroup -> array of yard locations found on track connections
+          const groups = new Map();
+          for (const sw of route.switchesAndCrossings) {
+            const group = (sw && sw.junctionGroup) ? String(sw.junctionGroup) : null;
+            if (!group) continue;
+            if (!groups.has(group)) groups.set(group, []);
+          }
+
+          if (groups.size > 0) {
+            const tracks = Array.isArray(route.tracks) ? route.tracks : [];
+            for (const t of tracks) {
+              ['fromConnection', 'toConnection'].forEach(key => {
+                const conn = t?.[key];
+                if (!conn || !conn.sc_name) return;
+                const scName = String(conn.sc_name);
+                // find switches that match this sc_name
+                const matches = route.switchesAndCrossings.filter(s => s.sc_Name === scName && s.junctionGroup);
+                if (!matches.length) return;
+                const atVal = Number(conn.at);
+                if (!Number.isFinite(atVal)) return;
+                for (const m of matches) {
+                  const g = String(m.junctionGroup);
+                  if (!groups.has(g)) groups.set(g, []);
+                  groups.get(g).push(atVal);
+                }
+              });
+            }
+
+            // Draw label for each group using midpoint of min/max
+            const LABEL_Y = 60; // fixed Y (px) below main ruler
+            ctx.font = '12px Arial';
+            ctx.textBaseline = 'top';
+            for (const [group, arr] of groups.entries()) {
+              if (!arr || !arr.length) continue;
+              const finite = arr.filter(v => Number.isFinite(Number(v))).map(v => Number(v));
+              if (!finite.length) continue;
+              const minY = Math.min(...finite);
+              const maxY = Math.max(...finite);
+              const mid = (minY + maxY) / 2;
+
+              // Only draw if midpoint visible horizontally (with small margin)
+              if (mid < visibleLeftLimitYards - 1000 || mid > visibleRightLimitYards + 1000) continue;
+
+              const x = getX(mid);
+              const text = String(group);
+              const padding = 6;
+              const txtW = ctx.measureText(text).width;
+              const boxW = txtW + padding * 2;
+              const boxH = 18;
+              const boxX = x - (boxW / 2);
+              const boxY = LABEL_Y;
+
+              // Fill: light yellow, border: thin red, text: red
+              ctx.fillStyle = 'rgba(255, 255, 200, 0.95)';
+              ctx.fillRect(boxX, boxY, boxW, boxH);
+              ctx.strokeStyle = 'red';
+              ctx.lineWidth = 1;
+              ctx.strokeRect(boxX, boxY, boxW, boxH);
+              ctx.fillStyle = 'red';
+              ctx.fillText(text, boxX + padding, boxY + 3);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error drawing junction group labels:', err);
+      }
+
+      // Draw after the main ruler so it sits visually beneath it.
+      drawAltRulersIfAny();
 
       route.sections.forEach(s => {
         if (s.from < visibleRightLimitYards && s.to > visibleLeftLimitYards) {
@@ -1745,7 +1795,9 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
     route = await response.json();
     debugLog('Route loaded from API:', route);
     dispatchRouteLoaded();
-    initializeApp();
+      // compute tick cache for this route
+      ticksCache = computeTicksForRoute(route);
+      initializeApp();
   } catch (err) {
     console.error('Error loading route from API:', err);
 
