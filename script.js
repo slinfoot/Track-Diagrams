@@ -675,6 +675,31 @@ function drawRulerLayer({
         ctx.textBaseline = 'top';
         ctx.fillText(s.elrNorm, midX - 10, elrLabelY);
 
+        // Draw start/end mileage labels for the alt ruler span (map main-route endpoints to alt-route yardages)
+        try {
+          const altStart = mapMainToAltExtrapolated(s.elrNorm, clippedFrom);
+          const altEnd = mapMainToAltExtrapolated(s.elrNorm, clippedTo);
+          ctx.font = '12px Arial';
+          ctx.fillStyle = ALT_RULER_LABEL_COLOR;
+          ctx.textBaseline = 'top';
+          if (Number.isFinite(altStart)) {
+            const txt = yardsToMiles_text(Math.round(altStart));
+            const txtW = ctx.measureText(txt).width;
+            // place start label slightly right of the span start
+            const startX = x1 + 4;
+            ctx.fillText(txt, startX, elrLabelY);
+          }
+          if (Number.isFinite(altEnd)) {
+            const txt = yardsToMiles_text(Math.round(altEnd));
+            const txtW = ctx.measureText(txt).width;
+            // place end label slightly left of the span end
+            const endX = x2 - txtW - 4;
+            ctx.fillText(txt, endX, elrLabelY);
+          }
+        } catch (err) {
+          // silently ignore mapping errors
+        }
+
         const ticks = collectQuarterMileTicks(s.elrNorm, s.from, s.to);
         for (const tick of ticks) {
           const mainTick = tick.mainYards;
@@ -1150,8 +1175,8 @@ function drawStructuresLayer({
 
       if (topWall && bottomWall) {
         ctx.setLineDash([5, 5]);
-        drawLine(topWall.start.x, topWall.start.y, bottomWall.start.x, bottomWall.start.y, 1, 'blue');
-        drawLine(topWall.end.x, topWall.end.y, bottomWall.end.x, bottomWall.end.y, 1, 'blue');
+        drawLine(topWall.start.x, topWall.start.y, bottomWall.start.x, bottomWall.start.y, 1, 'rgba(0,0,255,0.5)');
+        drawLine(topWall.end.x, topWall.end.y, bottomWall.end.x, bottomWall.end.y, 1, 'rgba(0,0,255,0.5)');
         ctx.setLineDash([]);
       }
 
@@ -1498,8 +1523,8 @@ function drawStructuresLayer({
 
     if (fromPortal && toPortal) {
       ctx.setLineDash([5, 5]);
-      drawLine(fromPortal.start.x, fromPortal.start.y, toPortal.start.x, toPortal.start.y, 1, 'blue');
-      drawLine(fromPortal.end.x, fromPortal.end.y, toPortal.end.x, toPortal.end.y, 1, 'blue');
+      drawLine(fromPortal.start.x, fromPortal.start.y, toPortal.start.x, toPortal.start.y, 1, 'rgba(0,0,255,0.5)');
+      drawLine(fromPortal.end.x, fromPortal.end.y, toPortal.end.x, toPortal.end.y, 1, 'rgba(0,0,255,0.5)');
       ctx.setLineDash([]);
     }
 
@@ -2757,5 +2782,13 @@ window.TrackDiagramApp = {
   centerOnYards: (yards, updateWindow = true) => appAPI?.centerOnYards(yards, updateWindow),
   setShowArrayOverlays: (v) => appAPI?.setShowArrayOverlays(v),
   setShowUrlOverlays: (v) => appAPI?.setShowUrlOverlays(v),
-  getRoute: () => route
+  getRoute: () => route,
+  getCenterYards: () => {
+    if (Number.isFinite(viewportState?.lastCenterYards)) return viewportState.lastCenterYards;
+    if (typeof config?.showFromYards === 'number' && typeof config?.showToYards === 'number') {
+      return (config.showFromYards + config.showToYards) / 2;
+    }
+    if (Number.isFinite(currentCenterYards)) return currentCenterYards;
+    return null;
+  }
 };
