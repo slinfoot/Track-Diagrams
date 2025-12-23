@@ -524,6 +524,17 @@ window.addEventListener('DOMContentLoaded', async () => {
       yardTo: params.get('yardTo'),
       text: params.get('text')
     });
+
+    // Ensure UI checkbox state is applied to the diagram app when scripts are hosted
+    // (timing can differ between file:// and hosted deployments). This forces
+    // the app to use whatever the checkbox currently shows.
+    try {
+      if (showAltElrRulers) window.TrackDiagramApp?.setShowAltRulers(showAltElrRulers.checked);
+      if (showArrayOverlays) window.TrackDiagramApp?.setShowArrayOverlays(showArrayOverlays.checked);
+      if (showUrlOverlays) window.TrackDiagramApp?.setShowUrlOverlays(showUrlOverlays.checked);
+    } catch (e) {
+      console.warn('Failed to sync UI toggles with TrackDiagramApp:', e);
+    }
     
     if (overlayElr) {
       console.log('Found overlay ELR:', overlayElr);
