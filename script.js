@@ -241,7 +241,8 @@ function createDefaultConfig(nextRoute) {
     showFromYards: 0,
     showToYards: DEFAULT_SCROLL_SIZE_MILES * YARDS_PER_MILE,
     showArrayOverlays: true,
-    showUrlOverlays: true
+    showUrlOverlays: true,
+    showAltRulers: true
   };
 }
 
@@ -644,6 +645,7 @@ function drawRulerLayer({
     }
 
     function drawAltRulersIfAny() {
+      if (!config || !config.showAltRulers) return;
       const tracks = Array.isArray(route?.tracks) ? route.tracks : [];
       const selectedAlt = tracks
         .filter(t => t?.altRoute?.showAltRuler === true)
@@ -2543,6 +2545,11 @@ function initializeApp() {
     drawAll();
   }
 
+  function setShowAltRulers(enabled) {
+    config.showAltRulers = !!enabled;
+    drawAll();
+  }
+
   function shouldDrawOverlay(overlay) {
     if (overlay.group === 'URL Overlay') {
       return !!config.showUrlOverlays;
@@ -2841,7 +2848,8 @@ function initializeApp() {
     centerByELR,
     centerOnYards,
     setShowArrayOverlays,
-    setShowUrlOverlays
+    setShowUrlOverlays,
+    setShowAltRulers
   };
 
   // Initialize window and scroll position
@@ -2908,6 +2916,7 @@ window.TrackDiagramApp = {
   centerOnYards: (yards, updateWindow = true) => appAPI?.centerOnYards(yards, updateWindow),
   setShowArrayOverlays: (v) => appAPI?.setShowArrayOverlays(v),
   setShowUrlOverlays: (v) => appAPI?.setShowUrlOverlays(v),
+  setShowAltRulers: (v) => appAPI?.setShowAltRulers(v),
   getRoute: () => route,
   getCenterYards: () => {
     if (Number.isFinite(viewportState?.lastCenterYards)) return viewportState.lastCenterYards;

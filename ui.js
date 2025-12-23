@@ -7,6 +7,7 @@ const yardsPerPixelInput = document.getElementById('yardsPerPixelInput');
 const gridSpacingInput = document.getElementById('gridSpacingInput');
 const showArrayOverlays = document.getElementById('showArrayOverlays');
 const showUrlOverlays = document.getElementById('showUrlOverlays');
+const showAltElrRulers = document.getElementById('showAltElrRulers');
 const windowSizeInput = document.getElementById('windowSizeInput');
 const elrInput = document.getElementById('elrInput');
 const mileInput = document.getElementById('mileInput');
@@ -449,6 +450,12 @@ if (showArrayOverlays) {
 if (showUrlOverlays) {
   showUrlOverlays.addEventListener('change', () => {
     window.TrackDiagramApp?.setShowUrlOverlays(showUrlOverlays.checked);
+  });
+}
+
+if (showAltElrRulers) {
+  showAltElrRulers.addEventListener('change', () => {
+    window.TrackDiagramApp?.setShowAltRulers(showAltElrRulers.checked);
   });
 }
 
