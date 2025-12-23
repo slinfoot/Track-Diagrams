@@ -1808,7 +1808,9 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
         route = fallbackRoute;
         console.warn('Loaded route from local data.js as fallback');
         dispatchRouteLoaded();
-        initializeApp();
+          // compute tick cache for this route (fallback path)
+          ticksCache = computeTicksForRoute(route);
+          initializeApp();
         return;
       }
     }
