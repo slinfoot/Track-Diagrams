@@ -750,6 +750,78 @@ function drawRulerLayer({
         drawLine(screenX, 0, screenX, diagramCanvas.clientHeight, 1, 'rgba(0, 0, 255, 0.3)');
       }
 
+    // Draw junction-group labels (fixed Y below main ruler)
+    try {
+      if (route && Array.isArray(route.switchesAndCrossings) && route.switchesAndCrossings.length) {
+        // Map junctionGroup -> array of yard locations found on track connections
+        const groups = new Map();
+        for (const sw of route.switchesAndCrossings) {
+          const group = (sw && sw.junctionGroup) ? String(sw.junctionGroup) : null;
+          if (!group) continue;
+          if (!groups.has(group)) groups.set(group, []);
+        }
+
+        if (groups.size > 0) {
+          const tracks = Array.isArray(route.tracks) ? route.tracks : [];
+          for (const t of tracks) {
+            ['fromConnection', 'toConnection'].forEach(key => {
+              const conn = t?.[key];
+              if (!conn || !conn.sc_name) return;
+              const scName = String(conn.sc_name);
+              // find switches that match this sc_name
+              const matches = route.switchesAndCrossings.filter(s => s.sc_Name === scName && s.junctionGroup);
+              if (!matches.length) return;
+              const atVal = Number(conn.at);
+              if (!Number.isFinite(atVal)) return;
+              for (const m of matches) {
+                const g = String(m.junctionGroup);
+                if (!groups.has(g)) groups.set(g, []);
+                groups.get(g).push(atVal);
+              }
+            });
+          }
+
+          // Draw label for each group using midpoint of min/max
+          const LABEL_Y = 60; // fixed Y (px) below main ruler
+          ctx.font = '12px Arial';
+          ctx.textBaseline = 'top';
+          for (const [group, arr] of groups.entries()) {
+            if (!arr || !arr.length) continue;
+            const finite = arr.filter(v => Number.isFinite(Number(v))).map(v => Number(v));
+            if (!finite.length) continue;
+            const minY = Math.min(...finite);
+            const maxY = Math.max(...finite);
+            const mid = (minY + maxY) / 2;
+
+            // Only draw if midpoint visible horizontally (with small margin)
+            if (mid < visibleLeftLimitYards - 1000 || mid > visibleRightLimitYards + 1000) continue;
+
+            const x = getX(mid);
+            const text = String(group);
+            const padding = 6;
+            const txtW = ctx.measureText(text).width;
+            const boxW = txtW + padding * 2;
+            const boxH = 18;
+            const boxX = x - (boxW / 2);
+            const boxY = LABEL_Y;
+
+            // Fill: light yellow, border: thin red, text: red
+            ctx.fillStyle = 'rgba(255, 255, 200, 0.95)';
+            ctx.fillRect(boxX, boxY, boxW, boxH);
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(boxX, boxY, boxW, boxH);
+            ctx.fillStyle = 'red';
+            ctx.fillText(text, boxX + padding, boxY + 3);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Error drawing junction group labels:', err);
+    }
+
+    // Draw after the main ruler so it sits visually beneath it.
+    drawAltRulersIfAny();
       if (adjustedYard % RULER_TICK_MICRO_YARDS === 0 && adjustedYard % RULER_TICK_MINOR_YARDS !== 0) {
         drawLine(screenX, 0, screenX, diagramCanvas.clientHeight, 1, 'rgba(0, 0, 0, 0.2)');
       }

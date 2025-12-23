@@ -106,6 +106,22 @@ const formStructureNo = document.getElementById('formStructureNo');
 const structureTracksTableBody = document.getElementById('structureTracksTableBody');
 const addStructureTrackBtn = document.getElementById('addStructureTrackBtn');
 
+// Switches & Crossings Elements
+const switchesTableBody = document.getElementById('switchesTableBody');
+const switchFilter = document.getElementById('switchFilter');
+const addSwitchBtn = document.getElementById('addSwitchBtn');
+const editSelectedSwitchBtn = document.getElementById('editSelectedSwitchBtn');
+
+// Switch Modal Elements
+const scEditModal = document.getElementById('scEditModal');
+const scModalTitle = document.getElementById('scModalTitle');
+const scModalCloseBtn = document.getElementById('scModalCloseBtn');
+const scModalCancelBtn = document.getElementById('scModalCancelBtn');
+const scModalSaveBtn = document.getElementById('scModalSaveBtn');
+const scEditForm = document.getElementById('scEditForm');
+const formScName = document.getElementById('formScName');
+const formJunctionGroup = document.getElementById('formJunctionGroup');
+
 // Yards calculator modal
 const yardsCalcModal = document.getElementById('yardsCalcModal');
 const calcModalCloseBtn = document.getElementById('calcModalCloseBtn');
@@ -137,6 +153,12 @@ let selectedAltYardage = null;
 let selectedAltYardageIndex = null;
 let isAddingNewAltYardage = false;
 let isSavingAltYardage = false;
+
+// Switches & Crossings state
+let selectedSwitch = null;
+let selectedSwitchIndex = null;
+let isAddingNewSwitch = false;
+let isSavingSwitch = false;
 
 let editingShapeIndex = null;
 let calcTargetInput = null;
@@ -471,6 +493,7 @@ window.addEventListener('diagram:routeLoaded', () => {
     }
     renderTracksTable(tidFilter?.value ?? '');
     renderStationsTable(stationFilter?.value ?? '');
+    if (typeof renderSwitchesTable === 'function') renderSwitchesTable(switchFilter?.value ?? '');
     if (typeof renderAltYardageTable === 'function') {
       renderAltYardageTable(altElrFilter?.value ?? '');
     }
@@ -2248,6 +2271,175 @@ function editSelectedStructure() {
   showStructureModal(selectedStructure, false);
 }
 
+// Switches & Crossings UI
+function updateSwitchActionButtons() {
+  if (!editSelectedSwitchBtn) return;
+  editSelectedSwitchBtn.disabled = !selectedSwitch;
+}
+
+function renderSwitchesTable(filterText = '') {
+  if (!switchesTableBody) return;
+  const route = window.TrackDiagramApp?.getRoute();
+  const list = route?.switchesAndCrossings || [];
+
+  const filtered = list.filter(s => {
+    if (!filterText) return true;
+    const term = filterText.toLowerCase();
+    return (s.sc_Name || '').toLowerCase().includes(term) ||
+           (s.junctionGroup || '').toLowerCase().includes(term);
+  });
+
+  if (!filtered.length) {
+    switchesTableBody.innerHTML = '<tr><td colspan="3" class="table-empty">No switches & crossings found.</td></tr>';
+    selectedSwitch = null;
+    selectedSwitchIndex = null;
+    updateSwitchActionButtons();
+    return;
+  }
+
+  // Sort by name
+  const sorted = [...filtered].sort((a, b) => (a.sc_Name || '').localeCompare(b.sc_Name || ''));
+
+  switchesTableBody.innerHTML = sorted.map((s, idx) => {
+    const isSelected = selectedSwitch === s;
+    return `<tr class="${isSelected ? 'selected' : ''}" data-idx="${idx}">
+      <td>${s.sc_Name || '-'}</td>
+      <td>${s.junctionGroup || '-'}</td>
+      <td><button type="button" class="btn-shape-action btn-shape-delete btn-switch-delete" data-idx="${idx}" title="Delete this item">Delete</button></td>
+    </tr>`;
+  }).join('');
+
+  // Wire selection and delete handlers
+  switchesTableBody.querySelectorAll('tr').forEach((row) => {
+    row.addEventListener('click', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('btn-switch-delete')) return;
+      const idx = parseInt(row.dataset.idx);
+      const sc = sorted[idx];
+      selectedSwitch = sc;
+      // find index in original array
+      const routeList = route?.switchesAndCrossings || [];
+      selectedSwitchIndex = routeList.findIndex(x => x._id ? String(x._id) === String(sc._id) : (x.sc_Name === sc.sc_Name));
+      updateSwitchActionButtons();
+      renderSwitchesTable(filterText);
+    });
+
+    row.addEventListener('dblclick', () => {
+      // dblclick edits the item
+      const idx = parseInt(row.dataset.idx);
+      const sc = sorted[idx];
+      selectedSwitch = sc;
+      const routeList = route?.switchesAndCrossings || [];
+      selectedSwitchIndex = routeList.findIndex(x => x._id ? String(x._id) === String(sc._id) : (x.sc_Name === sc.sc_Name));
+      updateSwitchActionButtons();
+      editSelectedSwitch();
+    });
+  });
+
+  // Delete buttons
+  switchesTableBody.querySelectorAll('.btn-switch-delete').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.idx);
+      const sc = sorted[idx];
+      if (!sc) return;
+      if (!window.confirm(`Delete switch/crossing "${sc.sc_Name || '-'}"?`)) return;
+      try {
+        const routeObj = window.TrackDiagramApp?.getRoute();
+        if (!routeObj) return;
+        const arr = routeObj.switchesAndCrossings || [];
+        const delIndex = arr.findIndex(x => x._id ? String(x._id) === String(sc._id) : (x.sc_Name === sc.sc_Name));
+        if (delIndex === -1) {
+          window.alert('Could not find item to delete.');
+          return;
+        }
+        arr.splice(delIndex, 1);
+        await saveSwitchesToApi(routeObj._id, arr);
+      } catch (err) {
+        console.error('Error deleting switch:', err);
+        window.alert('Error deleting switch: ' + err.message);
+      }
+    });
+  });
+}
+
+function showScModal(item, isNew) {
+  if (!scEditModal) return;
+  isAddingNewSwitch = isNew;
+  selectedSwitch = item;
+  if (scModalTitle) scModalTitle.textContent = isNew ? 'Add New Switch / Crossing' : 'Edit Switch / Crossing';
+  if (formScName) formScName.value = item.sc_Name || '';
+  if (formJunctionGroup) formJunctionGroup.value = item.junctionGroup || '';
+  scEditModal.hidden = false;
+}
+
+function hideScModal() {
+  if (scEditModal) scEditModal.hidden = true;
+  if (scEditForm) scEditForm.reset();
+}
+
+async function saveSwitchFromForm() {
+  try {
+    const r = window.TrackDiagramApp?.getRoute();
+    if (!r) return;
+    if (!selectedSwitch) return;
+    const name = formScName?.value?.trim();
+    if (!name) {
+      window.alert('Name is required.');
+      return;
+    }
+    selectedSwitch.sc_Name = name;
+    selectedSwitch.junctionGroup = formJunctionGroup?.value?.trim() || '';
+
+    const arr = Array.isArray(r.switchesAndCrossings) ? r.switchesAndCrossings : [];
+    if (isAddingNewSwitch) {
+      arr.push(selectedSwitch);
+    } else if (Number.isFinite(selectedSwitchIndex) && selectedSwitchIndex >= 0) {
+      arr[selectedSwitchIndex] = selectedSwitch;
+    }
+
+    await saveSwitchesToApi(r._id, arr);
+  } catch (err) {
+    console.error('Error saving switch:', err);
+    window.alert('Error saving switch: ' + err.message);
+  }
+}
+
+async function saveSwitchesToApi(routeId, array) {
+  try {
+    const safeId = encodeURIComponent(String(routeId || ''));
+    const url = `${apiUrl}/${safeId}`;
+    const resp = await fetch(url, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ switchesAndCrossings: array })
+    });
+    if (!resp.ok) {
+      const txt = await resp.text();
+      throw new Error(`HTTP ${resp.status} - ${txt}`);
+    }
+    const updated = await resp.json();
+    hideScModal();
+    isAddingNewSwitch = false;
+    window.TrackDiagramApp?.loadRoute(updated.code || updated._id);
+  } catch (err) {
+    throw err;
+  }
+}
+
+function addNewSwitch() {
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r) return;
+  const item = { sc_Name: '', junctionGroup: '' };
+  selectedSwitch = item;
+  selectedSwitchIndex = null;
+  showScModal(item, true);
+}
+
+function editSelectedSwitch() {
+  if (!selectedSwitch) return;
+  showScModal(selectedSwitch, false);
+}
+
 // Wire up calculator modal handlers
 if (calcModalCloseBtn) {
   calcModalCloseBtn.addEventListener('click', hideYardsCalc);
@@ -2493,6 +2685,53 @@ if (altYardageEditModal) {
   altYardageEditModal.addEventListener('click', (e) => {
     if (e.target === altYardageEditModal || e.target.classList.contains('modal-overlay')) {
       hideAltYardageModal();
+    }
+  });
+}
+
+// Switches & Crossings Event Listeners
+if (switchFilter) {
+  switchFilter.addEventListener('input', () => {
+    renderSwitchesTable(switchFilter.value);
+  });
+}
+
+if (addSwitchBtn) {
+  addSwitchBtn.addEventListener('click', addNewSwitch);
+}
+
+if (editSelectedSwitchBtn) {
+  editSelectedSwitchBtn.addEventListener('click', editSelectedSwitch);
+  updateSwitchActionButtons();
+}
+
+if (scModalCloseBtn) {
+  scModalCloseBtn.addEventListener('click', hideScModal);
+}
+
+if (scModalCancelBtn) {
+  scModalCancelBtn.addEventListener('click', hideScModal);
+}
+
+if (scEditForm) {
+  scEditForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSavingSwitch) return;
+    isSavingSwitch = true;
+    if (scModalSaveBtn) scModalSaveBtn.disabled = true;
+    try {
+      await saveSwitchFromForm();
+    } finally {
+      isSavingSwitch = false;
+      if (scModalSaveBtn) scModalSaveBtn.disabled = false;
+    }
+  });
+}
+
+if (scEditModal) {
+  scEditModal.addEventListener('click', (e) => {
+    if (e.target === scEditModal || e.target.classList.contains('modal-overlay')) {
+      hideScModal();
     }
   });
 }

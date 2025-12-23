@@ -114,6 +114,7 @@
           <button class="sidebar-button edit-tab-button" type="button" data-tab="sections">Sections</button>
           <button class="sidebar-button edit-tab-button" type="button" data-tab="stations">Stations</button>
           <button class="sidebar-button edit-tab-button" type="button" data-tab="structures">Structures</button>
+          <button class="sidebar-button edit-tab-button" type="button" data-tab="switches">Switches & Crossings</button>
           <button class="sidebar-button edit-tab-button" type="button" data-tab="altyardage">Alt ELR Mapping</button>
         </div>
       </div>
@@ -282,6 +283,48 @@
                   </colgroup>
                   <tbody id="structuresTableBody">
                     <tr><td colspan="6" class="table-empty">No structures loaded.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="edit-tab-content" data-tab="switches">
+            <div class="tracks-table-wrapper">
+              <div class="tracks-filter">
+                <label for="switchFilter">
+                  <span>Filter by Name:</span>
+                  <input type="text" id="switchFilter" placeholder="Enter Name...">
+                </label>
+                <div class="tracks-filter-actions">
+                  <button type="button" id="addSwitchBtn" class="sidebar-button">Add New</button>
+                  <button type="button" id="editSelectedSwitchBtn" class="sidebar-button" disabled>Edit Selected</button>
+                </div>
+              </div>
+              <div class="tracks-table-header">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 220px">
+                    <col style="width: 160px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Junction Group</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="tracks-table-body" aria-label="Switches table rows">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 220px">
+                    <col style="width: 160px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <tbody id="switchesTableBody">
+                    <tr><td colspan="3" class="table-empty">No switches & crossings loaded.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -487,6 +530,36 @@
       </div>
     </div>
   </div>
+
+      <!-- Switch / Crossing Edit Modal -->
+      <div id="scEditModal" class="modal" hidden>
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="scModalTitle">Edit Switch / Crossing</h3>
+            <button type="button" id="scModalCloseBtn" class="modal-close-btn">×</button>
+          </div>
+          <div class="modal-body">
+            <form id="scEditForm">
+              <div class="form-row">
+                <label class="form-field">
+                  <span>Name</span>
+                  <input type="text" id="formScName" required placeholder="e.g., 5041">
+                </label>
+                <!-- ID removed from schema; no input here -->
+                <label class="form-field">
+                  <span>Junction Group</span>
+                  <input type="text" id="formJunctionGroup" placeholder="Optional">
+                </label>
+              </div>
+              <div class="modal-actions">
+                <button type="button" id="scModalCancelBtn" class="btn-secondary">Cancel</button>
+                <button type="submit" id="scModalSaveBtn" class="btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
 
   <!-- Station Edit Modal -->
   <div id="stationEditModal" class="modal" hidden>
