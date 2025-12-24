@@ -10562,6 +10562,25 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "Low Whiske Moor",
+                "type": "overbridge",
+                "structureNo": "ECM5-66",
+                "trackLocation": [
+                    {
+                        "from": 387640,
+                        "to": 387650,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 387640,
+                        "to": 387650,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
             }
         ],
         "altRouteYardageMap": [
