@@ -1009,8 +1009,8 @@ function drawConnectionsLayer({
   withCanvasState(() => {
     const { leftYards: visibleLeftLimitYards, rightYards: visibleRightLimitYards } = getVisibleBounds();
 
-    const fontSize = 10;
-    ctx.font = `${fontSize}px Arial`;
+    const fontSize = 12;
+    //ctx.font = `${fontSize}px Arial`;
 
     const candidates = collectConnectionLabelCandidates(visibleLeftLimitYards, visibleRightLimitYards);
     const labels = buildConnectionLabelsWithMetrics(candidates, fontSize);
@@ -1019,8 +1019,8 @@ function drawConnectionsLayer({
     resolveLabelOverlapsVertically(uniqueLabels);
 
     // Draw labels
-    ctx.font = `${fontSize}px Arial`;
-    ctx.fillStyle = 'blue';
+    ctx.font = `Bold ${fontSize}px Arial`;
+    ctx.fillStyle = 'green';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -1834,6 +1834,17 @@ function initializeApp() {
 
   // Configuration for logical distances (mutable so UI changes can tweak values)
   const config = createDefaultConfig(route);
+
+  // Preserve the user's global "Show Alt ELR Rulers" UI preference when re-initializing
+  // (loadRoute recreates the config and would otherwise reset to the default).
+  try {
+    const el = (typeof document !== 'undefined') ? document.getElementById('showAltElrRulers') : null;
+    if (el && typeof el.checked === 'boolean') {
+      config.showAltRulers = !!el.checked;
+    }
+  } catch (e) {
+    // ignore - running in non-DOM environment or element not present
+  }
 
   // Keep a minimal copy of the viewport-related config in globals so loadRoute()
   // can capture the current center even if a scroll event hasn't fired recently.

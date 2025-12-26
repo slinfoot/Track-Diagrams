@@ -760,6 +760,34 @@ body {
   min-width: 120px;
 }
 
+/* Allow modal form fields to shrink smaller so neighbouring controls fit on one row */
+.modal .form-field {
+  min-width: 60px;
+}
+
+/* Keep form rows on one line but allow horizontal scrolling instead of overlapping */
+.modal .form-row {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Let inputs shrink to avoid overflow and ensure calc button remains visible */
+.modal .form-field input,
+.modal .form-field select,
+.modal .input-with-calc input {
+  min-width: 0;
+}
+
+.input-with-calc {
+  min-width: 0;
+}
+
+/* Make calc button sit above neighbours so it's always clickable */
+.btn-calc {
+  z-index: 2;
+}
+
 .form-field span {
   font-size: 13px;
   font-weight: 600;

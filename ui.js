@@ -59,11 +59,41 @@ const formFromSc = document.getElementById('formFromSc');
 const formFromTrack = document.getElementById('formFromTrack');
 const formFromAt = document.getElementById('formFromAt');
 const formFromElr = document.getElementById('formFromElr');
+const formFromLinkDescription = document.getElementById('formFromLinkDescription');
 const formToType = document.getElementById('formToType');
 const formToSc = document.getElementById('formToSc');
 const formToTrack = document.getElementById('formToTrack');
 const formToAt = document.getElementById('formToAt');
 const formToElr = document.getElementById('formToElr');
+const formToLinkDescription = document.getElementById('formToLinkDescription');
+
+// Helper to show/hide the link description field (label wrapper) depending on type
+function setLinkDescriptionVisibility(typeEl, linkInputEl) {
+  try {
+    const isLink = typeEl && String(typeEl.value) === 'link';
+    if (!linkInputEl) return;
+    const wrapper = linkInputEl.closest('.form-field');
+    if (!wrapper) return;
+    wrapper.style.display = isLink ? 'flex' : 'none';
+  } catch (e) {
+    // ignore
+  }
+}
+
+// Wire up change handlers so the description field is visible only for type === 'link'
+if (typeof formFromLinkDescription !== 'undefined' && typeof formFromLinkDescription !== 'null') {
+  // initial hide (will be set when modal opens)
+  const w = formFromLinkDescription.closest('.form-field'); if (w) w.style.display = 'none';
+}
+if (typeof formToLinkDescription !== 'undefined' && typeof formToLinkDescription !== 'null') {
+  const w2 = formToLinkDescription.closest('.form-field'); if (w2) w2.style.display = 'none';
+}
+if (typeof formFromType !== 'undefined' && formFromType) {
+  formFromType.addEventListener('change', () => setLinkDescriptionVisibility(formFromType, formFromLinkDescription));
+}
+if (typeof formToType !== 'undefined' && formToType) {
+  formToType.addEventListener('change', () => setLinkDescriptionVisibility(formToType, formToLinkDescription));
+}
 const formAltRouteElr = document.getElementById('formAltRouteElr');
 const formAltRouteShowRuler = document.getElementById('formAltRouteShowRuler');
 const shapeTableModalBody = document.getElementById('shapeTableModalBody');
@@ -1048,11 +1078,20 @@ function showTrackModal(track, isNew = false) {
   if (formFromSc) formFromSc.value = track.fromConnection?.sc_name ?? '';
   if (formFromTrack) formFromTrack.value = track.fromConnection?.track ?? '';
   if (formFromAt) formFromAt.value = track.fromConnection?.at ?? '';
+  if (formFromLinkDescription) {
+    formFromLinkDescription.value = track.fromConnection?.connectionLink?.linkDesctiption ?? '';
+    // ensure visibility matches current type
+    setLinkDescriptionVisibility(formFromType, formFromLinkDescription);
+  }
   if (formFromElr) formFromElr.value = track.fromConnection?.elr ?? '';
   if (formToType) formToType.value = track.toConnection?.type ?? '';
   if (formToSc) formToSc.value = track.toConnection?.sc_name ?? '';
   if (formToTrack) formToTrack.value = track.toConnection?.track ?? '';
   if (formToAt) formToAt.value = track.toConnection?.at ?? '';
+  if (formToLinkDescription) {
+    formToLinkDescription.value = track.toConnection?.connectionLink?.linkDesctiption ?? '';
+    setLinkDescriptionVisibility(formToType, formToLinkDescription);
+  }
   if (formToElr) formToElr.value = track.toConnection?.elr ?? '';
   if (formAltRouteElr) formAltRouteElr.value = track.altRoute?.elr ?? '';
   if (formAltRouteShowRuler) formAltRouteShowRuler.checked = track.altRoute?.showAltRuler === true;
@@ -1104,7 +1143,7 @@ async function saveTrackFromForm() {
   }
 
   // Connections are optional, but if present schema requires a valid type.
-  const allowedConnTypes = new Set(['buffer_stop', 'junction', 'fixed', 'buffer', 'other']);
+  const allowedConnTypes = new Set(['buffer_stop', 'junction', 'fixed', 'link', 'other']);
 
   // From connection
   const fromType = (formFromType?.value || '').trim();
@@ -1122,6 +1161,9 @@ async function saveTrackFromForm() {
     if (fromAtVal) fromConn.at = Number(fromAtVal);
     const fromElrVal = (formFromElr?.value || '').trim();
     if (fromElrVal) fromConn.elr = fromElrVal;
+    // Only attach connectionLink if type is 'link'
+    const fromLinkDescVal = (formFromLinkDescription?.value || '').trim();
+    if (fromType === 'link' && fromLinkDescVal) fromConn.connectionLink = { linkDesctiption: fromLinkDescVal };
     selectedTrack.fromConnection = fromConn;
   } else {
     delete selectedTrack.fromConnection;
@@ -1143,6 +1185,9 @@ async function saveTrackFromForm() {
     if (toAtVal) toConn.at = Number(toAtVal);
     const toElrVal = (formToElr?.value || '').trim();
     if (toElrVal) toConn.elr = toElrVal;
+    // Only attach connectionLink if type is 'link'
+    const toLinkDescVal = (formToLinkDescription?.value || '').trim();
+    if (toType === 'link' && toLinkDescVal) toConn.connectionLink = { linkDesctiption: toLinkDescVal };
     selectedTrack.toConnection = toConn;
   } else {
     delete selectedTrack.toConnection;

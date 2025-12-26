@@ -410,14 +410,12 @@
 
           <div class="form-section">
             <h4>Alt Route</h4>
-            <div class="form-row">
-              <label class="form-field">
+            <div class="form-row" style="flex-wrap: nowrap; align-items: center;">
+              <label class="form-field" style="flex: 1 1 70%">
                 <span>ELR</span>
                 <input type="text" id="formAltRouteElr" placeholder="e.g., ECM1">
               </label>
-            </div>
-            <div class="form-row">
-              <label class="form-field">
+              <label class="form-field" style="flex: 0 0 30%">
                 <span>Show Alt Ruler</span>
                 <input type="checkbox" id="formAltRouteShowRuler">
               </label>
@@ -427,37 +425,41 @@
           <div class="form-section">
             <h4>From Connection</h4>
             <div class="form-row">
-              <label class="form-field">
+              <label class="form-field" style="flex: 1 1 18%">
                 <span>Type</span>
                 <select id="formFromType">
                   <option value=""></option>
                   <option value="buffer_stop">buffer_stop</option>
                   <option value="junction">junction</option>
                   <option value="fixed">fixed</option>
-                  <option value="buffer">buffer</option>
+                  <option value="link">link</option>
                   <option value="other">other</option>
                 </select>
+              </label>
+              <label class="form-field" style="flex: 1 1 12%">
+                <span>ELR</span>
+                <input type="text" id="formFromElr" placeholder="e.g., ECM1">
               </label>
               <label class="form-field" style="flex: 0 0 70px">
                 <span>Track</span>
                 <input type="number" id="formFromTrack" placeholder="TID">
               </label>
-              <label class="form-field">
-                <span>ELR</span>
-                <input type="text" id="formFromElr" placeholder="e.g., ECM1">
-              </label>
-              <label class="form-field">
-                <span>SC Name</span>
-                <input type="text" id="formFromSc" placeholder="e.g., 5041">
-              </label>
-            </div>
-            <div class="form-row">
-              <label class="form-field">
+              <label class="form-field" style="flex: 1 1 10%">
                 <span>At</span>
                 <div class="input-with-calc">
                   <input type="number" id="formFromAt" placeholder="Yards">
                   <button type="button" class="btn-calc" data-target="formFromAt" title="Calculate from ELR/Mile/Yard">📍</button>
                 </div>
+              </label>
+              <label class="form-field" style="flex: 1 1 12%">
+                <span>SC Name</span>
+                <input type="text" id="formFromSc" placeholder="e.g., 5041">
+              </label>
+            </div>
+            <div class="form-row">
+              <label class="form-field" style="flex: 1 1 100%">
+                <span>Link description</span>
+                <input type="text" id="formFromLinkDescription" placeholder="Optional description">
               </label>
             </div>
           </div>
@@ -465,37 +467,41 @@
           <div class="form-section">
             <h4>To Connection</h4>
             <div class="form-row">
-              <label class="form-field">
+              <label class="form-field" style="flex: 1 1 18%">
                 <span>Type</span>
                 <select id="formToType">
                   <option value=""></option>
                   <option value="buffer_stop">buffer_stop</option>
                   <option value="junction">junction</option>
                   <option value="fixed">fixed</option>
-                  <option value="buffer">buffer</option>
+                  <option value="link">link</option>
                   <option value="other">other</option>
                 </select>
+              </label>
+              <label class="form-field" style="flex: 1 1 12%">
+                <span>ELR</span>
+                <input type="text" id="formToElr" placeholder="e.g., ECM1">
               </label>
               <label class="form-field" style="flex: 0 0 70px">
                 <span>Track</span>
                 <input type="number" id="formToTrack" placeholder="TID">
               </label>
-              <label class="form-field">
-                <span>ELR</span>
-                <input type="text" id="formToElr" placeholder="e.g., ECM1">
-              </label>
-              <label class="form-field">
-                <span>SC Name</span>
-                <input type="text" id="formToSc" placeholder="e.g., 5041">
-              </label>
-            </div>
-            <div class="form-row">
-              <label class="form-field">
+              <label class="form-field" style="flex: 1 1 10%">
                 <span>At</span>
                 <div class="input-with-calc">
                   <input type="number" id="formToAt" placeholder="Yards">
                   <button type="button" class="btn-calc" data-target="formToAt" title="Calculate from ELR/Mile/Yard">📍</button>
                 </div>
+              </label>
+              <label class="form-field" style="flex: 1 1 12%">
+                <span>SC Name</span>
+                <input type="text" id="formToSc" placeholder="e.g., 5041">
+              </label>
+            </div>
+            <div class="form-row">
+              <label class="form-field" style="flex: 1 1 100%">
+                <span>Link description</span>
+                <input type="text" id="formToLinkDescription" placeholder="Optional description">
               </label>
             </div>
           </div>
