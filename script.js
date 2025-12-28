@@ -808,12 +808,12 @@ function drawRulerLayer({
       // Draw junction-group labels (fixed Y below main ruler)
       try {
         if (route && Array.isArray(route.switchesAndCrossings) && route.switchesAndCrossings.length) {
-          // Map junctionGroup -> array of yard locations found on track connections
+          // Map junctionGroup -> collected connection yardages (with scName) and pick closest candidate per SC
           const groups = new Map();
           for (const sw of route.switchesAndCrossings) {
             const group = (sw && sw.junctionGroup) ? String(sw.junctionGroup) : null;
             if (!group) continue;
-            if (!groups.has(group)) groups.set(group, []);
+            if (!groups.has(group)) groups.set(group, { entries: [] });
           }
 
           if (groups.size > 0) {
@@ -830,17 +830,64 @@ function drawRulerLayer({
                 if (!Number.isFinite(atVal)) return;
                 for (const m of matches) {
                   const g = String(m.junctionGroup);
-                  if (!groups.has(g)) groups.set(g, []);
-                  groups.get(g).push(atVal);
+                  if (!groups.has(g)) groups.set(g, { entries: [] });
+                  groups.get(g).entries.push({ scName, at: atVal });
                 }
               });
             }
 
-            // Draw label for each group using midpoint of min/max
+            // For each group, reduce multiple candidates for the same scName to a single representative
+            for (const [g, obj] of groups.entries()) {
+              const list = obj.entries || [];
+              if (!list.length) { obj.chosen = []; continue; }
+
+              // Build scName -> [atVals]
+              const scMap = new Map();
+              for (const e of list) {
+                if (!scMap.has(e.scName)) scMap.set(e.scName, []);
+                scMap.get(e.scName).push(Number(e.at));
+              }
+
+              // Compute mean per scName (used as fallback)
+              const scMeans = new Map();
+              for (const [sn, arr] of scMap.entries()) {
+                const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+                scMeans.set(sn, mean);
+              }
+
+              const chosen = [];
+              if (scMap.size === 1) {
+                // Single scName: take mean of its values
+                const only = Array.from(scMap.values())[0];
+                const mean = only.reduce((a, b) => a + b, 0) / only.length;
+                chosen.push(mean);
+              } else {
+                // Multiple scNames: for each scName, pick the candidate closest to the other scMeans
+                for (const [sn, arr] of scMap.entries()) {
+                  if (arr.length === 1) { chosen.push(arr[0]); continue; }
+
+                  // compute means of other scNames
+                  const otherMeans = Array.from(scMeans.entries()).filter(([k]) => k !== sn).map(([k, v]) => v);
+                  // choose candidate minimizing sum absolute distance to otherMeans
+                  let best = arr[0];
+                  let bestScore = Infinity;
+                  for (const cand of arr) {
+                    const score = otherMeans.reduce((s, om) => s + Math.abs(cand - om), 0);
+                    if (score < bestScore) { bestScore = score; best = cand; }
+                  }
+                  chosen.push(best);
+                }
+              }
+
+              obj.chosen = chosen;
+            }
+
+            // Draw label for each group using midpoint of min/max of chosen representatives
             const LABEL_Y = 60; // fixed Y (px) below main ruler
             ctx.font = '12px Arial';
             ctx.textBaseline = 'top';
-            for (const [group, arr] of groups.entries()) {
+            for (const [group, obj] of groups.entries()) {
+              const arr = obj.chosen || [];
               if (!arr || !arr.length) continue;
               const finite = arr.filter(v => Number.isFinite(Number(v))).map(v => Number(v));
               if (!finite.length) continue;
