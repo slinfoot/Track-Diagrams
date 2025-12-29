@@ -1,7 +1,18 @@
 const fs = require('fs');
 const path = require('path');
+// Prefer config.js, fallback to environment variable
+let API_URL;
+try {
+    const conf = require('./config');
+    API_URL = process.env.API_BASE_URL || conf.API_BASE_URL || conf.CONFIG?.API_BASE_URL;
+} catch (err) {
+    API_URL = process.env.API_BASE_URL;
+}
 
-const API_URL = 'http://localhost:3000/api/routes';
+if (!API_URL) {
+    console.error('API_BASE_URL is not set. Set it in config.js or via the API_BASE_URL env var.');
+    process.exit(1);
+}
 const OUTPUT_FILE = path.join(__dirname, 'data.js');
 
 async function syncData() {

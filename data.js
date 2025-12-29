@@ -52,13 +52,15 @@ const routes = [
                 "tid": 3600,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 459,
                     "track": 3101,
-                    "sc_name": "5041"
+                    "sc_name": "5041",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -81,13 +83,15 @@ const routes = [
                 "tid": 3601,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 459,
                     "track": 3101,
-                    "sc_name": "5041"
+                    "sc_name": "5041",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -113,13 +117,15 @@ const routes = [
                     "type": "junction",
                     "at": 359,
                     "track": 3601,
-                    "sc_name": "5006A"
+                    "sc_name": "5006A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 419,
                     "track": 3102,
-                    "sc_name": "5006B"
+                    "sc_name": "5006B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -135,13 +141,15 @@ const routes = [
                 "tid": 3602,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 419,
                     "track": 3102,
-                    "sc_name": "5006B"
+                    "sc_name": "5006B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -167,13 +175,15 @@ const routes = [
                     "type": "junction",
                     "at": 418826,
                     "track": 1100,
-                    "sc_name": "750A"
+                    "sc_name": "750A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 418921,
                     "track": 2100,
-                    "sc_name": "750B"
+                    "sc_name": "750B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -189,13 +199,15 @@ const routes = [
                 "tid": 3603,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 469,
                     "track": 3103,
-                    "sc_name": "5058"
+                    "sc_name": "5058",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -218,13 +230,15 @@ const routes = [
                 "tid": 3604,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 428,
                     "track": 3105,
-                    "sc_name": "5035"
+                    "sc_name": "5035",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -247,13 +261,15 @@ const routes = [
                 "tid": 3605,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 469,
                     "track": 3103,
-                    "sc_name": "5058"
+                    "sc_name": "5058",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -272,13 +288,15 @@ const routes = [
                     "type": "junction",
                     "at": 359,
                     "track": 3605,
-                    "sc_name": "5012A"
+                    "sc_name": "5012A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 424,
                     "track": 3606,
-                    "sc_name": "5012B"
+                    "sc_name": "5012B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -298,7 +316,8 @@ const routes = [
                     "type": "junction",
                     "at": 461,
                     "track": 3104,
-                    "sc_name": "5052"
+                    "sc_name": "5052",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -317,13 +336,15 @@ const routes = [
                     "type": "junction",
                     "at": 359,
                     "track": 3607,
-                    "sc_name": "5018"
+                    "sc_name": "5018",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 461,
                     "track": 3104,
-                    "sc_name": "5052"
+                    "sc_name": "5052",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -339,13 +360,15 @@ const routes = [
                 "tid": 3607,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 450,
                     "track": 3105,
-                    "sc_name": "5024B"
+                    "sc_name": "5024B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -364,13 +387,15 @@ const routes = [
                     "type": "junction",
                     "at": 387,
                     "track": 3608,
-                    "sc_name": "5024A"
+                    "sc_name": "5024A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 450,
                     "track": 3105,
-                    "sc_name": "5024B"
+                    "sc_name": "5024B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -386,13 +411,15 @@ const routes = [
                 "tid": 3608,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 461,
                     "track": 3106,
-                    "sc_name": "5047"
+                    "sc_name": "5047",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -408,13 +435,15 @@ const routes = [
                 "tid": 3609,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 410,
                     "track": 3610,
-                    "sc_name": "5029"
+                    "sc_name": "5029",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -430,13 +459,15 @@ const routes = [
                 "tid": 3610,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 461,
                     "track": 3106,
-                    "sc_name": "5047"
+                    "sc_name": "5047",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -484,13 +515,15 @@ const routes = [
                     "type": "junction",
                     "at": 884,
                     "track": 3101,
-                    "sc_name": "5075A"
+                    "sc_name": "5075A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 994,
                     "track": 3102,
-                    "sc_name": "5075B"
+                    "sc_name": "5075B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -553,13 +586,15 @@ const routes = [
                     "type": "junction",
                     "at": 598,
                     "track": 3103,
-                    "sc_name": "5063A"
+                    "sc_name": "5063A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 742,
                     "track": 3104,
-                    "sc_name": "5063B"
+                    "sc_name": "5063B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -578,13 +613,15 @@ const routes = [
                     "type": "junction",
                     "at": 881,
                     "track": 3104,
-                    "sc_name": "5081A"
+                    "sc_name": "5081A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 990,
                     "track": 3103,
-                    "sc_name": "5081B"
+                    "sc_name": "5081B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -618,13 +655,15 @@ const routes = [
                     "type": "junction",
                     "at": 1019,
                     "track": 3105,
-                    "sc_name": "5086"
+                    "sc_name": "5086",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 1208,
                     "track": 3104,
-                    "sc_name": "5097"
+                    "sc_name": "5097",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -658,13 +697,15 @@ const routes = [
                     "type": "junction",
                     "at": 587,
                     "track": 3106,
-                    "sc_name": "5070A"
+                    "sc_name": "5070A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 687,
                     "track": 3105,
-                    "sc_name": "5070B"
+                    "sc_name": "5070B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -695,13 +736,15 @@ const routes = [
                 "tid": 1101,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "fixed"
+                    "type": "fixed",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 141,
                     "track": 1100,
-                    "sc_name": "5119"
+                    "sc_name": "5119",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -774,7 +817,8 @@ const routes = [
                     "type": "junction",
                     "at": 331814,
                     "track": 1100,
-                    "sc_name": "801"
+                    "sc_name": "801",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -792,12 +836,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 1253,
-                    "track": 1100
+                    "track": 1100,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 1375,
-                    "track": 3104
+                    "track": 3104,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -817,7 +863,8 @@ const routes = [
                     "type": "junction",
                     "at": 37748,
                     "track": 1100,
-                    "sc_name": "5562"
+                    "sc_name": "5562",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -856,12 +903,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 1285,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 1377,
-                    "track": 3106
+                    "track": 3106,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -881,7 +930,8 @@ const routes = [
                     "type": "junction",
                     "at": 37351,
                     "track": 2100,
-                    "sc_name": "5561B"
+                    "sc_name": "5561B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -920,12 +970,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 1456,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 1563,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -943,12 +995,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 1664,
-                    "track": 2100
+                    "track": 2100,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 1751,
-                    "track": 1100
+                    "track": 1100,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -981,12 +1035,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 2514,
-                    "track": 2100
+                    "track": 2100,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 2673,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1004,12 +1060,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 2619,
-                    "track": 1100
+                    "track": 1100,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 2718,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1027,12 +1085,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 2743,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 2888,
-                    "track": 1100
+                    "track": 1100,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1050,12 +1110,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 3014,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 3165,
-                    "track": 2100
+                    "track": 2100,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1073,11 +1135,13 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 3155,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "fixed",
-                    "at": null
+                    "at": null,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1134,7 +1198,8 @@ const routes = [
                 "toConnection": {
                     "type": "junction",
                     "at": 1424,
-                    "track": 3106
+                    "track": 3106,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1155,12 +1220,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 1227,
-                    "track": 3106
+                    "track": 3106,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 1278,
-                    "track": 3105
+                    "track": 3105,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1182,7 +1249,8 @@ const routes = [
                 "toConnection": {
                     "type": "junction",
                     "at": 1227,
-                    "track": 3106
+                    "track": 3106,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1204,7 +1272,8 @@ const routes = [
                 "toConnection": {
                     "type": "junction",
                     "at": 1279,
-                    "track": 3106
+                    "track": 3106,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1222,12 +1291,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 3286,
-                    "track": 1100
+                    "track": 1100,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 3420,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1245,7 +1316,8 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 3309,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -1300,7 +1372,8 @@ const routes = [
                 "toConnection": {
                     "type": "junction",
                     "at": 5032,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1325,12 +1398,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4705,
-                    "track": 2101
+                    "track": 2101,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4787,
-                    "track": 2252
+                    "track": 2252,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1350,7 +1425,8 @@ const routes = [
                     "type": "junction",
                     "at": 8640,
                     "track": 2200,
-                    "sc_name": "2142B"
+                    "sc_name": "2142B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1422,7 +1498,8 @@ const routes = [
                     "at": 8529,
                     "track": 2252,
                     "sc_name": "2142A",
-                    "elr": "ECM1"
+                    "elr": "ECM1",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -1441,12 +1518,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4821,
-                    "track": 2252
+                    "track": 2252,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4888,
-                    "track": 2101
+                    "track": 2101,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1464,12 +1543,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4810,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4933,
-                    "track": 2100
+                    "track": 2100,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1487,12 +1568,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4605,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4680,
-                    "track": 2101
+                    "track": 2101,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1510,12 +1593,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4656,
-                    "track": 1100
+                    "track": 1100,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4719,
-                    "track": 2100
+                    "track": 2100,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1533,12 +1618,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4829,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4933,
-                    "track": 1100
+                    "track": 1100,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1556,12 +1643,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4865,
-                    "track": 1202
+                    "track": 1202,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4943,
-                    "track": 1200
+                    "track": 1200,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1633,12 +1722,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 4162,
-                    "track": 2300
+                    "track": 2300,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4235,
-                    "track": 2101
+                    "track": 2101,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1657,7 +1748,8 @@ const routes = [
                 "toConnection": {
                     "type": "junction",
                     "at": 4203,
-                    "track": 2200
+                    "track": 2200,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1680,7 +1772,8 @@ const routes = [
                     "type": "junction",
                     "at": 4312,
                     "track": 1200,
-                    "elr": "ECM1"
+                    "elr": "ECM1",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1710,7 +1803,8 @@ const routes = [
                     "type": "junction",
                     "at": 4244,
                     "track": 1100,
-                    "elr": "MEB1"
+                    "elr": "MEB1",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1736,12 +1830,14 @@ const routes = [
                     "type": "junction",
                     "at": 4147,
                     "track": 1100,
-                    "elr": "CFP"
+                    "elr": "CFP",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 4226,
-                    "track": 1202
+                    "track": 1202,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1763,13 +1859,15 @@ const routes = [
                     "type": "junction",
                     "at": 3864,
                     "track": 1100,
-                    "elr": "MEB1"
+                    "elr": "MEB1",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 3994,
                     "track": 1100,
-                    "elr": "CFP"
+                    "elr": "CFP",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1786,7 +1884,8 @@ const routes = [
                 "altRoute": null,
                 "fromConnection": {
                     "type": "buffer",
-                    "at": 5362
+                    "at": 5362,
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -1806,13 +1905,15 @@ const routes = [
                     "type": "junction",
                     "at": 5741,
                     "track": 1200,
-                    "sc_name": "2102A"
+                    "sc_name": "2102A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 5811,
                     "track": 1202,
-                    "sc_name": "2102B"
+                    "sc_name": "2102B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1831,13 +1932,15 @@ const routes = [
                     "type": "junction",
                     "at": 5741,
                     "track": 1202,
-                    "sc_name": "2103A"
+                    "sc_name": "2103A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 5810,
                     "track": 3802,
-                    "sc_name": "2103B"
+                    "sc_name": "2103B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1856,13 +1959,15 @@ const routes = [
                     "type": "junction",
                     "at": 5824,
                     "track": 1202,
-                    "sc_name": "2103A"
+                    "sc_name": "2103A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 5894,
                     "track": 3802,
-                    "sc_name": "2103B"
+                    "sc_name": "2103B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1881,7 +1986,8 @@ const routes = [
                     "type": "junction",
                     "at": 5823,
                     "track": 5966,
-                    "sc_name": "2104"
+                    "sc_name": "2104",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -1922,13 +2028,15 @@ const routes = [
                     "type": "junction",
                     "at": 5904,
                     "track": 3802,
-                    "sc_name": "2107A"
+                    "sc_name": "2107A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 5966,
                     "track": 3801,
-                    "sc_name": "2107B"
+                    "sc_name": "2107B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1947,13 +2055,15 @@ const routes = [
                     "type": "junction",
                     "at": 5948,
                     "track": 3802,
-                    "sc_name": "2108A"
+                    "sc_name": "2108A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 6031,
                     "track": 1202,
-                    "sc_name": "2108B"
+                    "sc_name": "2108B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -1972,7 +2082,8 @@ const routes = [
                     "type": "junction",
                     "at": 5969,
                     "track": 3801,
-                    "sc_name": "2109"
+                    "sc_name": "2109",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -2045,13 +2156,15 @@ const routes = [
                     "type": "junction",
                     "at": 6661,
                     "track": 2252,
-                    "sc_name": "2119A"
+                    "sc_name": "2119A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 6731,
                     "track": 3800,
-                    "sc_name": "2119B"
+                    "sc_name": "2119B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2070,13 +2183,15 @@ const routes = [
                     "type": "junction",
                     "at": 6734,
                     "track": 3800,
-                    "sc_name": "2121A"
+                    "sc_name": "2121A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 6812,
                     "track": 2252,
-                    "sc_name": "2121B"
+                    "sc_name": "2121B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2095,10 +2210,12 @@ const routes = [
                     "type": "junction",
                     "at": 6620,
                     "track": 3800,
-                    "sc_name": "2117"
+                    "sc_name": "2117",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2117,13 +2234,15 @@ const routes = [
                     "type": "junction",
                     "at": 6626,
                     "track": 2200,
-                    "sc_name": "2118A"
+                    "sc_name": "2118A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 6728,
                     "track": 3901,
-                    "sc_name": "2118B"
+                    "sc_name": "2118B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2142,13 +2261,15 @@ const routes = [
                     "type": "junction",
                     "at": 6765,
                     "track": 3901,
-                    "sc_name": "2122A"
+                    "sc_name": "2122A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 6846,
                     "track": 2200,
-                    "sc_name": "2122B"
+                    "sc_name": "2122B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2167,10 +2288,12 @@ const routes = [
                     "type": "junction",
                     "at": 6790,
                     "track": 3800,
-                    "sc_name": "2117"
+                    "sc_name": "2117",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2189,13 +2312,15 @@ const routes = [
                     "type": "junction",
                     "at": 6790,
                     "track": 3900,
-                    "sc_name": "2123A"
+                    "sc_name": "2123A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 6842,
                     "track": 3901,
-                    "sc_name": "2123B"
+                    "sc_name": "2123B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2214,13 +2339,15 @@ const routes = [
                     "type": "junction",
                     "at": 6731,
                     "track": 3901,
-                    "sc_name": "2120A"
+                    "sc_name": "2120A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 6778,
                     "track": 3800,
-                    "sc_name": "2120B"
+                    "sc_name": "2120B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2240,7 +2367,8 @@ const routes = [
                     "type": "junction",
                     "at": 8269,
                     "track": 1152,
-                    "sc_name": "2148"
+                    "sc_name": "2148",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2260,7 +2388,8 @@ const routes = [
                     "type": "junction",
                     "at": 8269,
                     "track": 1152,
-                    "sc_name": "2148"
+                    "sc_name": "2148",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2286,7 +2415,8 @@ const routes = [
                     "showAltRuler": false
                 },
                 "fromConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -2306,7 +2436,8 @@ const routes = [
                     "type": "junction",
                     "at": 8269,
                     "track": 3901,
-                    "sc_name": "2148"
+                    "sc_name": "2148",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -2323,13 +2454,15 @@ const routes = [
                 "tid": 3900,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 34810,
                     "track": 3800,
-                    "sc_name": "5506B"
+                    "sc_name": "5506B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2348,13 +2481,15 @@ const routes = [
                     "type": "junction",
                     "at": 34710,
                     "track": 1200,
-                    "sc_name": "5506A"
+                    "sc_name": "5506A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 35535,
                     "track": 2500,
-                    "sc_name": "5511B"
+                    "sc_name": "5511B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2408,13 +2543,15 @@ const routes = [
                     "type": "junction",
                     "at": 34929,
                     "track": 3800,
-                    "sc_name": "5507A"
+                    "sc_name": "5507A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 35559,
                     "track": 1500,
-                    "sc_name": "5517B"
+                    "sc_name": "5517B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2433,13 +2570,15 @@ const routes = [
                     "type": "junction",
                     "at": 35488,
                     "track": 1200,
-                    "sc_name": "5517A"
+                    "sc_name": "5517A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 36002,
                     "track": 1200,
-                    "sc_name": "5525"
+                    "sc_name": "5525",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2472,13 +2611,15 @@ const routes = [
                     "type": "junction",
                     "at": 35459,
                     "track": 2200,
-                    "sc_name": "5517A"
+                    "sc_name": "5517A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 35998,
                     "track": 2200,
-                    "sc_name": "5525"
+                    "sc_name": "5525",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2511,13 +2652,15 @@ const routes = [
                     "type": "junction",
                     "at": 41963,
                     "track": 2100,
-                    "sc_name": "5568"
+                    "sc_name": "5568",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 121689,
                     "track": 2100,
-                    "sc_name": "1166"
+                    "sc_name": "1166",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2550,13 +2693,15 @@ const routes = [
                     "type": "junction",
                     "at": 41963,
                     "track": 1100,
-                    "sc_name": "5569"
+                    "sc_name": "5569",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 104262,
                     "track": 1100,
-                    "sc_name": "1146"
+                    "sc_name": "1146",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2589,13 +2734,15 @@ const routes = [
                     "type": "junction",
                     "at": 115346,
                     "track": 1100,
-                    "sc_name": "1158"
+                    "sc_name": "1158",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 118369,
                     "track": 1100,
-                    "sc_name": "1161"
+                    "sc_name": "1161",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2628,13 +2775,15 @@ const routes = [
                     "type": "junction",
                     "at": 334112,
                     "track": 1100,
-                    "sc_name": "831A"
+                    "sc_name": "831A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 334239,
                     "track": 2100,
-                    "sc_name": "831B"
+                    "sc_name": "831B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2653,13 +2802,15 @@ const routes = [
                     "type": "junction",
                     "at": 334252,
                     "track": 2100,
-                    "sc_name": "832A"
+                    "sc_name": "832A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 337193,
                     "track": 2100,
-                    "sc_name": "851"
+                    "sc_name": "851",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2692,7 +2843,8 @@ const routes = [
                     "type": "junction",
                     "at": 334480,
                     "track": 1200,
-                    "sc_name": "834A"
+                    "sc_name": "834A",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -2733,13 +2885,15 @@ const routes = [
                     "type": "junction",
                     "at": 337211,
                     "track": 2100,
-                    "sc_name": "835A"
+                    "sc_name": "835A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 337288,
                     "track": 1100,
-                    "sc_name": "835B"
+                    "sc_name": "835B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2758,13 +2912,15 @@ const routes = [
                     "type": "junction",
                     "at": 337548,
                     "track": 1100,
-                    "sc_name": "855"
+                    "sc_name": "855",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 384063,
                     "track": 1100,
-                    "sc_name": "884"
+                    "sc_name": "884",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2797,13 +2953,15 @@ const routes = [
                     "type": "junction",
                     "at": 382354,
                     "track": 2200,
-                    "sc_name": "881A"
+                    "sc_name": "881A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 382554,
                     "track": 2100,
-                    "sc_name": "881B"
+                    "sc_name": "881B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2822,13 +2980,15 @@ const routes = [
                     "type": "junction",
                     "at": 382568,
                     "track": 2100,
-                    "sc_name": "882A"
+                    "sc_name": "882A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 382731,
                     "track": 2200,
-                    "sc_name": "882B"
+                    "sc_name": "882B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2847,13 +3007,15 @@ const routes = [
                     "type": "junction",
                     "at": 418701,
                     "track": 2100,
-                    "sc_name": "751A"
+                    "sc_name": "751A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 418808,
                     "track": 1100,
-                    "sc_name": "751B"
+                    "sc_name": "751B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2872,13 +3034,15 @@ const routes = [
                     "type": "junction",
                     "at": 397514,
                     "track": 1100,
-                    "sc_name": "1121A"
+                    "sc_name": "1121A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 397621,
                     "track": 2100,
-                    "sc_name": "1121B"
+                    "sc_name": "1121B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2936,7 +3100,8 @@ const routes = [
                     "type": "junction",
                     "at": 331399,
                     "track": 3811,
-                    "sc_name": "786B"
+                    "sc_name": "786B",
+                    "connectionLink": null
                 }
             },
             {
@@ -2949,13 +3114,15 @@ const routes = [
                     "type": "junction",
                     "at": 321879,
                     "track": 2100,
-                    "sc_name": "2295AB"
+                    "sc_name": "2295AB",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 322052,
                     "track": 1100,
-                    "sc_name": "2295C"
+                    "sc_name": "2295C",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -2978,7 +3145,8 @@ const routes = [
                     "type": "junction",
                     "at": 32879,
                     "track": 2100,
-                    "sc_name": "2295AB"
+                    "sc_name": "2295AB",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3001,7 +3169,8 @@ const routes = [
                     "type": "junction",
                     "at": 322052,
                     "track": 2100,
-                    "sc_name": "2296"
+                    "sc_name": "2296",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3063,13 +3232,15 @@ const routes = [
                     "type": "junction",
                     "at": 323154,
                     "track": 1100,
-                    "sc_name": "2297A"
+                    "sc_name": "2297A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 323311,
                     "track": 2100,
-                    "sc_name": "2297B"
+                    "sc_name": "2297B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3088,13 +3259,15 @@ const routes = [
                     "type": "junction",
                     "at": 323344,
                     "track": 2100,
-                    "sc_name": "2298A"
+                    "sc_name": "2298A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 323532,
                     "track": 1150,
-                    "sc_name": "2298B"
+                    "sc_name": "2298B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3113,13 +3286,15 @@ const routes = [
                     "type": "junction",
                     "at": 323555,
                     "track": 1150,
-                    "sc_name": "2299A"
+                    "sc_name": "2299A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 323717,
                     "track": 2150,
-                    "sc_name": "2299B"
+                    "sc_name": "2299B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3138,13 +3313,15 @@ const routes = [
                     "type": "junction",
                     "at": 329986,
                     "track": 1150,
-                    "sc_name": "761A"
+                    "sc_name": "761A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 330049,
                     "track": 2150,
-                    "sc_name": "761B"
+                    "sc_name": "761B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3163,13 +3340,15 @@ const routes = [
                     "type": "junction",
                     "at": 330068,
                     "track": 2150,
-                    "sc_name": "762A"
+                    "sc_name": "762A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 330803,
                     "track": 2150,
-                    "sc_name": "767B"
+                    "sc_name": "767B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3200,13 +3379,15 @@ const routes = [
                 "altRoute": null,
                 "fromConnection": {
                     "type": "buffer_stop",
-                    "at": 330003
+                    "at": 330003,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 330117,
                     "track": 3500,
-                    "sc_name": "762B"
+                    "sc_name": "762B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3225,13 +3406,15 @@ const routes = [
                     "type": "junction",
                     "at": 330224,
                     "track": 3500,
-                    "sc_name": "763"
+                    "sc_name": "763",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 331019,
                     "track": 2150,
-                    "sc_name": "776B"
+                    "sc_name": "776B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3264,13 +3447,15 @@ const routes = [
                     "type": "junction",
                     "at": 330255,
                     "track": 3901,
-                    "sc_name": "764"
+                    "sc_name": "764",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 330953,
                     "track": 3901,
-                    "sc_name": "775"
+                    "sc_name": "775",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3303,13 +3488,15 @@ const routes = [
                     "type": "junction",
                     "at": 330288,
                     "track": 3902,
-                    "sc_name": "765"
+                    "sc_name": "765",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 330924,
                     "track": 3902,
-                    "sc_name": "774"
+                    "sc_name": "774",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3342,13 +3529,15 @@ const routes = [
                     "type": "junction",
                     "at": 330827,
                     "track": 2150,
-                    "sc_name": "771A"
+                    "sc_name": "771A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 330901,
                     "track": 1150,
-                    "sc_name": "771B"
+                    "sc_name": "771B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3367,13 +3556,15 @@ const routes = [
                     "type": "junction",
                     "at": 330786,
                     "track": 1100,
-                    "sc_name": "768A"
+                    "sc_name": "768A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 330908,
                     "track": 2100,
-                    "sc_name": "768B"
+                    "sc_name": "768B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3392,13 +3583,15 @@ const routes = [
                     "type": "junction",
                     "at": 330918,
                     "track": 1150,
-                    "sc_name": "772A"
+                    "sc_name": "772A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 331026,
                     "track": 2100,
-                    "sc_name": "772B"
+                    "sc_name": "772B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3417,13 +3610,15 @@ const routes = [
                     "type": "junction",
                     "at": 331040,
                     "track": 2100,
-                    "sc_name": "777A"
+                    "sc_name": "777A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 331986,
                     "track": 3810,
-                    "sc_name": "803"
+                    "sc_name": "803",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3484,13 +3679,15 @@ const routes = [
                     "type": "junction",
                     "at": 331311,
                     "track": 3811,
-                    "sc_name": "786A"
+                    "sc_name": "786A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332060,
                     "track": 3800,
-                    "sc_name": "804"
+                    "sc_name": "804",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3516,13 +3713,15 @@ const routes = [
                     "type": "junction",
                     "at": 331143,
                     "track": 2150,
-                    "sc_name": "789A"
+                    "sc_name": "789A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 331299,
                     "track": 3811,
-                    "sc_name": "789B"
+                    "sc_name": "789B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3541,13 +3740,15 @@ const routes = [
                     "type": "junction",
                     "at": 331131,
                     "track": 2100,
-                    "sc_name": "781A"
+                    "sc_name": "781A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 331197,
                     "track": 1100,
-                    "sc_name": "781B"
+                    "sc_name": "781B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3566,13 +3767,15 @@ const routes = [
                     "type": "junction",
                     "at": 331227,
                     "track": 1100,
-                    "sc_name": "783A"
+                    "sc_name": "783A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 331359,
                     "track": 2100,
-                    "sc_name": "783B"
+                    "sc_name": "783B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3591,11 +3794,13 @@ const routes = [
                     "type": "junction",
                     "at": 331398,
                     "track": 1100,
-                    "sc_name": "788"
+                    "sc_name": "788",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "buffer_stop",
-                    "at": 331751
+                    "at": 331751,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3621,13 +3826,15 @@ const routes = [
                     "type": "junction",
                     "at": 331197,
                     "track": 3811,
-                    "sc_name": "784"
+                    "sc_name": "784",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332060,
                     "track": 3800,
-                    "sc_name": "804"
+                    "sc_name": "804",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3660,10 +3867,12 @@ const routes = [
                     "type": "junction",
                     "at": 331248,
                     "track": 3809,
-                    "sc_name": "784"
+                    "sc_name": "784",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3682,10 +3891,12 @@ const routes = [
                     "type": "junction",
                     "at": 331331,
                     "track": 3606,
-                    "sc_name": "785"
+                    "sc_name": "785",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3708,13 +3919,15 @@ const routes = [
                 "altRoute": null,
                 "tid": 3608,
                 "fromConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332116,
                     "track": 2100,
-                    "sc_name": "807"
+                    "sc_name": "807",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3740,13 +3953,15 @@ const routes = [
                     "type": "junction",
                     "at": 332093,
                     "track": 1100,
-                    "sc_name": "808A"
+                    "sc_name": "808A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332182,
                     "track": 2100,
-                    "sc_name": "808B"
+                    "sc_name": "808B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3765,7 +3980,8 @@ const routes = [
                     "type": "junction",
                     "at": 332060,
                     "track": 3809,
-                    "sc_name": "804"
+                    "sc_name": "804",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3801,7 +4017,8 @@ const routes = [
                     "type": "junction",
                     "at": 332449,
                     "track": 2100,
-                    "sc_name": "812B"
+                    "sc_name": "812B",
+                    "connectionLink": null
                 }
             },
             {
@@ -3811,13 +4028,15 @@ const routes = [
                     "type": "junction",
                     "at": 332101,
                     "track": 3800,
-                    "sc_name": "806A"
+                    "sc_name": "806A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332261,
                     "track": 2100,
-                    "sc_name": "806B"
+                    "sc_name": "806B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3836,13 +4055,15 @@ const routes = [
                     "type": "junction",
                     "at": 332281,
                     "track": 2100,
-                    "sc_name": "811A"
+                    "sc_name": "811A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332365,
                     "track": 1100,
-                    "sc_name": "811B"
+                    "sc_name": "811B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3861,10 +4082,12 @@ const routes = [
                     "type": "junction",
                     "at": 332363,
                     "track": 3800,
-                    "sc_name": "812A"
+                    "sc_name": "812A",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3897,10 +4120,12 @@ const routes = [
                     "type": "junction",
                     "at": 331316,
                     "track": 2150,
-                    "sc_name": "787A"
+                    "sc_name": "787A",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3926,10 +4151,12 @@ const routes = [
                     "type": "junction",
                     "at": 331393,
                     "track": 3902,
-                    "sc_name": "790"
+                    "sc_name": "790",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3955,13 +4182,15 @@ const routes = [
                     "type": "junction",
                     "at": 337177,
                     "track": 2200,
-                    "sc_name": "852A"
+                    "sc_name": "852A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 337304,
                     "track": 2100,
-                    "sc_name": "852B"
+                    "sc_name": "852B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -3980,13 +4209,15 @@ const routes = [
                     "type": "junction",
                     "at": 337429,
                     "track": 2100,
-                    "sc_name": "854A"
+                    "sc_name": "854A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 337572,
                     "track": 2200,
-                    "sc_name": "854B"
+                    "sc_name": "854B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4005,13 +4236,15 @@ const routes = [
                     "type": "junction",
                     "at": 334737,
                     "track": 2200,
-                    "sc_name": "843A"
+                    "sc_name": "843A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 334806,
                     "track": 1200,
-                    "sc_name": "843B"
+                    "sc_name": "843B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4033,7 +4266,8 @@ const routes = [
                     "type": "junction",
                     "at": 334652,
                     "track": 2200,
-                    "sc_name": "842"
+                    "sc_name": "842",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4056,7 +4290,8 @@ const routes = [
                     "at": 334832,
                     "track": 1100,
                     "sc_name": "845",
-                    "elr": "HAY1"
+                    "elr": "HAY1",
+                    "connectionLink": null
                 }
             },
             {
@@ -4066,13 +4301,15 @@ const routes = [
                     "type": "junction",
                     "at": 348532,
                     "track": 1100,
-                    "sc_name": "862A"
+                    "sc_name": "862A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 348597,
                     "track": 2100,
-                    "sc_name": "862B"
+                    "sc_name": "862B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4091,13 +4328,15 @@ const routes = [
                     "type": "junction",
                     "at": 348621,
                     "track": 2100,
-                    "sc_name": "863A"
+                    "sc_name": "863A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 348820,
                     "track": 2200,
-                    "sc_name": "863B"
+                    "sc_name": "863B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4116,13 +4355,15 @@ const routes = [
                     "type": "junction",
                     "at": 348640,
                     "track": 1100,
-                    "sc_name": "864A"
+                    "sc_name": "864A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 348839,
                     "track": 1200,
-                    "sc_name": "864B"
+                    "sc_name": "864B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4138,13 +4379,15 @@ const routes = [
                 "tid": 3901,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 348557,
                     "track": 3900,
-                    "sc_name": "861B"
+                    "sc_name": "861B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4163,10 +4406,12 @@ const routes = [
                     "type": "junction",
                     "at": 348490,
                     "track": 1200,
-                    "sc_name": "861A"
+                    "sc_name": "861A",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4204,7 +4449,8 @@ const routes = [
                 "altRoute": null,
                 "fromConnection": null,
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4221,7 +4467,8 @@ const routes = [
                 "altRoute": null,
                 "fromConnection": null,
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4247,13 +4494,15 @@ const routes = [
                     "type": "junction",
                     "at": 349612,
                     "track": 1200,
-                    "sc_name": "865A"
+                    "sc_name": "865A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 349771,
                     "track": 1100,
-                    "sc_name": "865B"
+                    "sc_name": "865B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4272,13 +4521,15 @@ const routes = [
                     "type": "junction",
                     "at": 349721,
                     "track": 2200,
-                    "sc_name": "866A"
+                    "sc_name": "866A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 349839,
                     "track": 2100,
-                    "sc_name": "866B"
+                    "sc_name": "866B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4297,13 +4548,15 @@ const routes = [
                     "type": "junction",
                     "at": 307920,
                     "track": 1100,
-                    "sc_name": "2942A"
+                    "sc_name": "2942A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 308029,
                     "track": 2100,
-                    "sc_name": "2942B"
+                    "sc_name": "2942B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4319,10 +4572,12 @@ const routes = [
                 "altRoute": null,
                 "tid": 3901,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4340,10 +4595,12 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 294409,
-                    "track": 3901
+                    "track": 3901,
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4375,10 +4632,12 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 294437,
-                    "track": 3903
+                    "track": 3903,
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4396,10 +4655,12 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 294462,
-                    "track": 3903
+                    "track": 3903,
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4425,12 +4686,14 @@ const routes = [
                     "type": "junction",
                     "at": 294316,
                     "track": 1100,
-                    "sc_name": "2A"
+                    "sc_name": "2A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 294428,
-                    "track": 3901
+                    "track": 3901,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4448,12 +4711,14 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 294410,
-                    "track": 3900
+                    "track": 3900,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 294427,
-                    "track": 3903
+                    "track": 3903,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4472,13 +4737,15 @@ const routes = [
                     "type": "junction",
                     "at": 297597,
                     "track": 2100,
-                    "sc_name": "2951A"
+                    "sc_name": "2951A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 297757,
                     "track": 1100,
-                    "sc_name": "2951B"
+                    "sc_name": "2951B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4501,7 +4768,8 @@ const routes = [
                     "type": "junction",
                     "at": 297781,
                     "track": 1100,
-                    "sc_name": "2952"
+                    "sc_name": "2952",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4527,13 +4795,15 @@ const routes = [
                     "type": "junction",
                     "at": 306557,
                     "track": 1100,
-                    "sc_name": "2939A"
+                    "sc_name": "2939A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 306715,
                     "track": 2100,
-                    "sc_name": "2939B"
+                    "sc_name": "2939B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4556,7 +4826,8 @@ const routes = [
                     "type": "junction",
                     "at": 306468,
                     "track": 2100,
-                    "sc_name": "2938"
+                    "sc_name": "2938",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4579,7 +4850,8 @@ const routes = [
                     "type": "junction",
                     "at": 306741,
                     "track": 2100,
-                    "sc_name": "2940"
+                    "sc_name": "2940",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4602,7 +4874,8 @@ const routes = [
                     "type": "junction",
                     "at": 307898,
                     "track": 1100,
-                    "sc_name": "2942A"
+                    "sc_name": "2942A",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4625,7 +4898,8 @@ const routes = [
                     "type": "junction",
                     "at": 331909,
                     "track": 2100,
-                    "sc_name": "802"
+                    "sc_name": "802",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4662,7 +4936,8 @@ const routes = [
                     "type": "junction",
                     "at": 331056,
                     "track": 2150,
-                    "sc_name": "779"
+                    "sc_name": "779",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4685,7 +4960,8 @@ const routes = [
                     "type": "junction",
                     "at": 331056,
                     "track": 1150,
-                    "sc_name": "778"
+                    "sc_name": "778",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4719,13 +4995,15 @@ const routes = [
                     "type": "junction",
                     "at": 267520,
                     "track": 1100,
-                    "sc_name": "2282"
+                    "sc_name": "2282",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 275488,
                     "track": 1100,
-                    "sc_name": "2481"
+                    "sc_name": "2481",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4758,7 +5036,8 @@ const routes = [
                     "type": "junction",
                     "at": 270911,
                     "track": 2100,
-                    "sc_name": "2311A"
+                    "sc_name": "2311A",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -4800,7 +5079,8 @@ const routes = [
                     "type": "junction",
                     "at": 273651,
                     "track": 3200,
-                    "sc_name": "2400"
+                    "sc_name": "2400",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4843,7 +5123,8 @@ const routes = [
                     "type": "junction",
                     "at": 274829,
                     "track": 3301,
-                    "sc_name": "2442B"
+                    "sc_name": "2442B",
+                    "connectionLink": null
                 }
             },
             {
@@ -4853,7 +5134,8 @@ const routes = [
                     "type": "junction",
                     "at": 274251,
                     "track": 2200,
-                    "sc_name": "2423"
+                    "sc_name": "2423",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4889,7 +5171,8 @@ const routes = [
                     "type": "junction",
                     "at": 274817,
                     "track": 2200,
-                    "sc_name": "2445"
+                    "sc_name": "2445",
+                    "connectionLink": null
                 }
             },
             {
@@ -4899,10 +5182,12 @@ const routes = [
                     "type": "junction",
                     "at": 274285,
                     "track": 2808,
-                    "sc_name": "2424"
+                    "sc_name": "2424",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4918,13 +5203,15 @@ const routes = [
                 "altRoute": null,
                 "tid": 3607,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 274785,
                     "track": 2200,
-                    "sc_name": "2448"
+                    "sc_name": "2448",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4961,13 +5248,15 @@ const routes = [
                 "tid": 3900,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 274718,
                     "track": 3607,
-                    "sc_name": "2446B"
+                    "sc_name": "2446B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -4983,13 +5272,15 @@ const routes = [
                 "tid": 3606,
                 "altRoute": null,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 274750,
                     "track": 3607,
-                    "sc_name": "2447"
+                    "sc_name": "2447",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5008,7 +5299,8 @@ const routes = [
                     "type": "junction",
                     "at": 274157,
                     "track": 3200,
-                    "sc_name": "2461A"
+                    "sc_name": "2461A",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5051,7 +5343,8 @@ const routes = [
                     "type": "junction",
                     "at": 274862,
                     "track": 2200,
-                    "sc_name": "2445"
+                    "sc_name": "2445",
+                    "connectionLink": null
                 }
             },
             {
@@ -5061,13 +5354,15 @@ const routes = [
                     "type": "junction",
                     "at": 274220,
                     "track": 3301,
-                    "sc_name": "2452A"
+                    "sc_name": "2452A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 274398,
                     "track": 2808,
-                    "sc_name": "2426"
+                    "sc_name": "2426",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5100,13 +5395,15 @@ const routes = [
                     "type": "junction",
                     "at": 274128,
                     "track": 3302,
-                    "sc_name": "2413A"
+                    "sc_name": "2413A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 274216,
                     "track": 3301,
-                    "sc_name": "2416B"
+                    "sc_name": "2416B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5126,7 +5423,8 @@ const routes = [
                     "type": "junction",
                     "at": 274770,
                     "track": 3302,
-                    "sc_name": "2442A"
+                    "sc_name": "2442A",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5166,7 +5464,8 @@ const routes = [
                     "type": "junction",
                     "at": 131763,
                     "track": 2100,
-                    "sc_name": "1198"
+                    "sc_name": "1198",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -5193,7 +5492,8 @@ const routes = [
                     "type": "junction",
                     "at": 132244,
                     "track": 1100,
-                    "sc_name": "1203"
+                    "sc_name": "1203",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5250,7 +5550,8 @@ const routes = [
                     "type": "junction",
                     "at": 175573,
                     "track": 1100,
-                    "sc_name": "1316"
+                    "sc_name": "1316",
+                    "connectionLink": null
                 }
             },
             {
@@ -5260,13 +5561,15 @@ const routes = [
                     "type": "junction",
                     "at": 131866,
                     "track": 1100,
-                    "sc_name": "1197A"
+                    "sc_name": "1197A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 131973,
                     "track": 2100,
-                    "sc_name": "1197B"
+                    "sc_name": "1197B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5285,13 +5588,15 @@ const routes = [
                     "type": "junction",
                     "at": 132058,
                     "track": 2100,
-                    "sc_name": "1202A"
+                    "sc_name": "1202A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 132166,
                     "track": 1100,
-                    "sc_name": "1202B"
+                    "sc_name": "1202B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5310,13 +5615,15 @@ const routes = [
                     "type": "junction",
                     "at": 133864,
                     "track": 2100,
-                    "sc_name": "1217A"
+                    "sc_name": "1217A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 133962,
                     "track": 1100,
-                    "sc_name": "1217B"
+                    "sc_name": "1217B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5335,13 +5642,15 @@ const routes = [
                     "type": "junction",
                     "at": 133938,
                     "track": 2100,
-                    "sc_name": "1214A"
+                    "sc_name": "1214A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134028,
                     "track": 2200,
-                    "sc_name": "1214B"
+                    "sc_name": "1214B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5360,13 +5669,15 @@ const routes = [
                     "type": "junction",
                     "at": 133979,
                     "track": 1100,
-                    "sc_name": "1218"
+                    "sc_name": "1218",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134749,
                     "track": 1100,
-                    "sc_name": "1243"
+                    "sc_name": "1243",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5399,13 +5710,15 @@ const routes = [
                     "type": "junction",
                     "at": 134026,
                     "track": 1252,
-                    "sc_name": "1219A"
+                    "sc_name": "1219A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134095,
                     "track": 1200,
-                    "sc_name": "1219B"
+                    "sc_name": "1219B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5424,13 +5737,15 @@ const routes = [
                     "type": "junction",
                     "at": 134605,
                     "track": 1200,
-                    "sc_name": "1242A"
+                    "sc_name": "1242A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134711,
                     "track": 1252,
-                    "sc_name": "1242B"
+                    "sc_name": "1242B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5465,7 +5780,8 @@ const routes = [
                     "type": "junction",
                     "at": 134187,
                     "track": 2202,
-                    "sc_name": "1216A"
+                    "sc_name": "1216A",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5491,13 +5807,15 @@ const routes = [
                     "type": "junction",
                     "at": 134712,
                     "track": 2202,
-                    "sc_name": "1234A"
+                    "sc_name": "1234A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134824,
                     "track": 2100,
-                    "sc_name": "1234B"
+                    "sc_name": "1234B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5516,13 +5834,15 @@ const routes = [
                     "type": "junction",
                     "at": 134672,
                     "track": 2201,
-                    "sc_name": "1232A"
+                    "sc_name": "1232A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134786,
                     "track": 3700,
-                    "sc_name": "1233B"
+                    "sc_name": "1233B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5541,13 +5861,15 @@ const routes = [
                     "type": "junction",
                     "at": 134713,
                     "track": 3701,
-                    "sc_name": "1233A"
+                    "sc_name": "1233A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134786,
                     "track": 2202,
-                    "sc_name": "1232B"
+                    "sc_name": "1232B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5566,13 +5888,15 @@ const routes = [
                     "type": "junction",
                     "at": 134835,
                     "track": 2100,
-                    "sc_name": "1240A"
+                    "sc_name": "1240A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134901,
                     "track": 1100,
-                    "sc_name": "1240B"
+                    "sc_name": "1240B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5591,13 +5915,15 @@ const routes = [
                     "type": "junction",
                     "at": 134917,
                     "track": 1100,
-                    "sc_name": "1244A"
+                    "sc_name": "1244A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 135001,
                     "track": 1200,
-                    "sc_name": "1244B"
+                    "sc_name": "1244B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5616,13 +5942,15 @@ const routes = [
                     "type": "junction",
                     "at": 134970,
                     "track": 1100,
-                    "sc_name": "1241A"
+                    "sc_name": "1241A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 135047,
                     "track": 2100,
-                    "sc_name": "1241B"
+                    "sc_name": "1241B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5779,14 +6107,16 @@ const routes = [
                     "at": 134883,
                     "track": 1150,
                     "sc_name": "1235A",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 134995,
                     "track": 2150,
                     "sc_name": "1235B",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5809,14 +6139,16 @@ const routes = [
                     "at": 135014,
                     "track": 2150,
                     "sc_name": "1237A",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 135110,
                     "track": 1150,
                     "sc_name": "1237B",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5829,7 +6161,6 @@ const routes = [
                 ]
             },
             {
-                "fromConnection": null,
                 "toConnection": null,
                 "tid": 1100,
                 "altRoute": {
@@ -5844,10 +6175,17 @@ const routes = [
                         "yTo": 47,
                         "electrification": "none"
                     }
-                ]
+                ],
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 138682,
+                    "track": 1150,
+                    "sc_name": "1269",
+                    "elr": "PMJ",
+                    "connectionLink": null
+                }
             },
             {
-                "fromConnection": null,
                 "toConnection": null,
                 "tid": 2100,
                 "altRoute": {
@@ -5862,7 +6200,15 @@ const routes = [
                         "yTo": 46,
                         "electrification": "none"
                     }
-                ]
+                ],
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 138682,
+                    "track": 2150,
+                    "sc_name": "1268",
+                    "elr": "PMJ",
+                    "connectionLink": null
+                }
             },
             {
                 "altRoute": null,
@@ -5872,7 +6218,8 @@ const routes = [
                     "at": 143901,
                     "track": 1150,
                     "sc_name": "1281",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5902,7 +6249,8 @@ const routes = [
                     "at": 175573,
                     "track": 2100,
                     "sc_name": "1315",
-                    "elr": "ECM1"
+                    "elr": "ECM1",
+                    "connectionLink": null
                 }
             },
             {
@@ -5916,14 +6264,16 @@ const routes = [
                     "at": 143800,
                     "track": 2150,
                     "sc_name": "1280A",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 143876,
                     "track": 1150,
                     "sc_name": "1280B",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -5982,10 +6332,12 @@ const routes = [
                     "at": 134858,
                     "track": 2150,
                     "sc_name": "1236A",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6005,21 +6357,36 @@ const routes = [
                 ]
             },
             {
+                "fromConnection": null,
                 "tid": 1100,
                 "altRoute": {
                     "elr": "EMP",
                     "showAltRuler": true
                 },
-                "fromConnection": null,
                 "toConnection": {
                     "type": "junction",
                     "at": 134663,
                     "track": 2201,
-                    "sc_name": "1229"
+                    "sc_name": "1229",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
-                        "from": 134200,
+                        "from": 133914,
+                        "to": 133980,
+                        "yFrom": 45,
+                        "yTo": 45,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 133980,
+                        "to": 134134,
+                        "yFrom": 45,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134134,
                         "to": 134619,
                         "yFrom": 46,
                         "yTo": 46,
@@ -6046,18 +6413,33 @@ const routes = [
                     "at": 134833,
                     "track": 2150,
                     "sc_name": "1231",
-                    "elr": "PMJ"
+                    "elr": "PMJ",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
-                        "from": 134200,
-                        "to": 134789,
+                        "from": 133914,
+                        "to": 133980,
+                        "yFrom": 44,
+                        "yTo": 44,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 133980,
+                        "to": 134134,
+                        "yFrom": 44,
+                        "yTo": 45,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134134,
+                        "to": 134757,
                         "yFrom": 45,
                         "yTo": 45,
                         "electrification": "none"
                     },
                     {
-                        "from": 134789,
+                        "from": 134757,
                         "to": 134833,
                         "yFrom": 45,
                         "yTo": null,
@@ -6072,13 +6454,15 @@ const routes = [
                     "type": "junction",
                     "at": 124772,
                     "track": 1100,
-                    "sc_name": "1170A"
+                    "sc_name": "1170A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 124869,
                     "track": 2100,
-                    "sc_name": "1170B"
+                    "sc_name": "1170B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6097,13 +6481,15 @@ const routes = [
                     "type": "junction",
                     "at": 124923,
                     "track": 2100,
-                    "sc_name": "1171A"
+                    "sc_name": "1171A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 125047,
                     "track": 1100,
-                    "sc_name": "1171B"
+                    "sc_name": "1171B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6122,13 +6508,15 @@ const routes = [
                     "type": "junction",
                     "at": 178775,
                     "track": 1100,
-                    "sc_name": "2101"
+                    "sc_name": "2101",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 184821,
                     "track": 1100,
-                    "sc_name": "2103B"
+                    "sc_name": "2103B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6161,13 +6549,15 @@ const routes = [
                     "type": "junction",
                     "at": 184838,
                     "track": 1100,
-                    "sc_name": "2104A"
+                    "sc_name": "2104A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 184904,
                     "track": 2100,
-                    "sc_name": "2104B"
+                    "sc_name": "2104B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6186,13 +6576,15 @@ const routes = [
                     "type": "junction",
                     "at": 184921,
                     "track": 2100,
-                    "sc_name": "2105"
+                    "sc_name": "2105",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 187208,
                     "track": 2100,
-                    "sc_name": "2118"
+                    "sc_name": "2118",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6250,13 +6642,15 @@ const routes = [
                 "altRoute": null,
                 "tid": 3603,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 185828,
                     "track": 3200,
-                    "sc_name": "2113"
+                    "sc_name": "2113",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6282,13 +6676,15 @@ const routes = [
                     "type": "junction",
                     "at": 191865,
                     "track": 1100,
-                    "sc_name": "2126A"
+                    "sc_name": "2126A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 191974,
                     "track": 2100,
-                    "sc_name": "2126B"
+                    "sc_name": "2126B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6307,13 +6703,15 @@ const routes = [
                     "type": "junction",
                     "at": 191996,
                     "track": 2100,
-                    "sc_name": "2120A"
+                    "sc_name": "2120A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 192105,
                     "track": 1100,
-                    "sc_name": "2120B"
+                    "sc_name": "2120B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6332,7 +6730,8 @@ const routes = [
                     "showAltRuler": false
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6354,7 +6753,8 @@ const routes = [
                     "type": "junction",
                     "at": 333682,
                     "track": 1802,
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 }
             },
             {
@@ -6378,7 +6778,8 @@ const routes = [
                     "at": 334302,
                     "track": 1801,
                     "sc_name": "798",
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 }
             },
             {
@@ -6422,14 +6823,16 @@ const routes = [
                     "at": 334407,
                     "track": 1200,
                     "sc_name": "833B",
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 },
                 "fromConnection": {
                     "type": "junction",
                     "at": 333646,
                     "track": 1802,
                     "sc_name": "57",
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 }
             },
             {
@@ -6444,7 +6847,8 @@ const routes = [
                     "at": 334470,
                     "track": 1200,
                     "sc_name": "832B",
-                    "elr": "ECM1"
+                    "elr": "ECM1",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6498,7 +6902,8 @@ const routes = [
                     "at": 334611,
                     "track": 2200,
                     "sc_name": "834B",
-                    "elr": "ECM5"
+                    "elr": "ECM5",
+                    "connectionLink": null
                 }
             },
             {
@@ -6513,7 +6918,8 @@ const routes = [
                     "at": 334647,
                     "track": 2200,
                     "sc_name": "841B",
-                    "elr": "ECM5"
+                    "elr": "ECM5",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6543,7 +6949,8 @@ const routes = [
                     "at": 334832,
                     "track": 3100,
                     "sc_name": "845",
-                    "elr": "HAY1"
+                    "elr": "HAY1",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -6568,7 +6975,8 @@ const routes = [
                     "at": 334832,
                     "track": 3100,
                     "sc_name": "845",
-                    "elr": "HAY1"
+                    "elr": "HAY1",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6598,14 +7006,16 @@ const routes = [
                     "at": 333603,
                     "track": 1200,
                     "sc_name": "796A",
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 333659,
                     "track": 2200,
                     "sc_name": "796B",
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6628,14 +7038,16 @@ const routes = [
                     "at": 333670,
                     "track": 2200,
                     "sc_name": "797A",
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 333723,
                     "track": 2901,
                     "sc_name": "797B",
-                    "elr": "HOS"
+                    "elr": "HOS",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6654,14 +7066,16 @@ const routes = [
                     "showAltRuler": false
                 },
                 "fromConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332145,
                     "track": 3804,
                     "sc_name": "821",
-                    "elr": "YMS"
+                    "elr": "YMS",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6687,14 +7101,16 @@ const routes = [
                     "showAltRuler": false
                 },
                 "fromConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 332117,
                     "track": 3602,
                     "sc_name": "820B",
-                    "elr": "YMS"
+                    "elr": "YMS",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6720,13 +7136,15 @@ const routes = [
                     "type": "junction",
                     "at": 370328,
                     "track": 2100,
-                    "sc_name": "872A"
+                    "sc_name": "872A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 370478,
                     "track": 2200,
-                    "sc_name": "872B"
+                    "sc_name": "872B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6745,13 +7163,15 @@ const routes = [
                     "type": "junction",
                     "at": 370328,
                     "track": 1100,
-                    "sc_name": "871A"
+                    "sc_name": "871A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 370489,
                     "track": 1200,
-                    "sc_name": "871B"
+                    "sc_name": "871B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6770,13 +7190,15 @@ const routes = [
                     "type": "junction",
                     "at": 371222,
                     "track": 1100,
-                    "sc_name": "873A"
+                    "sc_name": "873A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 371287,
                     "track": 2100,
-                    "sc_name": "873B"
+                    "sc_name": "873B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6795,13 +7217,15 @@ const routes = [
                     "type": "junction",
                     "at": 371935,
                     "track": 2200,
-                    "sc_name": "875A"
+                    "sc_name": "875A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 372031,
                     "track": 2100,
-                    "sc_name": "875B"
+                    "sc_name": "875B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6817,12 +7241,14 @@ const routes = [
                 "altRoute": null,
                 "tid": 3901,
                 "fromConnection": {
-                    "type": "buffer"
+                    "type": "buffer",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 371719,
-                    "track": 3900
+                    "track": 3900,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6847,13 +7273,15 @@ const routes = [
                 "fromConnection": {
                     "type": "junction",
                     "at": 371313,
-                    "track": 3901
+                    "track": 3901,
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 371820,
                     "track": 2200,
-                    "sc_name": "874B"
+                    "sc_name": "874B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6890,12 +7318,14 @@ const routes = [
                 "altRoute": null,
                 "tid": 3902,
                 "fromConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 371674,
-                    "track": 3901
+                    "track": 3901,
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6926,7 +7356,8 @@ const routes = [
                     "at": 382837,
                     "track": 1200,
                     "sc_name": "883",
-                    "elr": "ECM5"
+                    "elr": "ECM5",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -6998,13 +7429,15 @@ const routes = [
                     "type": "junction",
                     "at": 384115,
                     "track": 1100,
-                    "sc_name": "885A"
+                    "sc_name": "885A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 384222,
                     "track": 2100,
-                    "sc_name": "885B"
+                    "sc_name": "885B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -7023,13 +7456,15 @@ const routes = [
                     "type": "junction",
                     "at": 384822,
                     "track": 2100,
-                    "sc_name": "888A"
+                    "sc_name": "888A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 384887,
                     "track": 1100,
-                    "sc_name": "888B"
+                    "sc_name": "888B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -7103,7 +7538,8 @@ const routes = [
                     "at": 384758,
                     "track": 1100,
                     "sc_name": "887",
-                    "elr": "ECM5"
+                    "elr": "ECM5",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -7126,7 +7562,8 @@ const routes = [
                     "at": 384895,
                     "track": 1100,
                     "sc_name": "889",
-                    "elr": "ECM5"
+                    "elr": "ECM5",
+                    "connectionLink": null
                 },
                 "toConnection": null,
                 "shape": [
@@ -7146,10 +7583,12 @@ const routes = [
                     "type": "junction",
                     "at": 385888,
                     "track": 2100,
-                    "sc_name": "897A"
+                    "sc_name": "897A",
+                    "connectionLink": null
                 },
                 "toConnection": {
-                    "type": "buffer_stop"
+                    "type": "buffer_stop",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -7180,7 +7619,8 @@ const routes = [
                     "at": 385978,
                     "track": 2800,
                     "sc_name": "897B",
-                    "elr": "ECM5"
+                    "elr": "ECM5",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -7199,13 +7639,15 @@ const routes = [
                     "type": "junction",
                     "at": 397636,
                     "track": 2100,
-                    "sc_name": "1120A"
+                    "sc_name": "1120A",
+                    "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 397743,
                     "track": 1100,
-                    "sc_name": "1120B"
+                    "sc_name": "1120B",
+                    "connectionLink": null
                 },
                 "shape": [
                     {
@@ -7214,6 +7656,1162 @@ const routes = [
                         "yFrom": null,
                         "yTo": null,
                         "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 137201,
+                    "track": 1200,
+                    "sc_name": "1264A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 137284,
+                    "track": 1100,
+                    "sc_name": "1264B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 137201,
+                        "to": 137284,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 137298,
+                    "track": 1100,
+                    "sc_name": "1265A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 137374,
+                    "track": 2100,
+                    "sc_name": "1265B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 137298,
+                        "to": 137374,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 137389,
+                    "track": 2100,
+                    "sc_name": "1266A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 137532,
+                    "track": 1150,
+                    "sc_name": "1266B",
+                    "elr": "PMJ",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 137389,
+                        "to": 137532,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": {
+                    "elr": "PMJ",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 137543,
+                    "track": 1150,
+                    "sc_name": "1267A",
+                    "elr": "PMJ",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 137619,
+                    "track": 2150,
+                    "sc_name": "1267B",
+                    "elr": "PMJ",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 137543,
+                        "to": 137619,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "fromConnection": null,
+                "tid": 3200,
+                "altRoute": {
+                    "elr": "EMP",
+                    "showAltRuler": false
+                },
+                "shape": [
+                    {
+                        "from": 133914,
+                        "to": 133970,
+                        "yFrom": 46,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 133970,
+                        "to": 134134,
+                        "yFrom": 46,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134134,
+                        "to": 134295,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 134295,
+                    "track": 2201,
+                    "sc_name": "1216B",
+                    "elr": "ECM1",
+                    "connectionLink": null
+                }
+            },
+            {
+                "tid": 3400,
+                "altRoute": {
+                    "elr": "EMP",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 133970,
+                    "track": 3200,
+                    "sc_name": "1213",
+                    "elr": "EMP",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 134159,
+                    "track": 2200,
+                    "sc_name": "1215",
+                    "elr": "ECM1",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 133970,
+                        "to": 134038,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134038,
+                        "to": 134159,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "fromConnection": null,
+                "tid": 3300,
+                "altRoute": {
+                    "elr": "EMP",
+                    "showAltRuler": false
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 134757,
+                    "track": 2100,
+                    "sc_name": "1230",
+                    "elr": "EMP",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 133914,
+                        "to": 133980,
+                        "yFrom": 43,
+                        "yTo": 43,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 133980,
+                        "to": 134134,
+                        "yFrom": 43,
+                        "yTo": 44,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134134,
+                        "to": 134713,
+                        "yFrom": 44,
+                        "yTo": 44,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134713,
+                        "to": 134757,
+                        "yFrom": 44,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3900,
+                "altRoute": {
+                    "elr": "EMP",
+                    "showAltRuler": false
+                },
+                "fromConnection": null,
+                "toConnection": {
+                    "type": "junction",
+                    "at": 134038,
+                    "track": 3400,
+                    "sc_name": "1211B",
+                    "elr": "EMP",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 133914,
+                        "to": 134038,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3900,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 134502,
+                    "track": 1200,
+                    "sc_name": "1228A",
+                    "elr": "ECM1",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 134502,
+                        "to": 134610,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134610,
+                        "to": 134768,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3916,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 134610,
+                    "track": 3900,
+                    "sc_name": "1228B",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 134610,
+                        "to": 134714,
+                        "yFrom": null,
+                        "yTo": 54,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3917,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 134509,
+                        "to": 134689,
+                        "yFrom": 56,
+                        "yTo": 56,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "toConnection": null,
+                "tid": 3801,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135005,
+                    "track": 1200,
+                    "sc_name": "1245A",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 135005,
+                        "to": 135064,
+                        "yFrom": null,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 135064,
+                        "to": 135091,
+                        "yFrom": 52,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2801,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135064,
+                    "track": 3801,
+                    "sc_name": "1245B",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 135064,
+                        "to": 135108,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 135108,
+                        "to": 135547,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1801,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135091,
+                    "track": 3801,
+                    "sc_name": "1249A",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 135091,
+                        "to": 135135,
+                        "yFrom": null,
+                        "yTo": 54,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 135135,
+                        "to": 135521,
+                        "yFrom": 54,
+                        "yTo": 54,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135091,
+                    "track": 3801,
+                    "sc_name": "1249A",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 135091,
+                        "to": 135135,
+                        "yFrom": null,
+                        "yTo": 55,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 135135,
+                        "to": 135488,
+                        "yFrom": 55,
+                        "yTo": 55,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3901,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 134601,
+                    "track": 3917,
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 135147,
+                    "track": 3900,
+                    "sc_name": "1249B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 134601,
+                        "to": 134714,
+                        "yFrom": null,
+                        "yTo": 54,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134714,
+                        "to": 134741,
+                        "yFrom": 54,
+                        "yTo": 54,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134741,
+                        "to": 134785,
+                        "yFrom": 54,
+                        "yTo": 53,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134785,
+                        "to": 134960,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134960,
+                        "to": 135004,
+                        "yFrom": 53,
+                        "yTo": 54,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 135004,
+                        "to": 135037,
+                        "yFrom": 54,
+                        "yTo": 55,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 135037,
+                        "to": 135147,
+                        "yFrom": 55,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3914,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 134741,
+                    "track": 3901,
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 135004,
+                    "track": 3901,
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 134741,
+                        "to": 135004,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "toConnection": null,
+                "tid": 3915,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 134632,
+                    "track": 3917,
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 134632,
+                        "to": 134676,
+                        "yFrom": null,
+                        "yTo": 55,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 134676,
+                        "to": 134882,
+                        "yFrom": 55,
+                        "yTo": 55,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3913,
+                "altRoute": null,
+                "fromConnection": null,
+                "toConnection": {
+                    "type": "junction",
+                    "at": 135037,
+                    "track": 3901,
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 134913,
+                        "to": 135037,
+                        "yFrom": 55,
+                        "yTo": 55,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 2802,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135547,
+                    "track": 2801,
+                    "sc_name": "48A",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 135547,
+                        "to": 137079,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3802,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 137079,
+                    "track": 2802,
+                    "sc_name": "1261",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 137196,
+                    "track": 1200,
+                    "sc_name": "1262B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 137079,
+                        "to": 137137,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 137137,
+                        "to": 137196,
+                        "yFrom": 53,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1909,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135486,
+                    "track": 3900,
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 135486,
+                        "to": 135521,
+                        "yFrom": 55,
+                        "yTo": 55,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1802,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135521,
+                    "track": 1909,
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 137079,
+                    "track": 3802,
+                    "sc_name": "1261",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 135521,
+                        "to": 135540,
+                        "yFrom": 55,
+                        "yTo": 54,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 135540,
+                        "to": 137035,
+                        "yFrom": 54,
+                        "yTo": 54,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 137035,
+                        "to": 137079,
+                        "yFrom": 54,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 135521,
+                    "track": 1801,
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 135540,
+                    "track": 1802,
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 135521,
+                        "to": 135540,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 139692,
+                    "track": 2100,
+                    "sc_name": "1271A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 139800,
+                    "track": 1100,
+                    "sc_name": "1271B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 139692,
+                        "to": 139800,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 139818,
+                    "track": 1100,
+                    "sc_name": "1272A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 139962,
+                    "track": 1200,
+                    "sc_name": "1272B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 139818,
+                        "to": 139962,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "WEB",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 139976,
+                    "track": 1200,
+                    "sc_name": "1273",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 139976,
+                        "to": 140072,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1100,
+                "altRoute": {
+                    "elr": "WEB",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 139797,
+                    "track": 1200,
+                    "sc_name": "1274",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 139797,
+                        "to": 139863,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 149317,
+                    "track": 2200,
+                    "sc_name": "1293A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 149474,
+                    "track": 2100,
+                    "sc_name": "1293B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149317,
+                        "to": 149474,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 149335,
+                    "track": 1200,
+                    "sc_name": "1294A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 149470,
+                    "track": 1100,
+                    "sc_name": "1294B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149335,
+                        "to": 149470,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 149489,
+                    "track": 2100,
+                    "sc_name": "1295A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 149554,
+                    "track": 1100,
+                    "sc_name": "1295B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149489,
+                        "to": 149554,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 149556,
+                    "track": 2100,
+                    "sc_name": "1296A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 149692,
+                    "track": 2200,
+                    "sc_name": "1296B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149556,
+                        "to": 149692,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 149568,
+                    "track": 1100,
+                    "sc_name": "1297A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 149704,
+                    "track": 1200,
+                    "sc_name": "1297B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149568,
+                        "to": 149704,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149287,
+                        "to": 149976,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 149541,
+                    "track": 1900,
+                    "sc_name": "3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 149634,
+                    "track": 1200,
+                    "sc_name": "3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149541,
+                        "to": 149634,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 149273,
+                    "track": 1200,
+                    "sc_name": "3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 149339,
+                    "track": 1900,
+                    "sc_name": "3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 149273,
+                        "to": 149339,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 175597,
+                    "track": 1100,
+                    "sc_name": "3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 175692,
+                    "track": 2100,
+                    "sc_name": "3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 175597,
+                        "to": 175692,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 175717,
+                    "track": 2100,
+                    "sc_name": "2A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 175811,
+                    "track": 1100,
+                    "sc_name": "2B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 175717,
+                        "to": 175811,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 1901,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 184744,
+                    "sc_name": "2103A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 184744,
+                        "to": 185134,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 185134,
+                        "to": 185454,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "toConnection": null,
+                "tid": 1100,
+                "altRoute": {
+                    "elr": "NOG",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 186727,
+                    "track": 3200,
+                    "sc_name": "2117",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 186727,
+                        "to": 186771,
+                        "yFrom": 48,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 186771,
+                        "to": 186926,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
                     }
                 ]
             }
@@ -10581,6 +12179,177 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "High Street",
+                "type": "overbridge",
+                "structureNo": "ECM1-181",
+                "trackLocation": [
+                    {
+                        "from": 132220,
+                        "to": 132230,
+                        "tid": 2200,
+                        "elr": ""
+                    },
+                    {
+                        "from": 132220,
+                        "to": 132230,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "A15 London Road",
+                "type": "overbridge",
+                "structureNo": "ECM1-182",
+                "trackLocation": [
+                    {
+                        "from": 132858,
+                        "to": 132868,
+                        "tid": 2200,
+                        "elr": ""
+                    },
+                    {
+                        "from": 132891,
+                        "to": 132901,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "A47 Stoke Parkway",
+                "type": "overbridge",
+                "structureNo": "ECM1-188D",
+                "trackLocation": [
+                    {
+                        "from": 137346,
+                        "to": 137401,
+                        "tid": 2150,
+                        "elr": "PMJ"
+                    },
+                    {
+                        "from": 137346,
+                        "to": 137401,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Station Footbridge",
+                "type": "overbridge",
+                "structureNo": "ECM1-186",
+                "trackLocation": [
+                    {
+                        "from": 134387,
+                        "to": 134392,
+                        "tid": 3300,
+                        "elr": "EMP"
+                    },
+                    {
+                        "from": 134387,
+                        "to": 134392,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Parcels Bridge",
+                "type": "overbridge",
+                "structureNo": "ECM1-186A",
+                "trackLocation": [
+                    {
+                        "from": 134508,
+                        "to": 134513,
+                        "tid": 1100,
+                        "elr": "EMP"
+                    },
+                    {
+                        "from": 134508,
+                        "to": 134513,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Cresent Bridge",
+                "type": "overbridge",
+                "structureNo": "ECM1-185",
+                "trackLocation": [
+                    {
+                        "from": 134178,
+                        "to": 134188,
+                        "tid": 3300,
+                        "elr": "EMP"
+                    },
+                    {
+                        "from": 134178,
+                        "to": 134188,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Westfield Road",
+                "type": "overbridge",
+                "structureNo": "ECM1-188",
+                "trackLocation": [
+                    {
+                        "from": 135498,
+                        "to": 135520,
+                        "tid": 2150,
+                        "elr": "PMJ"
+                    },
+                    {
+                        "from": 135498,
+                        "to": 135520,
+                        "tid": 1909,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Spital Bridge (Mayors Walk)",
+                "type": "overbridge",
+                "structureNo": "ECM1-187",
+                "trackLocation": [
+                    {
+                        "from": 134849,
+                        "to": 134859,
+                        "tid": 2150,
+                        "elr": "PMJ"
+                    },
+                    {
+                        "from": 134827,
+                        "to": 134837,
+                        "tid": 3915,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Tallington - Main Road LC",
+                "type": "level_crossing",
+                "structureNo": "No. 119",
+                "trackLocation": [
+                    {
+                        "from": 149248,
+                        "to": 149263,
+                        "tid": 2200,
+                        "elr": ""
+                    },
+                    {
+                        "from": 149248,
+                        "to": 149263,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
             }
         ],
         "altRouteYardageMap": [
@@ -10777,6 +12546,111 @@ const routes = [
                 "sc_Name": "854B",
                 "junctionGroup": "Skelton Bridge Junction",
                 "_id": "694aee9d9f05575b73c81613"
+            },
+            {
+                "sc_Name": "1264A",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb27250559398a6be4003"
+            },
+            {
+                "sc_Name": "1264B",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb28d50559398a6be4a07"
+            },
+            {
+                "sc_Name": "1265A",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb29b50559398a6be540e"
+            },
+            {
+                "sc_Name": "1265B",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb2ae50559398a6be5e18"
+            },
+            {
+                "sc_Name": "1266A",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb2ba50559398a6be6825"
+            },
+            {
+                "sc_Name": "1266B",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb2c250559398a6be7235"
+            },
+            {
+                "sc_Name": "1267A",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb2ce50559398a6be7c48"
+            },
+            {
+                "sc_Name": "1267B",
+                "junctionGroup": "New England North Junction",
+                "_id": "694cb2e850559398a6be9073"
+            },
+            {
+                "sc_Name": "1229",
+                "junctionGroup": "Spital Junction",
+                "_id": "694cbd2950559398a6bf8380"
+            },
+            {
+                "sc_Name": "1244B",
+                "junctionGroup": "Spital Junction",
+                "_id": "694cbd5350559398a6bf982f"
+            },
+            {
+                "sc_Name": "1216B",
+                "junctionGroup": "Cresent Junction",
+                "_id": "694cbd8850559398a6bfa28a"
+            },
+            {
+                "sc_Name": "1217A",
+                "junctionGroup": "Cresent Junction",
+                "_id": "694cbd9350559398a6bface8"
+            },
+            {
+                "sc_Name": "1170A",
+                "junctionGroup": "Stilton Fen Emergency Crossover",
+                "_id": "694cf7a537571f1e58e837bb"
+            },
+            {
+                "sc_Name": "1171B",
+                "junctionGroup": "Stilton Fen Emergency Crossover",
+                "_id": "694cf7b337571f1e58e8421f"
+            },
+            {
+                "sc_Name": "1198",
+                "junctionGroup": "Fletton Junction",
+                "_id": "694cf7d637571f1e58e84c86"
+            },
+            {
+                "sc_Name": "1203",
+                "junctionGroup": "Fletton Junction",
+                "_id": "694cf7e137571f1e58e856f0"
+            },
+            {
+                "sc_Name": "1293A",
+                "junctionGroup": "Tallington Crossovers",
+                "_id": "695133d67ba263398b5b7b00"
+            },
+            {
+                "sc_Name": "1297B",
+                "junctionGroup": "Tallington Crossovers",
+                "_id": "695133e17ba263398b5b8604"
+            },
+            {
+                "sc_Name": "2126A",
+                "junctionGroup": "Peascliffe Crossovers",
+                "_id": "69513ea7133285f28bb68eae"
+            },
+            {
+                "sc_Name": "2126B",
+                "junctionGroup": "Peascliffe Crossovers",
+                "_id": "69513f06133285f28bb6bb59"
+            },
+            {
+                "sc_Name": "2120B",
+                "junctionGroup": "Peascliffe Crossovers",
+                "_id": "69514222133285f28bb713e1"
             }
         ]
     }
