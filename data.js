@@ -923,9 +923,9 @@ const routes = [
                 ]
             },
             {
-                "tid": 2200,
                 "altRoute": null,
                 "fromConnection": null,
+                "tid": 2200,
                 "toConnection": {
                     "type": "junction",
                     "at": 37351,
@@ -950,13 +950,13 @@ const routes = [
                     },
                     {
                         "from": 2290,
-                        "to": 37307,
+                        "to": 37195,
                         "yFrom": 48,
                         "yTo": 48,
                         "electrification": "overhead"
                     },
                     {
-                        "from": 37307,
+                        "from": 37195,
                         "to": 37351,
                         "yFrom": 48,
                         "yTo": null,
@@ -2605,8 +2605,8 @@ const routes = [
                 ]
             },
             {
-                "tid": 2500,
                 "altRoute": null,
+                "tid": 2500,
                 "fromConnection": {
                     "type": "junction",
                     "at": 35459,
@@ -2631,13 +2631,13 @@ const routes = [
                     },
                     {
                         "from": 35535,
-                        "to": 35954,
+                        "to": 35881,
                         "yFrom": 47,
                         "yTo": 47,
                         "electrification": "overhead"
                     },
                     {
-                        "from": 35954,
+                        "from": 35881,
                         "to": 35998,
                         "yFrom": 47,
                         "yTo": null,
@@ -8701,20 +8701,20 @@ const routes = [
                 ]
             },
             {
-                "tid": 3700,
                 "altRoute": null,
+                "tid": 3700,
                 "fromConnection": {
                     "type": "junction",
                     "at": 175597,
                     "track": 1100,
-                    "sc_name": "3A",
+                    "sc_name": "1317-3A",
                     "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 175692,
                     "track": 2100,
-                    "sc_name": "3B",
+                    "sc_name": "1317-3B",
                     "connectionLink": null
                 },
                 "shape": [
@@ -8728,20 +8728,20 @@ const routes = [
                 ]
             },
             {
-                "tid": 3700,
                 "altRoute": null,
+                "tid": 3700,
                 "fromConnection": {
                     "type": "junction",
                     "at": 175717,
                     "track": 2100,
-                    "sc_name": "2A",
+                    "sc_name": "1317-2A",
                     "connectionLink": null
                 },
                 "toConnection": {
                     "type": "junction",
                     "at": 175811,
                     "track": 1100,
-                    "sc_name": "2B",
+                    "sc_name": "1317-2B",
                     "connectionLink": null
                 },
                 "shape": [
@@ -8788,7 +8788,7 @@ const routes = [
                 "toConnection": null,
                 "tid": 1100,
                 "altRoute": {
-                    "elr": "NOG",
+                    "elr": "NOG1",
                     "showAltRuler": false
                 },
                 "fromConnection": {
@@ -8808,10 +8808,3549 @@ const routes = [
                     },
                     {
                         "from": 186771,
-                        "to": 186926,
+                        "to": 187150,
                         "yFrom": 47,
                         "yTo": 47,
                         "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1500,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 201875,
+                    "track": 1100,
+                    "sc_name": "2152",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 202928,
+                    "track": 1100,
+                    "sc_name": "2153",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 201875,
+                        "to": 201929,
+                        "yFrom": null,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 201929,
+                        "to": 202884,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 202884,
+                        "to": 202928,
+                        "yFrom": 51,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 203024,
+                    "track": 1100,
+                    "sc_name": "2A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 203118,
+                    "track": 2100,
+                    "sc_name": "2B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 203024,
+                        "to": 203118,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 203143,
+                    "track": 2100,
+                    "sc_name": "3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 203237,
+                    "track": 1100,
+                    "sc_name": "3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 203143,
+                        "to": 203237,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2500,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 203419,
+                    "track": 2100,
+                    "sc_name": "2157",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 204448,
+                    "track": 2100,
+                    "sc_name": "2159B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 203419,
+                        "to": 203463,
+                        "yFrom": null,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 203463,
+                        "to": 204368,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 204368,
+                        "to": 204448,
+                        "yFrom": 48,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 1901,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 211229,
+                    "track": 3500,
+                    "sc_name": "2181B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 210752,
+                        "to": 211229,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3500,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 211152,
+                    "track": 1100,
+                    "sc_name": "2181A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 212389,
+                    "track": 1100,
+                    "sc_name": "2186B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 211152,
+                        "to": 211229,
+                        "yFrom": null,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 211229,
+                        "to": 212258,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 212258,
+                        "to": 212389,
+                        "yFrom": 51,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3100,
+                "altRoute": {
+                    "elr": "NSE",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 212258,
+                    "track": 3500,
+                    "sc_name": "2186A",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 212258,
+                        "to": 212520,
+                        "yFrom": null,
+                        "yTo": 51,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 212520,
+                        "to": 212618,
+                        "yFrom": 51,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 212618,
+                    "track": 1100,
+                    "sc_name": "2190",
+                    "elr": "NOB1",
+                    "connectionLink": null
+                }
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 212443,
+                    "track": 1100,
+                    "sc_name": "2187A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 212551,
+                    "track": 2100,
+                    "sc_name": "2187B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 212443,
+                        "to": 212551,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 211027,
+                    "track": 2100,
+                    "sc_name": "2179A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 211136,
+                    "track": 1100,
+                    "sc_name": "2179B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 211027,
+                        "to": 211136,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3300,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 211239,
+                    "track": 3500,
+                    "sc_name": "2182",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 211982,
+                    "track": 3500,
+                    "sc_name": "2185B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 211239,
+                        "to": 211283,
+                        "yFrom": null,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 211283,
+                        "to": 211938,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 211938,
+                        "to": 211982,
+                        "yFrom": 52,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3601,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 211278,
+                    "track": 3300,
+                    "sc_name": "2184A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 211278,
+                        "to": 211332,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 211332,
+                        "to": 211499,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1100,
+                "altRoute": {
+                    "elr": "NOB1",
+                    "showAltRuler": false
+                },
+                "fromConnection": null,
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 212575,
+                        "to": 212619,
+                        "yFrom": 47,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "NOB1",
+                    "showAltRuler": false
+                },
+                "fromConnection": null,
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 212580,
+                        "to": 212624,
+                        "yFrom": 47,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 220775,
+                    "track": 2100,
+                    "sc_name": "2A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 220883,
+                    "track": 1100,
+                    "sc_name": "2B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 220775,
+                        "to": 220883,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 220918,
+                    "track": 1100,
+                    "sc_name": "3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 221026,
+                    "track": 2100,
+                    "sc_name": "3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 220918,
+                        "to": 221026,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2500,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 221140,
+                    "track": 2100,
+                    "sc_name": "2203",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "fixed",
+                    "at": 222301,
+                    "track": 2100,
+                    "sc_name": "2205",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 221140,
+                        "to": 221184,
+                        "yFrom": null,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 221184,
+                        "to": 222257,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 222257,
+                        "to": 222301,
+                        "yFrom": 48,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1500,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 221148,
+                    "track": 1100,
+                    "sc_name": "2202",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 222301,
+                    "track": 1100,
+                    "sc_name": "2204",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 221148,
+                        "to": 221192,
+                        "yFrom": null,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 221192,
+                        "to": 222257,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 222257,
+                        "to": 222301,
+                        "yFrom": 51,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 11582,
+                    "track": 1200,
+                    "sc_name": "2160A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 11726,
+                    "track": 1100,
+                    "sc_name": "2160B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 11582,
+                        "to": 11726,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 15617,
+                    "track": 1200,
+                    "sc_name": "2166A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 15699,
+                    "track": 1100,
+                    "sc_name": "2166B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 15617,
+                        "to": 15699,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 15722,
+                    "track": 1100,
+                    "sc_name": "2167A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 15806,
+                    "track": 1200,
+                    "sc_name": "2167B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 15722,
+                        "to": 15806,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 15779,
+                    "track": 1100,
+                    "sc_name": "2168A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 15845,
+                    "track": 2100,
+                    "sc_name": "2168B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 15779,
+                        "to": 15845,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 15866,
+                    "track": 2100,
+                    "sc_name": "2169A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 15994,
+                    "track": 2200,
+                    "sc_name": "2169B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 15866,
+                        "to": 15994,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 16183,
+                    "track": 2200,
+                    "sc_name": "2176A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 16292,
+                    "track": 2100,
+                    "sc_name": "2176B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 16183,
+                        "to": 16292,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 21930,
+                    "track": 1200,
+                    "sc_name": "2180A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 22078,
+                    "track": 1100,
+                    "sc_name": "2180B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 21930,
+                        "to": 22078,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 22092,
+                    "track": 1100,
+                    "sc_name": "2181A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 22152,
+                    "track": 2100,
+                    "sc_name": "2181B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 22092,
+                        "to": 22152,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 22155,
+                    "track": 1100,
+                    "sc_name": "2183A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 22300,
+                    "track": 1200,
+                    "sc_name": "2183B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 22155,
+                        "to": 22300,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 22166,
+                    "track": 2100,
+                    "sc_name": "2182A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 22288,
+                    "track": 2200,
+                    "sc_name": "2182B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 22166,
+                        "to": 22288,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 22892,
+                    "track": 2200,
+                    "sc_name": "2188A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 23028,
+                    "track": 2100,
+                    "sc_name": "2188B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 22892,
+                        "to": 23028,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 28128,
+                    "track": 1100,
+                    "sc_name": "2192A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 28327,
+                    "track": 1200,
+                    "sc_name": "2192B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 28128,
+                        "to": 28327,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 31392,
+                    "track": 1200,
+                    "sc_name": "2195A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 31528,
+                    "track": 1100,
+                    "sc_name": "2195B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 31392,
+                        "to": 31528,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 31567,
+                    "track": 2200,
+                    "sc_name": "2197A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 31651,
+                    "track": 2100,
+                    "sc_name": "2197B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 31567,
+                        "to": 31651,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1901,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 35203,
+                        "to": 36377,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 35249,
+                    "track": 3200,
+                    "sc_name": "5508A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 35311,
+                    "track": 1901,
+                    "sc_name": "5508B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 35249,
+                        "to": 35311,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3702,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 35542,
+                    "track": 2500,
+                    "sc_name": "5513A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 35619,
+                    "track": 2200,
+                    "sc_name": "5513B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 35542,
+                        "to": 35619,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 35461,
+                    "track": 2100,
+                    "sc_name": "5512A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 35568,
+                    "track": 2200,
+                    "sc_name": "5512B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 35461,
+                        "to": 35568,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 35492,
+                    "track": 1100,
+                    "sc_name": "5516A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 35583,
+                    "track": 1200,
+                    "sc_name": "5516B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 35492,
+                        "to": 35583,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 35881,
+                    "track": 2500,
+                    "sc_name": "5521A",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 35881,
+                        "to": 36284,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3702,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 36041,
+                    "track": 2200,
+                    "sc_name": "5522A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 36131,
+                    "track": 2900,
+                    "sc_name": "5522B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 36041,
+                        "to": 36131,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 36085,
+                    "track": 2200,
+                    "sc_name": "5529A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 36179,
+                    "track": 2100,
+                    "sc_name": "5529B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 36085,
+                        "to": 36179,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 36082,
+                    "track": 1200,
+                    "sc_name": "5530A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 36174,
+                    "track": 1100,
+                    "sc_name": "5530B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 36082,
+                        "to": 36174,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 36201,
+                    "track": 1100,
+                    "sc_name": "5531A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 36274,
+                    "track": 2100,
+                    "sc_name": "5531B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 36201,
+                        "to": 36274,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 36296,
+                    "track": 2100,
+                    "sc_name": "5532A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 36389,
+                    "track": 2200,
+                    "sc_name": "5532B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 36296,
+                        "to": 36389,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3700,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 35839,
+                    "track": 1901,
+                    "sc_name": "5526A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 35899,
+                    "track": 1500,
+                    "sc_name": "5526B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 35839,
+                        "to": 35899,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 2900,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 37195,
+                    "track": 2200,
+                    "sc_name": "5561A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 37195,
+                        "to": 37292,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 41739,
+                    "track": 1100,
+                    "sc_name": "5566A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 41799,
+                    "track": 2100,
+                    "sc_name": "5566B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 41739,
+                        "to": 41799,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 48178,
+                    "track": 2100,
+                    "sc_name": "5609A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 48353,
+                    "track": 2200,
+                    "sc_name": "5609B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 48178,
+                        "to": 48353,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 48178,
+                    "track": 1100,
+                    "sc_name": "5610A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 48352,
+                    "track": 1200,
+                    "sc_name": "5610B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 48178,
+                        "to": 48352,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 48712,
+                    "track": 2200,
+                    "sc_name": "5612A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 48883,
+                    "track": 2100,
+                    "sc_name": "5612B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 48712,
+                        "to": 48883,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 48712,
+                    "track": 1200,
+                    "sc_name": "5613A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 48883,
+                    "track": 1100,
+                    "sc_name": "5613B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 48712,
+                        "to": 48883,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 48930,
+                    "track": 1100,
+                    "sc_name": "5614A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 48991,
+                    "track": 2100,
+                    "sc_name": "5614B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 48930,
+                        "to": 48991,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3605,
+                "altRoute": {
+                    "elr": "HDB",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 46948,
+                    "track": 2100,
+                    "sc_name": "5604A",
+                    "elr": "HDB",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 46948,
+                        "to": 48525,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": {
+                    "elr": "HDB",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 46948,
+                    "track": 3605,
+                    "sc_name": "5604A",
+                    "elr": "HDB",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 47089,
+                    "track": 2200,
+                    "sc_name": "5604B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 46948,
+                        "to": 47089,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "fromConnection": null,
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "HDB",
+                    "showAltRuler": false
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 46948,
+                    "track": 3605,
+                    "sc_name": "5604A",
+                    "elr": "HDB",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 45980,
+                        "to": 46233,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 46233,
+                        "to": 46332,
+                        "yFrom": 52,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 46332,
+                        "to": 46948,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1100,
+                "altRoute": {
+                    "elr": "HDB",
+                    "showAltRuler": false
+                },
+                "fromConnection": null,
+                "toConnection": {
+                    "type": "junction",
+                    "at": 46745,
+                    "track": 1200,
+                    "sc_name": "5603",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 45980,
+                        "to": 46596,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 46596,
+                        "to": 46745,
+                        "yFrom": 53,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1901,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 46964,
+                    "track": 3900,
+                    "sc_name": "5605B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 46819,
+                        "to": 46964,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3900,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 46904,
+                    "track": 1200,
+                    "sc_name": "5605A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 46904,
+                        "to": 46964,
+                        "yFrom": null,
+                        "yTo": 52,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 46964,
+                        "to": 47540,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 54944,
+                    "track": 1100,
+                    "sc_name": "5805A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 55150,
+                    "track": 1200,
+                    "sc_name": "5805B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 54944,
+                        "to": 55150,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3700,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 54947,
+                    "track": 2100,
+                    "sc_name": "5804A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 55173,
+                    "track": 2200,
+                    "sc_name": "5804B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 54947,
+                        "to": 55173,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56286,
+                    "track": 2200,
+                    "sc_name": "5809A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 56372,
+                    "track": 2100,
+                    "sc_name": "5809B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56286,
+                        "to": 56372,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56403,
+                    "track": 2100,
+                    "sc_name": "5812A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 56512,
+                    "track": 1100,
+                    "sc_name": "5812B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56403,
+                        "to": 56512,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56479,
+                    "track": 2100,
+                    "sc_name": "5814A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 56695,
+                    "track": 2200,
+                    "sc_name": "5814B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56479,
+                        "to": 56695,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3702,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56473,
+                    "track": 1200,
+                    "sc_name": "5813A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 56571,
+                    "track": 1100,
+                    "sc_name": "5813B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56473,
+                        "to": 56571,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3900,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 55648,
+                    "track": 1200,
+                    "sc_name": "5807A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 55648,
+                        "to": 55692,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 55692,
+                        "to": 55863,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 55863,
+                        "to": 55900,
+                        "yFrom": 53,
+                        "yTo": 52,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 55900,
+                        "to": 55919,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1100,
+                "altRoute": {
+                    "elr": "SBR",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56575,
+                    "track": 1200,
+                    "sc_name": "5816",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 56575,
+                        "to": 56625,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "SBR",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56575,
+                    "track": 1100,
+                    "sc_name": "5817",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 56659,
+                    "track": 1200,
+                    "sc_name": "5818A",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56575,
+                        "to": 56659,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "SBR",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56659,
+                    "track": 1200,
+                    "sc_name": "5818B",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 56659,
+                        "to": 56709,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3902,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 55863,
+                    "track": 3900,
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 55863,
+                        "to": 56239,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "toConnection": null,
+                "tid": 3900,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56239,
+                    "track": 3902,
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56239,
+                        "to": 56364,
+                        "yFrom": 53,
+                        "yTo": 52,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 56364,
+                        "to": 56579,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3901,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 56290,
+                    "track": 1200,
+                    "sc_name": "5810A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 56364,
+                    "track": 3900,
+                    "sc_name": "5810B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56290,
+                        "to": 56364,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 2901,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 57017,
+                    "track": 2200,
+                    "sc_name": "5820B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56452,
+                        "to": 56685,
+                        "yFrom": 46,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 56685,
+                        "to": 56729,
+                        "yFrom": 46,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 56729,
+                        "to": 56973,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 56973,
+                        "to": 57017,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 2903,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 56729,
+                    "track": 2901,
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 56453,
+                        "to": 56685,
+                        "yFrom": 45,
+                        "yTo": 45,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 56685,
+                        "to": 56729,
+                        "yFrom": 45,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "toConnection": null,
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "DCF",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 57482,
+                    "track": 2200,
+                    "sc_name": "5822",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 57482,
+                        "to": 57526,
+                        "yFrom": null,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 57526,
+                        "to": 58126,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 58126,
+                        "to": 58190,
+                        "yFrom": 47,
+                        "yTo": 53,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 58963,
+                    "track": 1100,
+                    "sc_name": "5824A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 59108,
+                    "track": 1200,
+                    "sc_name": "5824B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 58963,
+                        "to": 59108,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 72238,
+                    "track": 2200,
+                    "sc_name": "2286",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 71325,
+                        "to": 72194,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 72194,
+                        "to": 72238,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 71335,
+                    "track": 1200,
+                    "sc_name": "2282A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 71459,
+                    "track": 1100,
+                    "sc_name": "2282B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 71335,
+                        "to": 71459,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 71479,
+                    "track": 1100,
+                    "sc_name": "2283A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 71545,
+                    "track": 2100,
+                    "sc_name": "2283B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 71479,
+                        "to": 71545,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 71563,
+                    "track": 2100,
+                    "sc_name": "2284A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 71807,
+                    "track": 2200,
+                    "sc_name": "2284B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 71563,
+                        "to": 71807,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3700,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 71806,
+                    "track": 2900,
+                    "sc_name": "2285A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 71870,
+                    "track": 2200,
+                    "sc_name": "2285B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 71806,
+                        "to": 71870,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3701,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 76946,
+                    "track": 1100,
+                    "sc_name": "1102A",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 76946,
+                        "to": 77012,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ],
+                "toConnection": {
+                    "type": "junction",
+                    "at": 77012,
+                    "track": 2100,
+                    "sc_name": "1102B",
+                    "connectionLink": null
+                }
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 76992,
+                    "track": 1100,
+                    "sc_name": "1100A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 77127,
+                    "track": 1200,
+                    "sc_name": "1100B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 76992,
+                        "to": 77127,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3702,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 77026,
+                    "track": 2100,
+                    "sc_name": "1101A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 77161,
+                    "track": 2200,
+                    "sc_name": "1101B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 77026,
+                        "to": 77161,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 1900,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 77141,
+                    "track": 1200,
+                    "sc_name": "1103A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 77141,
+                        "to": 77185,
+                        "yFrom": null,
+                        "yTo": 52,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 77185,
+                        "to": 77519,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 78812,
+                    "track": 2200,
+                    "sc_name": "1107A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 78942,
+                    "track": 2100,
+                    "sc_name": "1107B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 78812,
+                        "to": 78942,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 78812,
+                    "track": 1200,
+                    "sc_name": "1108A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 78942,
+                    "track": 1100,
+                    "sc_name": "1108B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 78812,
+                        "to": 78942,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 90295,
+                    "track": 2200,
+                    "sc_name": "1122A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 90431,
+                    "track": 2100,
+                    "sc_name": "1122B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 90295,
+                        "to": 90431,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 90544,
+                    "track": 2100,
+                    "sc_name": "1123A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 90610,
+                    "track": 1100,
+                    "sc_name": "1123B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 90544,
+                        "to": 90610,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 90590,
+                    "track": 2100,
+                    "sc_name": "1124A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 90726,
+                    "track": 2200,
+                    "sc_name": "1124B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 90590,
+                        "to": 90726,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 90635,
+                    "track": 1100,
+                    "sc_name": "1125A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 90806,
+                    "track": 1200,
+                    "sc_name": "1125B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 90635,
+                        "to": 90806,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 90908,
+                    "track": 2200,
+                    "sc_name": "1126B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 90572,
+                        "to": 90864,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 90864,
+                        "to": 90908,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 90819,
+                    "track": 1200,
+                    "sc_name": "1127A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 90819,
+                        "to": 90863,
+                        "yFrom": null,
+                        "yTo": 52,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 90863,
+                        "to": 91339,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 91968,
+                    "track": 1200,
+                    "sc_name": "1129A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 92104,
+                    "track": 1100,
+                    "sc_name": "1129B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 91968,
+                        "to": 92104,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 102803,
+                    "track": 2100,
+                    "sc_name": "1140A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 102913,
+                    "track": 2200,
+                    "sc_name": "1140B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 102803,
+                        "to": 102913,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3701,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 102848,
+                    "track": 1100,
+                    "sc_name": "1141A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 102957,
+                    "track": 1200,
+                    "sc_name": "1141B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 102848,
+                        "to": 102957,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1201,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 103299,
+                    "track": 1200,
+                    "sc_name": "1142A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 103299,
+                        "to": 103343,
+                        "yFrom": null,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 103343,
+                        "to": 103538,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3902,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 104069,
+                    "track": 2200,
+                    "sc_name": "1144B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 103821,
+                        "to": 103937,
+                        "yFrom": 46,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 103937,
+                        "to": 103981,
+                        "yFrom": 46,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 103981,
+                        "to": 104025,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 104025,
+                        "to": 104069,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3901,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 103981,
+                    "track": 3902,
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 103836,
+                        "to": 103981,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 104125,
+                    "track": 2200,
+                    "sc_name": "1145A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 104262,
+                    "track": 2100,
+                    "sc_name": "1145B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 104125,
+                        "to": 104262,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 104285,
+                    "track": 1100,
+                    "sc_name": "1148A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 104352,
+                    "track": 2100,
+                    "sc_name": "1148B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 104285,
+                        "to": 104352,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 118030,
+                    "track": 2100,
+                    "sc_name": "1159A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 118138,
+                    "track": 1100,
+                    "sc_name": "1159B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 118030,
+                        "to": 118138,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 118382,
+                    "track": 1100,
+                    "sc_name": "1162A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 118490,
+                    "track": 2100,
+                    "sc_name": "1162B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 118382,
+                        "to": 118490,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 118607,
+                    "track": 2100,
+                    "sc_name": "1163A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 118747,
+                    "track": 2200,
+                    "sc_name": "1163B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 118607,
+                        "to": 118747,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3300,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 184961,
+                    "track": 3200,
+                    "sc_name": "2106A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 185790,
+                    "track": 3200,
+                    "sc_name": "2112B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 184961,
+                        "to": 185005,
+                        "yFrom": null,
+                        "yTo": 46,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 185005,
+                        "to": 185746,
+                        "yFrom": 46,
+                        "yTo": 46,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 185746,
+                        "to": 185790,
+                        "yFrom": 46,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 187362,
+                    "track": 2100,
+                    "sc_name": "2119A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 187428,
+                    "track": 1100,
+                    "sc_name": "2119B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 187362,
+                        "to": 187428,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "toConnection": null,
+                "tid": 2100,
+                "altRoute": {
+                    "elr": "NOG1",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 186839,
+                    "track": 1100,
+                    "sc_name": "2115",
+                    "elr": "NOG1",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 186839,
+                        "to": 186883,
+                        "yFrom": null,
+                        "yTo": 46,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 186883,
+                        "to": 187154,
+                        "yFrom": 46,
+                        "yTo": 46,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 231559,
+                    "track": 1100,
+                    "sc_name": "2221-2A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 231664,
+                    "track": 2100,
+                    "sc_name": "2221-2B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 231559,
+                        "to": 231664,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 231679,
+                    "track": 2100,
+                    "sc_name": "2221-3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 231785,
+                    "track": 1100,
+                    "sc_name": "2221-3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 231679,
+                        "to": 231785,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 243225,
+                    "track": 1100,
+                    "sc_name": "2241A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 243332,
+                    "track": 2100,
+                    "sc_name": "2241B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 243225,
+                        "to": 243332,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 2200,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 243385,
+                    "track": 2100,
+                    "sc_name": "2243",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 245652,
+                    "track": 2100,
+                    "sc_name": "2257",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 243385,
+                        "to": 243429,
+                        "yFrom": null,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 243429,
+                        "to": 245608,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 245608,
+                        "to": 245652,
+                        "yFrom": 48,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1500,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 243385,
+                    "track": 1100,
+                    "sc_name": "2242",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 244799,
+                    "track": 1100,
+                    "sc_name": "2249",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 243385,
+                        "to": 243429,
+                        "yFrom": null,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 243429,
+                        "to": 244755,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 244755,
+                        "to": 244799,
+                        "yFrom": 51,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 244236,
+                    "track": 2200,
+                    "sc_name": "2248A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 244384,
+                    "track": 2100,
+                    "sc_name": "2248B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 244236,
+                        "to": 244384,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 244090,
+                    "track": 2200,
+                    "sc_name": "2245B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 243864,
+                        "to": 244046,
+                        "yFrom": 47,
+                        "yTo": 47,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 244046,
+                        "to": 244090,
+                        "yFrom": 47,
+                        "yTo": null,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1100,
+                "altRoute": {
+                    "elr": "WHR",
+                    "showAltRuler": false
+                },
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 244097,
+                    "track": 2200,
+                    "sc_name": "2246",
+                    "connectionLink": null
+                },
+                "toConnection": null,
+                "shape": [
+                    {
+                        "from": 244097,
+                        "to": 244200,
+                        "yFrom": null,
+                        "yTo": 46,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 1900,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 244078,
+                    "track": 1500,
+                    "sc_name": "2247A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 244078,
+                        "to": 244132,
+                        "yFrom": null,
+                        "yTo": 52,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 244132,
+                        "to": 244553,
+                        "yFrom": 52,
+                        "yTo": 52,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 1901,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 244329,
+                    "track": 1900,
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 244329,
+                        "to": 244373,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 244373,
+                        "to": 244591,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 1902,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 244205,
+                    "track": 1900,
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "buffer_stop",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 244205,
+                        "to": 244249,
+                        "yFrom": null,
+                        "yTo": 53,
+                        "electrification": "none"
+                    },
+                    {
+                        "from": 244249,
+                        "to": 244329,
+                        "yFrom": 53,
+                        "yTo": 53,
+                        "electrification": "none"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 246087,
+                    "track": 2100,
+                    "sc_name": "2258A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 246194,
+                    "track": 1100,
+                    "sc_name": "2258B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 246087,
+                        "to": 246194,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 2500,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 252077,
+                    "track": 2100,
+                    "sc_name": "2265",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 253260,
+                    "track": 2100,
+                    "sc_name": "2267",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 252077,
+                        "to": 252131,
+                        "yFrom": null,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 252131,
+                        "to": 253216,
+                        "yFrom": 48,
+                        "yTo": 48,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 253216,
+                        "to": 253260,
+                        "yFrom": 48,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 1500,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 252079,
+                    "track": 1100,
+                    "sc_name": "2264",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 253260,
+                    "track": 1100,
+                    "sc_name": "2266",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 252079,
+                        "to": 252131,
+                        "yFrom": null,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 252131,
+                        "to": 253216,
+                        "yFrom": 51,
+                        "yTo": 51,
+                        "electrification": "overhead"
+                    },
+                    {
+                        "from": 253216,
+                        "to": 253260,
+                        "yFrom": 51,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 253498,
+                    "track": 1100,
+                    "sc_name": "2269-2A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 253605,
+                    "track": 2100,
+                    "sc_name": "2269-2B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 253498,
+                        "to": 253605,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "altRoute": null,
+                "tid": 3700,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 253675,
+                    "track": 2100,
+                    "sc_name": "2269-3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 253783,
+                    "track": 1100,
+                    "sc_name": "2269-3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 253675,
+                        "to": 253783,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 261619,
+                    "track": 1100,
+                    "sc_name": "2271-2A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 261728,
+                    "track": 2100,
+                    "sc_name": "2271-2B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 261619,
+                        "to": 261728,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
+                    }
+                ]
+            },
+            {
+                "tid": 3700,
+                "altRoute": null,
+                "fromConnection": {
+                    "type": "junction",
+                    "at": 261746,
+                    "track": 2100,
+                    "sc_name": "2271-3A",
+                    "connectionLink": null
+                },
+                "toConnection": {
+                    "type": "junction",
+                    "at": 261853,
+                    "track": 1100,
+                    "sc_name": "2271-3B",
+                    "connectionLink": null
+                },
+                "shape": [
+                    {
+                        "from": 261746,
+                        "to": 261853,
+                        "yFrom": null,
+                        "yTo": null,
+                        "electrification": "overhead"
                     }
                 ]
             }
@@ -9141,7 +12680,7 @@ const routes = [
                         "track": 2200,
                         "platformNo": 4,
                         "from": 16016,
-                        "to": 16214,
+                        "to": 16192,
                         "position": "below"
                     }
                 ],
@@ -9393,7 +12932,6 @@ const routes = [
                 "sideDiagramVisible": false
             },
             {
-                "sideDiagramVisible": true,
                 "name": "Stevenage",
                 "at": 48576,
                 "platforms": [
@@ -9424,8 +12962,17 @@ const routes = [
                         "from": 48432,
                         "to": 48686,
                         "position": "below"
+                    },
+                    {
+                        "track": 3605,
+                        "platformNo": 5,
+                        "from": 48433,
+                        "to": 48565,
+                        "position": "above",
+                        "elr": "HDB"
                     }
-                ]
+                ],
+                "sideDiagramVisible": true
             },
             {
                 "name": "Hitchin",
@@ -9893,6 +13440,14 @@ const routes = [
                         "to": 211574,
                         "position": "below",
                         "elr": ""
+                    },
+                    {
+                        "track": 3500,
+                        "platformNo": 3,
+                        "from": 211288,
+                        "to": 211651,
+                        "position": "above",
+                        "elr": ""
                     }
                 ]
             },
@@ -9900,7 +13455,24 @@ const routes = [
                 "name": "Retford",
                 "at": 243958,
                 "sideDiagramVisible": true,
-                "platforms": []
+                "platforms": [
+                    {
+                        "track": 1500,
+                        "platformNo": 1,
+                        "from": 243793,
+                        "to": 244068,
+                        "position": "below",
+                        "elr": ""
+                    },
+                    {
+                        "track": 2200,
+                        "platformNo": 2,
+                        "from": 243815,
+                        "to": 244068,
+                        "position": "below",
+                        "elr": ""
+                    }
+                ]
             },
             {
                 "name": "Darlington",
@@ -12350,6 +15922,209 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "Claypole LC CCTV",
+                "type": "level_crossing",
+                "structureNo": "No. 148",
+                "trackLocation": [
+                    {
+                        "from": 202994,
+                        "to": 202999,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 202994,
+                        "to": 202999,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Osterfen LC CCTV",
+                "type": "level_crossing",
+                "structureNo": "No. 149",
+                "trackLocation": [
+                    {
+                        "from": 203390,
+                        "to": 203395,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 203390,
+                        "to": 203395,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "B6166 Lincoln Road",
+                "type": "overbridge",
+                "structureNo": "ECM1-276",
+                "trackLocation": [
+                    {
+                        "from": 211761,
+                        "to": 211771,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 211783,
+                        "to": 211793,
+                        "tid": 3300,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "A46",
+                "type": "overbridge",
+                "structureNo": "ECM1-277A",
+                "trackLocation": [
+                    {
+                        "from": 212465,
+                        "to": 212475,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 212498,
+                        "to": 212508,
+                        "tid": 3100,
+                        "elr": "NSE"
+                    }
+                ]
+            },
+            {
+                "name": "Carlton - Station Road",
+                "type": "level_crossing",
+                "structureNo": "No. 193",
+                "trackLocation": [
+                    {
+                        "from": 222310,
+                        "to": 222320,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 222310,
+                        "to": 222320,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "A1 Sutton Bypass",
+                "type": "overbridge",
+                "structureNo": "ECM1-282B",
+                "trackLocation": [
+                    {
+                        "from": 223047,
+                        "to": 223124,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 223047,
+                        "to": 223124,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Intersection Bridge",
+                "type": "underbridge",
+                "structureNo": "ECM1-82A",
+                "trackLocation": [
+                    {
+                        "from": 46288,
+                        "to": 46332,
+                        "tid": 2200,
+                        "elr": ""
+                    },
+                    {
+                        "from": 46222,
+                        "to": 46266,
+                        "tid": 1200,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "A602 Broadhall Way",
+                "type": "overbridge",
+                "structureNo": "ECM1-82B",
+                "trackLocation": [
+                    {
+                        "from": 46948,
+                        "to": 46970,
+                        "tid": 3605,
+                        "elr": "HDB"
+                    },
+                    {
+                        "from": 46948,
+                        "to": 46970,
+                        "tid": 3900,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Cambridge Flyover",
+                "type": "viaduct",
+                "structureNo": "ECM1-105BA",
+                "trackLocation": [
+                    {
+                        "from": 57706,
+                        "to": 58190,
+                        "tid": 2100,
+                        "elr": "DCF"
+                    }
+                ]
+            },
+            {
+                "name": "Torworth LC CCTV",
+                "type": "level_crossing",
+                "structureNo": "No. 235",
+                "trackLocation": [
+                    {
+                        "from": 252054,
+                        "to": 252064,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 252054,
+                        "to": 252064,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Ranskill LC",
+                "type": "level_crossing",
+                "structureNo": "",
+                "trackLocation": [
+                    {
+                        "from": 253418,
+                        "to": 253428,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 253418,
+                        "to": 253428,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
             }
         ],
         "altRouteYardageMap": [
@@ -12424,6 +16199,22 @@ const routes = [
                 "toYardageMainRoute": 385978,
                 "toYardageAltRoute": -88,
                 "_id": "694ae45057b7882b0df37b96"
+            },
+            {
+                "elr": "HDB",
+                "fromYardageMainRoute": 46016,
+                "fromYardageAltRoute": 48515,
+                "toYardageMainRoute": 48525,
+                "toYardageAltRoute": 51059,
+                "_id": "69527a2e58e5a1d4d1a11d20"
+            },
+            {
+                "elr": "NOG1",
+                "fromYardageMainRoute": 186727,
+                "fromYardageAltRoute": 186736,
+                "toYardageMainRoute": 187150,
+                "toYardageAltRoute": 187154,
+                "_id": "69542a4ca54ab261b1432210"
             }
         ],
         "switchesAndCrossings": [
@@ -12651,6 +16442,246 @@ const routes = [
                 "sc_Name": "2120B",
                 "junctionGroup": "Peascliffe Crossovers",
                 "_id": "69514222133285f28bb713e1"
+            },
+            {
+                "sc_Name": "2153",
+                "junctionGroup": "Claypole Emergency Crossovers",
+                "_id": "6951720f3291a9e05f23f9c2"
+            },
+            {
+                "sc_Name": "2157",
+                "junctionGroup": "Claypole Emergency Crossovers",
+                "_id": "695172183291a9e05f24050d"
+            },
+            {
+                "sc_Name": "2203",
+                "junctionGroup": "Carlton Emergency Crossovers",
+                "_id": "69519be1c356c5ac32ec443b"
+            },
+            {
+                "sc_Name": "2A",
+                "junctionGroup": "Carlton Emergency Crossovers",
+                "_id": "69519bedc356c5ac32ec4fee"
+            },
+            {
+                "sc_Name": "2192A",
+                "junctionGroup": "Marshmoor Crossover",
+                "_id": "695266e0d9a6d11292f5f3d8"
+            },
+            {
+                "sc_Name": "2192B",
+                "junctionGroup": "Marshmoor Crossover",
+                "_id": "695266e9d9a6d11292f5ffcd"
+            },
+            {
+                "sc_Name": "5566A",
+                "junctionGroup": "Woolmer Green Junction",
+                "_id": "69526d5fd9a6d11292f6fa48"
+            },
+            {
+                "sc_Name": "5569",
+                "junctionGroup": "Woolmer Green Junction",
+                "_id": "69526d6ad9a6d11292f70683"
+            },
+            {
+                "sc_Name": "5603",
+                "junctionGroup": "Langley Junction",
+                "_id": "69527f3358e5a1d4d1a1c883"
+            },
+            {
+                "sc_Name": "5604B",
+                "junctionGroup": "Langley Junction",
+                "_id": "69527f4858e5a1d4d1a1d508"
+            },
+            {
+                "sc_Name": "5824A",
+                "junctionGroup": "Cadwell",
+                "_id": "69540c79d7f0fd191d79b695"
+            },
+            {
+                "sc_Name": "5824B",
+                "junctionGroup": "Cadwell",
+                "_id": "69540c84d7f0fd191d79c37c"
+            },
+            {
+                "sc_Name": "1102A",
+                "junctionGroup": "Sandy South Junction",
+                "_id": "69541797a54ab261b140bf23"
+            },
+            {
+                "sc_Name": "1101B",
+                "junctionGroup": "Sandy South Junction",
+                "_id": "695417a3a54ab261b140cc38"
+            },
+            {
+                "sc_Name": "1107A",
+                "junctionGroup": "Sandy North Junction",
+                "_id": "69541851a54ab261b140f31a"
+            },
+            {
+                "sc_Name": "1107B",
+                "junctionGroup": "Sandy North Junction",
+                "_id": "6954185ea54ab261b141003d"
+            },
+            {
+                "sc_Name": "1122A",
+                "junctionGroup": "St. Neots South Junction",
+                "_id": "69541c7da54ab261b141684a"
+            },
+            {
+                "sc_Name": "1126B",
+                "junctionGroup": "St. Neots South Junction",
+                "_id": "69541c8ca54ab261b1417593"
+            },
+            {
+                "sc_Name": "1129A",
+                "junctionGroup": "St. Neots North Junction",
+                "_id": "69541c9fa54ab261b14182df"
+            },
+            {
+                "sc_Name": "1129B",
+                "junctionGroup": "St. Neots North Junction",
+                "_id": "69541caca54ab261b141902e"
+            },
+            {
+                "sc_Name": "1140A",
+                "junctionGroup": "Huntingdon South Junction",
+                "_id": "69541f44a54ab261b141b7b2"
+            },
+            {
+                "sc_Name": "1141B",
+                "junctionGroup": "Huntingdon South Junction",
+                "_id": "69541f51a54ab261b141c50f"
+            },
+            {
+                "sc_Name": "1144B",
+                "junctionGroup": "Huntingdon North Junction",
+                "_id": "695421a3a54ab261b1421468"
+            },
+            {
+                "sc_Name": "1148B",
+                "junctionGroup": "Huntingdon North Junction",
+                "_id": "695421ada54ab261b14221e7"
+            },
+            {
+                "sc_Name": "1158",
+                "junctionGroup": "Woodwalton Junction",
+                "_id": "695421e6a54ab261b1422f69"
+            },
+            {
+                "sc_Name": "1159A",
+                "junctionGroup": "Conington South Junction",
+                "_id": "69542301a54ab261b14264c9"
+            },
+            {
+                "sc_Name": "1163B",
+                "junctionGroup": "Conington South Junction",
+                "_id": "6954230ba54ab261b142725d"
+            },
+            {
+                "sc_Name": "1315",
+                "junctionGroup": "Stoke Junction",
+                "_id": "69542375a54ab261b1427ff4"
+            },
+            {
+                "sc_Name": "1317-2B",
+                "junctionGroup": "Stoke Junction",
+                "_id": "695423d7a54ab261b142a836"
+            },
+            {
+                "sc_Name": "2101",
+                "junctionGroup": "Highdyke Junction",
+                "_id": "695423f6a54ab261b142b5d3"
+            },
+            {
+                "sc_Name": "2103A",
+                "junctionGroup": "Grantham South Junction",
+                "_id": "69542416a54ab261b142c373"
+            },
+            {
+                "sc_Name": "2105",
+                "junctionGroup": "Grantham South Junction",
+                "_id": "6954245aa54ab261b142d116"
+            },
+            {
+                "sc_Name": "2117",
+                "junctionGroup": "Nottingham Branch Junction",
+                "_id": "695426a6a54ab261b142f985"
+            },
+            {
+                "sc_Name": "2118",
+                "junctionGroup": "Grantham North Junction",
+                "_id": "695427dba54ab261b1430736"
+            },
+            {
+                "sc_Name": "2115",
+                "junctionGroup": "Nottingham Branch Junction",
+                "_id": "69542b4ca54ab261b1435821"
+            },
+            {
+                "sc_Name": "2119B",
+                "junctionGroup": "Grantham North Junction",
+                "_id": "69542b68a54ab261b14365e4"
+            },
+            {
+                "sc_Name": "2221-2A",
+                "junctionGroup": "Tuxford Emergency Crossovers",
+                "_id": "69542d1aa54ab261b1439c69"
+            },
+            {
+                "sc_Name": "2221-3B",
+                "junctionGroup": "Tuxford Emergency Crossovers",
+                "_id": "69542d2aa54ab261b143aa3a"
+            },
+            {
+                "sc_Name": "2241A",
+                "junctionGroup": "Retford South Junction",
+                "_id": "69543051a54ab261b143ee4c"
+            },
+            {
+                "sc_Name": "2242",
+                "junctionGroup": "Retford South Junction",
+                "_id": "6954305da54ab261b143fc37"
+            },
+            {
+                "sc_Name": "2245B",
+                "junctionGroup": "Retford West Junction",
+                "_id": "695432f4a54ab261b14440bb"
+            },
+            {
+                "sc_Name": "2246",
+                "junctionGroup": "Retford West Junction",
+                "_id": "695432fea54ab261b1444ebe"
+            },
+            {
+                "sc_Name": "2258A",
+                "junctionGroup": "Retford North",
+                "_id": "695434f3a54ab261b144af46"
+            },
+            {
+                "sc_Name": "2258B",
+                "junctionGroup": "Retford North",
+                "_id": "695434fda54ab261b144bd65"
+            },
+            {
+                "sc_Name": "2269-2A",
+                "junctionGroup": "Ranskill Emergency Crossovers",
+                "_id": "695438c5a54ab261b1451ecf"
+            },
+            {
+                "sc_Name": "2269-3B",
+                "junctionGroup": "Ranskill Emergency Crossovers",
+                "_id": "695438d4a54ab261b1452d18"
+            },
+            {
+                "sc_Name": "2271-2A",
+                "junctionGroup": "Bawtry Emergency Crossovers",
+                "_id": "69543a07a54ab261b145654a"
+            },
+            {
+                "sc_Name": "2271-3B",
+                "junctionGroup": "Bawtry Emergency Crossovers",
+                "_id": "69543a15a54ab261b14573a1"
             }
         ]
     }

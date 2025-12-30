@@ -962,7 +962,7 @@ function drawHorizontalGridLinesLayer({
     // Label the lines with their index. Write the text half between the lines.
     // The labels will stay at the left even when scrolling horizontally.
     ctx.font = '10px Arial';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
@@ -1066,8 +1066,8 @@ function drawConnectionsLayer({
     resolveLabelOverlapsVertically(uniqueLabels);
 
     // Draw labels
-    ctx.font = `Bold ${fontSize}px Arial`;
-    ctx.fillStyle = 'green';
+    ctx.font = `${fontSize}px Arial`;
+    ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
