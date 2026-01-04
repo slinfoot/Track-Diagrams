@@ -383,12 +383,56 @@ if (hamburgerMenu && sidebar) {
 }
 
 if (editDiagramBtn) {
+  
+  const FAKE_WINDOW_WIDTH = '1825';
+  const EDIT_UNLOCK_KEY = 'td_edit_unlocked';
+
+  function isEditUnlocked() {
+    return localStorage.getItem(EDIT_UNLOCK_KEY) === '1';
+  }
+
+  function setEditUnlocked(v) {
+    try { localStorage.setItem(EDIT_UNLOCK_KEY, v ? '1' : '0'); } catch (e) { /* ignore */ }
+  }
+
+  function updateEditButtonLockState() {
+    try {
+      if (!editDiagramBtn) return;
+      // Always render as enabled; prompt will be shown on click
+      editDiagramBtn.classList.remove('locked');
+      editDiagramBtn.removeAttribute('aria-disabled');
+      editDiagramBtn.title = '';
+    } catch (e) { /* ignore */ }
+  }
+
+  // Initialize state
+  updateEditButtonLockState();
+
   editDiagramBtn.addEventListener('click', () => {
-    toggleEditPanel();
-    if (hamburgerMenu && sidebar) {
-      hamburgerMenu.classList.remove('active');
-      sidebar.classList.remove('open');
+    const entered = window.prompt('Enter the password to open Edit Diagram:');
+    if (entered === null) return; // user cancelled
+    if (String(entered).trim() === FAKE_WINDOW_WIDTH) {
+      toggleEditPanel();
+      if (hamburgerMenu && sidebar) {
+        hamburgerMenu.classList.remove('active');
+        sidebar.classList.remove('open');
+      }
+    } else {
+      window.alert('Incorrect password.');
     }
+  });
+
+  // If hamburger toggles the sidebar, update the edit button state
+  if (hamburgerMenu && sidebar) {
+    hamburgerMenu.addEventListener('click', () => {
+      // small timeout to let class toggle occur
+      setTimeout(updateEditButtonLockState, 0);
+    });
+  }
+
+  // Update lock state when storage changes in other tabs
+  window.addEventListener('storage', (ev) => {
+    if (ev.key === EDIT_UNLOCK_KEY) updateEditButtonLockState();
   });
 }
 
