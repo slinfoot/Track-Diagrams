@@ -2179,14 +2179,31 @@ function renderStructuresTable(filterText = '') {
       const idx = parseInt(btn.closest('tr').dataset.idx);
       const s = sortedStructures[idx];
       if (window.confirm(`Are you sure you want to delete structure "${s.name}"?`)) {
-        // TODO: Implement delete API
-        // For now, just remove from array and save? No, should use API.
-        // Assuming we have a delete endpoint or we update the route.
-        // Since we don't have a specific delete structure endpoint in the snippets, 
-        // we might need to implement it or just remove from local and save?
-        // Let's assume we can't easily delete without an endpoint.
-        // For now, let's just alert.
-        window.alert('Delete functionality not yet implemented for structures.');
+        try {
+          const route = window.TrackDiagramApp?.getRoute();
+          if (!route) return;
+          
+          const safeCode = encodeURIComponent(String(route.code || '').trim());
+          const safeId = encodeURIComponent(String(structureId));
+          const url = `${apiUrl}/code/${safeCode}/structures/${safeId}`;
+          const resp = await fetch(url, { method: 'DELETE' });
+          
+          if (!resp.ok) {
+            const errText = await resp.text();
+            throw new Error(`HTTP error! status: ${resp.status} - ${errText}`);
+          }
+
+          if (selectedStructureId && String(selectedStructureId) === String(structureId)) {
+            selectedStructure = null;
+            selectedStructureId = null;
+            updateStructureActionButtons();
+          }
+
+          window.TrackDiagramApp?.loadRoute(route.code);
+        } catch (err) {
+          console.error('Error deleting structure:', err);
+          window.alert('Error deleting structure: ' + err.message);
+        }
       }
     });
   });
