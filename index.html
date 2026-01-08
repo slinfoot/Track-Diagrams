@@ -112,6 +112,7 @@
             <span>Route Length</span>
             <span id="editRouteLength" class="readonly-field">-</span>
           </label>
+          <button id="saveRouteMetaBtn" class="sidebar-button" style="margin-top: 8px;">Save Route Details</button>
         </div>
         <div class="edit-actions">
           <button class="sidebar-button edit-tab-button" type="button" data-tab="tracks">Tracks</button>
@@ -191,7 +192,52 @@
             </div>
           </div>
           <div class="edit-tab-content" data-tab="sections">
-            <div class="tab-placeholder">Sections editor coming soon.</div>
+            <div class="tracks-table-wrapper">
+              <div class="tracks-filter">
+                <label for="sectionFilter">
+                  <span>Filter by ELR:</span>
+                  <input type="text" id="sectionFilter" placeholder="Enter ELR...">
+                </label>
+                <div class="tracks-filter-actions">
+                  <button type="button" id="addSectionBtn" class="sidebar-button">Add New Section</button>
+                  <button type="button" id="editSelectedSectionBtn" class="sidebar-button" disabled>Edit Selected</button>
+                </div>
+              </div>
+              <div class="tracks-table-header">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 100px">
+                    <col style="width: 120px">
+                    <col style="width: 120px">
+                    <col style="width: 120px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>ELR</th>
+                      <th>From (Route Yds)</th>
+                      <th>To (Route Yds)</th>
+                      <th>Offset (Yds)</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="tracks-table-body" aria-label="Sections table rows">
+                <table class="tracks-table">
+                  <colgroup>
+                    <col style="width: 100px">
+                    <col style="width: 120px">
+                    <col style="width: 120px">
+                    <col style="width: 120px">
+                    <col style="width: 80px">
+                  </colgroup>
+                  <tbody id="sectionsTableBody">
+                    <tr><td colspan="5" class="table-empty">No sections loaded.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
           <div class="edit-tab-content" data-tab="stations">
             <div class="tracks-table-wrapper">
@@ -753,6 +799,46 @@
     </div>
   </div>
 
+  <!-- Section Edit Modal -->
+  <div id="sectionEditModal" class="modal" hidden>
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="sectionModalTitle">Edit Section</h3>
+        <button type="button" id="sectionModalCloseBtn" class="modal-close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="sectionEditForm">
+          <div class="form-row">
+            <label class="form-field">
+              <span>ELR</span>
+              <input type="text" id="formSectionElr" required>
+            </label>
+            <label class="form-field">
+              <span>Offset (Yards)</span>
+              <input type="number" id="formSectionOffset" placeholder="0" required>
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="form-field">
+              <span>From (Route Yards)</span>
+              <input type="number" id="formSectionFrom" required>
+            </label>
+            <label class="form-field">
+              <span>To (Route Yards)</span>
+              <input type="number" id="formSectionTo" required>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="sectionModalCancelBtn" class="btn-secondary">Cancel</button>
+            <button type="submit" id="sectionModalSaveBtn" class="btn-primary">Save Section</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Yards Calculator Modal -->
   <div id="yardsCalcModal" class="modal modal-small" hidden>
     <div class="modal-overlay"></div>
@@ -793,6 +879,9 @@
   </div>
 
   <script src="config.js"></script>
+  <script src="viewport.js"></script>
+  <script src="domain.js"></script>
+  <script src="renderer.js"></script>
   <script src="data.js"></script>
   <script src="OverlayTestData.js"></script>
   <script src="script.js"></script>

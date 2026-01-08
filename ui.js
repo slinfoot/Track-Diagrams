@@ -21,11 +21,30 @@ const closeEditPanelBtn = document.getElementById('closeEditPanelBtn');
 const editRouteName = document.getElementById('editRouteName');
 const editRouteCode = document.getElementById('editRouteCode');
 const editRouteLength = document.getElementById('editRouteLength');
+const saveRouteMetaBtn = document.getElementById('saveRouteMetaBtn');
 const tracksTableBody = document.getElementById('tracksTableBody');
 const tidFilter = document.getElementById('tidFilter');
 const addTrackBtn = document.getElementById('addTrackBtn');
 const editSelectedTrackBtn = document.getElementById('editSelectedTrackBtn');
 const editTabButtons = Array.from(document.querySelectorAll('.edit-tab-button'));
+
+// Section Elements
+const sectionsTableBody = document.getElementById('sectionsTableBody');
+const sectionFilter = document.getElementById('sectionFilter');
+const addSectionBtn = document.getElementById('addSectionBtn');
+const editSelectedSectionBtn = document.getElementById('editSelectedSectionBtn');
+
+// Section Modal Elements
+const sectionEditModal = document.getElementById('sectionEditModal');
+const sectionModalTitle = document.getElementById('sectionModalTitle');
+const sectionModalCloseBtn = document.getElementById('sectionModalCloseBtn');
+const sectionModalCancelBtn = document.getElementById('sectionModalCancelBtn');
+const sectionModalSaveBtn = document.getElementById('sectionModalSaveBtn');
+const sectionEditForm = document.getElementById('sectionEditForm');
+const formSectionElr = document.getElementById('formSectionElr');
+const formSectionOffset = document.getElementById('formSectionOffset');
+const formSectionFrom = document.getElementById('formSectionFrom');
+const formSectionTo = document.getElementById('formSectionTo');
 const editTabPanels = Array.from(document.querySelectorAll('.edit-tab-content'));
 // Alt Yardage Elements
 const altYardageTableBody = document.getElementById('altYardageTableBody');
@@ -168,6 +187,12 @@ let selectedTrackId = null;
 let selectedTrackTid = null;
 let isAddingNewTrack = false;
 let isSavingTrack = false;
+
+// Section state
+let selectedSection = null;
+let selectedSectionIndex = null;
+let isAddingNewSection = false;
+let isSavingSection = false;
 
 let selectedStation = null;
 let selectedStationId = null;
@@ -1290,6 +1315,8 @@ function setActiveEditTab(tabName) {
   // Trigger render for the active tab
   if (tabName === 'tracks') {
       if (typeof renderTracksTable === 'function') renderTracksTable(tidFilter?.value || '');
+  } else if (tabName === 'sections') {
+      if (typeof renderSectionsTable === 'function') renderSectionsTable(sectionFilter?.value || '');
   } else if (tabName === 'stations') {
       if (typeof renderStationsTable === 'function') renderStationsTable(stationFilter?.value || '');
   } else if (tabName === 'structures') {
@@ -2879,6 +2906,292 @@ if (calcYards && calcChains) {
       calcYards.value = Math.round(chainsValue * 22);
     } else {
       calcYards.value = '';
+    }
+  });
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/* SECTIONS LOGIC */
+function renderSectionsTable(filterElr = '') {
+  if (!sectionsTableBody) return;
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r?.sections?.length) {
+    sectionsTableBody.innerHTML = '<tr><td colspan="5" class="table-empty">No sections available.</td></tr>';
+    selectedSection = null;
+    selectedSectionIndex = null;
+    updateSectionActionButtons();
+    return;
+  }
+  
+  let sections = r.sections.map((s, i) => ({ ...s, originalIndex: i }));
+  if (filterElr.trim()) {
+    const filterLower = filterElr.trim().toLowerCase();
+    sections = sections.filter(s => String(s.elr || '').toLowerCase().includes(filterLower));
+  }
+  
+  if (!sections.length) {
+    sectionsTableBody.innerHTML = '<tr><td colspan="5" class="table-empty">No sections match the filter.</td></tr>';
+    selectedSection = null;
+    selectedSectionIndex = null;
+    updateSectionActionButtons();
+    return;
+  }
+  
+  // Sort by offset
+  sections.sort((a, b) => (a.offset || 0) - (b.offset || 0));
+  
+  const rows = sections.map(section => {
+    const isSelected = selectedSectionIndex === section.originalIndex;
+    const offset = section.offset || 0;
+    const from = section.from || 0;
+    const to = section.to || 0;
+    
+    return `
+      <tr class="${isSelected ? 'selected' : ''}" data-index="${section.originalIndex}" onclick="selectSectionRow(${section.originalIndex})">
+        <td>${escapeHtml(section.elr || '-')}</td>
+        <td>${from}</td>
+        <td>${to}</td>
+        <td>${offset}</td>
+        <td>
+           <button class="delete-btn" onclick="deleteSection(event, ${section.originalIndex})" title="Delete Section">×</button>
+        </td>
+      </tr>
+    `;
+  });
+  
+  sectionsTableBody.innerHTML = rows.join('');
+  updateSectionActionButtons();
+}
+
+function selectSectionRow(index) {
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r?.sections) return;
+
+  if (selectedSectionIndex === index) {
+    // Deselect
+    selectedSectionIndex = null;
+    selectedSection = null;
+  } else {
+    selectedSectionIndex = index;
+    selectedSection = r.sections[index];
+  }
+  renderSectionsTable(sectionFilter ? sectionFilter.value : '');
+}
+
+function updateSectionActionButtons() {
+    if (editSelectedSectionBtn) {
+        editSelectedSectionBtn.disabled = (selectedSectionIndex === null);
+    }
+}
+
+async function deleteSection(event, index) {
+  event.stopPropagation();
+  if (!confirm('Are you sure you want to delete this section?')) return;
+  
+  const r = window.TrackDiagramApp?.getRoute();
+  if (!r) return;
+  
+  const newSections = [...r.sections];
+  newSections.splice(index, 1);
+  
+  try {
+    await saveSectionsToApi(r._id, newSections);
+    window.TrackDiagramApp?.loadRoute(r.code);
+  } catch (err) {
+    alert('Error deleting section: ' + err.message);
+  }
+}
+
+function addNewSection() {
+    selectedSectionIndex = null;
+    selectedSection = null;
+    showSectionModal({}, true);
+}
+
+function editSelectedSection() {
+    if (selectedSectionIndex !== null && selectedSection) {
+        showSectionModal(selectedSection, false);
+    }
+}
+
+function showSectionModal(sectionData, isNew) {
+    isAddingNewSection = isNew;
+    if (sectionModalTitle) sectionModalTitle.textContent = isNew ? 'Add New Section' : 'Edit Section';
+    
+    if (formSectionElr) formSectionElr.value = sectionData.elr || '';
+    if (formSectionOffset) formSectionOffset.value = sectionData.offset ?? 0;
+    if (formSectionFrom) formSectionFrom.value = sectionData.from ?? 0;
+    if (formSectionTo) formSectionTo.value = sectionData.to ?? 0;
+    
+    if (sectionEditModal) {
+        sectionEditModal.hidden = false;
+        setTimeout(() => sectionEditModal.classList.add('open'), 10);
+    }
+}
+
+function hideSectionModal() {
+    if (sectionEditModal) {
+        sectionEditModal.classList.remove('open');
+        setTimeout(() => sectionEditModal.hidden = true, 300);
+    }
+}
+
+async function saveSectionFromForm() {
+    const r = window.TrackDiagramApp?.getRoute();
+    if (!r) return;
+    
+    const newSection = {
+        elr: formSectionElr.value.trim(),
+        offset: Number(formSectionOffset.value),
+        from: Number(formSectionFrom.value),
+        to: Number(formSectionTo.value)
+    };
+    
+    if (!newSection.elr) {
+        alert('ELR is required.');
+        return;
+    }
+    
+    const sections = r.sections ? [...r.sections] : [];
+    
+    if (isAddingNewSection) {
+        sections.push(newSection);
+    } else if (selectedSectionIndex !== null) {
+        sections[selectedSectionIndex] = newSection;
+    }
+    
+    await saveSectionsToApi(r._id, sections);
+    hideSectionModal();
+    window.TrackDiagramApp?.loadRoute(r.code);
+}
+
+async function saveSectionsToApi(routeId, sections) {
+  const safeId = encodeURIComponent(String(routeId || ''));
+  const url = `${apiUrl}/${safeId}`;
+  const resp = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sections })
+  });
+  
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`HTTP ${resp.status} - ${txt}`);
+  }
+  return await resp.json();
+}
+
+// Section Event Listeners
+if (sectionFilter) {
+  sectionFilter.addEventListener('input', () => {
+    renderSectionsTable(sectionFilter.value);
+  });
+}
+
+if (addSectionBtn) {
+  addSectionBtn.addEventListener('click', addNewSection);
+}
+
+if (editSelectedSectionBtn) {
+  editSelectedSectionBtn.addEventListener('click', editSelectedSection);
+  updateSectionActionButtons();
+}
+
+if (sectionModalCloseBtn) {
+  sectionModalCloseBtn.addEventListener('click', hideSectionModal);
+}
+
+if (sectionModalCancelBtn) {
+  sectionModalCancelBtn.addEventListener('click', hideSectionModal);
+}
+
+if (sectionEditForm) {
+  sectionEditForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSavingSection) return;
+    isSavingSection = true;
+    if (sectionModalSaveBtn) sectionModalSaveBtn.disabled = true;
+    try {
+      await saveSectionFromForm();
+    } catch (err) {
+      alert('Error saving section: ' + err.message);
+    } finally {
+      isSavingSection = false;
+      if (sectionModalSaveBtn) sectionModalSaveBtn.disabled = false;
+    }
+  });
+}
+
+if (sectionEditModal) {
+    makeModalDraggable(sectionEditModal);
+    sectionEditModal.addEventListener('click', (e) => {
+        if (e.target === sectionEditModal || e.target.classList.contains('modal-overlay')) {
+            hideSectionModal();
+        }
+    });
+}
+
+/* ROUTE METADATA LOGIC */
+if (saveRouteMetaBtn) {
+  saveRouteMetaBtn.addEventListener('click', async () => {
+    const route = window.TrackDiagramApp?.getRoute();
+    if (!route) return;
+
+    const newName = editRouteName.value.trim();
+    const newCode = editRouteCode.value.trim();
+
+    if (!newName || !newCode) {
+      alert('Route Name and Route Code are required.');
+      return;
+    }
+
+    try {
+      saveRouteMetaBtn.disabled = true;
+      saveRouteMetaBtn.textContent = 'Saving...';
+
+      const safeId = encodeURIComponent(String(route._id || ''));
+      const url = `${apiUrl}/${safeId}`;
+      
+      const payload = {
+        name: newName,
+        code: newCode
+      };
+
+      const resp = await fetch(url, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+      
+      const updatedRoute = await resp.json();
+      
+      // Reload application with new code if it changed
+      if (updatedRoute.code !== route.code) {
+         window.location.search = `?routeCode=${encodeURIComponent(updatedRoute.code)}`;
+      } else {
+         window.TrackDiagramApp?.loadRoute(updatedRoute.code);
+         alert('Route details saved successfully.');
+      }
+      
+    } catch (err) {
+      console.error('Error saving route details:', err);
+      alert('Error saving route details: ' + err.message);
+    } finally {
+      saveRouteMetaBtn.disabled = false;
+      saveRouteMetaBtn.textContent = 'Save Route Details';
     }
   });
 }
