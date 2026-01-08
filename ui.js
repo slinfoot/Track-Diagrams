@@ -18,6 +18,7 @@ const sidebar = document.getElementById('sidebar');
 const editDiagramBtn = document.getElementById('editDiagramBtn');
 const editPanel = document.getElementById('editPanel');
 const closeEditPanelBtn = document.getElementById('closeEditPanelBtn');
+const addNewRouteBtn = document.getElementById('addNewRouteBtn');
 const editRouteName = document.getElementById('editRouteName');
 const editRouteCode = document.getElementById('editRouteCode');
 const editRouteLength = document.getElementById('editRouteLength');
@@ -3004,7 +3005,7 @@ async function deleteSection(event, index) {
   newSections.splice(index, 1);
   
   try {
-    await saveSectionsToApi(r._id, newSections);
+    await saveSectionsToApi(r._id, { sections: newSections });
     window.TrackDiagramApp?.loadRoute(r.code);
   } catch (err) {
     alert('Error deleting section: ' + err.message);
@@ -3068,19 +3069,33 @@ async function saveSectionFromForm() {
     } else if (selectedSectionIndex !== null) {
         sections[selectedSectionIndex] = newSection;
     }
+
+    // specific fix: ensure route length accommodates the new section
+    let newLength = r.length_yards || 0;
+    sections.forEach(s => {
+        const end = Math.max(s.from, s.to);
+        if (end > newLength) {
+            newLength = end;
+        }
+    });
     
-    await saveSectionsToApi(r._id, sections);
+    const payload = { sections };
+    if (newLength > (r.length_yards || 0)) {
+        payload.length_yards = newLength;
+    }
+
+    await saveSectionsToApi(r._id, payload);
     hideSectionModal();
     window.TrackDiagramApp?.loadRoute(r.code);
 }
 
-async function saveSectionsToApi(routeId, sections) {
+async function saveSectionsToApi(routeId, payload) {
   const safeId = encodeURIComponent(String(routeId || ''));
   const url = `${apiUrl}/${safeId}`;
   const resp = await fetch(url, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sections })
+    body: JSON.stringify(payload)
   });
   
   if (!resp.ok) {
@@ -3192,6 +3207,64 @@ if (saveRouteMetaBtn) {
     } finally {
       saveRouteMetaBtn.disabled = false;
       saveRouteMetaBtn.textContent = 'Save Route Details';
+    }
+  });
+}
+
+/* NEW ROUTE LOGIC */
+if (addNewRouteBtn) {
+  addNewRouteBtn.addEventListener('click', async () => {
+    const defaultName = 'New Route';
+    const defaultCode = 'NEW' + Math.floor(Math.random() * 1000);
+    
+    // Prompt user for simple details, or just create a stub and let them edit it
+    const name = window.prompt("Enter name for the new route:", defaultName);
+    if (name === null) return; // Cancelled
+    
+    const code = window.prompt("Enter a unique code for the new route (e.g. ECML):", defaultCode);
+    if (code === null) return;
+
+    if (!name.trim() || !code.trim()) {
+      alert("Name and Code are required.");
+      return;
+    }
+
+    try {
+      addNewRouteBtn.disabled = true;
+      addNewRouteBtn.textContent = 'Creating...';
+
+      // Ensure minimal required fields are present according to Mongoose schema
+      const payload = {
+        name: name.trim(),
+        code: code.trim().toUpperCase(),
+        length_yards: 10000,
+        sections: [],
+        tracks: [],
+        stations: [],
+        structures: [],
+        altRouteYardageMap: [],
+        switchesAndCrossings: []
+      };
+
+      const resp = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+
+      // If created successfully, switch to the new route
+      const createdRoute = await resp.json();
+      window.location.search = `?routeCode=${encodeURIComponent(createdRoute.code)}`;
+
+    } catch (err) {
+      console.error('Error creating route:', err);
+      alert('Error creating route: ' + err.message);
+      addNewRouteBtn.disabled = false;
+      addNewRouteBtn.textContent = '+ New Route';
     }
   });
 }

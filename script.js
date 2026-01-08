@@ -191,8 +191,18 @@ function computeInitialTargetYards({ lastCenterYards }, config) {
 }
 
 function createDefaultConfig(nextRoute) {
+  let computedLength = nextRoute.length_yards || 10000;
+  if (Array.isArray(nextRoute.sections)) {
+    for (const s of nextRoute.sections) {
+       const end = Number(s.to);
+       if (!isNaN(end) && end > computedLength) {
+           computedLength = end;
+       }
+    }
+  }
+
   return {
-    totalYards: nextRoute.length_yards,
+    totalYards: computedLength,
     yardsPerPixel: DEFAULT_YARDS_PER_PIXEL,
     horizontalGridSpacing: DEFAULT_GRID_SPACING,
     horizontalGridLinesNo: 100,
