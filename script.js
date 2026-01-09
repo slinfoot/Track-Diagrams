@@ -1,7 +1,7 @@
 const API_URL = (typeof CONFIG !== 'undefined' ? CONFIG.API_BASE_URL : 'http://localhost:3000/api/routes');
 
 // Set true for verbose debugging.
-const DEBUG = false;
+const DEBUG = true;
 
 function debugLog(...args) {
   if (DEBUG) console.log(...args);
@@ -18,13 +18,13 @@ const RULER_TICK_MEDIUM_YARDS = 440;
 const RULER_TICK_MINOR_YARDS = 110;
 const RULER_TICK_MICRO_YARDS = 22;
 
-const DEFAULT_ROUTE_CODE = 'ECML';
+const DEFAULT_ROUTE_CODE = 'HDB'
 const DEFAULT_YARDS_PER_PIXEL = 1;
 const DEFAULT_GRID_SPACING = 50;
 const DEFAULT_SCROLL_SIZE_MILES = 10;
 
 // Default initial centering (historically York area). Used when no prior viewport state exists.
-const DEFAULT_INITIAL_TARGET_YARDS = 134786;
+const DEFAULT_INITIAL_TARGET_YARDS = 30000;
 
 // Layout/label defaults
 const WINDOW_EDGE_MARGIN_RATIO = 0.2;
@@ -141,7 +141,7 @@ function consumeUrlOverlayFromLocation() {
     // One-shot: remove overlay params from the URL once consumed, so future route reloads
     // (e.g. triggered by Save) don't keep forcing a recenter.
     if (window.history && typeof window.history.replaceState === 'function') {
-      const overlayKeys = ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text', 'routeCode'];
+      const overlayKeys = ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'];
       let changed = false;
       overlayKeys.forEach(key => {
         if (params.has(key)) {
@@ -379,6 +379,104 @@ function computeOverlayCenterYards(urlOverlay, computeAbsoluteYardsFn) {
 
 function dispatchRouteLoaded() {
   window.dispatchEvent(new CustomEvent('diagram:routeLoaded', { detail: { route } }));
+}
+
+async function findRouteCodeByElr(elrCode) {
+  if (!elrCode) return null;
+  
+  debugLog(`findRouteCodeByElr: Looking for ELR "${elrCode}"`);
+  
+  // Normalize the ELR - handle case where TrackDomain might not be fully loaded
+  let normElr = null;
+  try {
+    if (typeof TrackDomain !== 'undefined' && typeof TrackDomain.normalizeElr === 'function') {
+      normElr = TrackDomain.normalizeElr(elrCode);
+    } else {
+      // Fallback: basic normalization (uppercase, trim)
+      normElr = String(elrCode).trim().toUpperCase();
+      debugLog(`TrackDomain not available, using fallback normalization: "${normElr}"`);
+    }
+  } catch (e) {
+    debugLog(`Error normalizing ELR: ${e.message}`);
+    return null;
+  }
+  
+  if (!normElr) {
+    debugLog(`Could not normalize ELR "${elrCode}"`);
+    return null;
+  }
+
+  // Try local data.js first (synchronously available)
+  if (typeof routes !== 'undefined' && Array.isArray(routes)) {
+    debugLog(`Searching ${routes.length} local routes for normalized ELR "${normElr}"`);
+    for (const r of routes) {
+      if (Array.isArray(r.sections)) {
+        for (const section of r.sections) {
+          let sectionElrNorm = null;
+          try {
+            if (typeof TrackDomain !== 'undefined' && typeof TrackDomain.normalizeElr === 'function') {
+              sectionElrNorm = TrackDomain.normalizeElr(section.elr);
+            } else {
+              sectionElrNorm = String(section.elr).trim().toUpperCase();
+            }
+          } catch (e) {
+            continue;
+          }
+          
+          if (sectionElrNorm === normElr) {
+            debugLog(`✓ Found ELR "${normElr}" in local route "${r.code}"`);
+            return r.code;
+          }
+        }
+      }
+    }
+  } else {
+    debugLog(`Local routes not available (routes is ${typeof routes})`);
+  }
+
+  // Try API if local data didn't have it
+  try {
+    if (typeof CONFIG !== 'undefined' && CONFIG.API_BASE_URL) {
+      debugLog(`ELR "${normElr}" not found locally, checking API at ${API_URL}`);
+      const response = await fetch(API_URL);
+      if (response.ok) {
+        const data = await response.json();
+        // Handle both array and object responses
+        const allRoutes = Array.isArray(data) ? data : (data.routes || data.data || []);
+        debugLog(`API returned ${Array.isArray(allRoutes) ? allRoutes.length : 0} routes`);
+        if (Array.isArray(allRoutes)) {
+          for (const r of allRoutes) {
+            if (Array.isArray(r.sections)) {
+              for (const section of r.sections) {
+                let sectionElrNorm = null;
+                try {
+                  if (typeof TrackDomain !== 'undefined' && typeof TrackDomain.normalizeElr === 'function') {
+                    sectionElrNorm = TrackDomain.normalizeElr(section.elr);
+                  } else {
+                    sectionElrNorm = String(section.elr).trim().toUpperCase();
+                  }
+                } catch (e) {
+                  continue;
+                }
+                
+                if (sectionElrNorm === normElr) {
+                  debugLog(`✓ Found ELR "${normElr}" in API route "${r.code}"`);
+                  return r.code;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        debugLog(`API returned status ${response.status}`);
+      }
+    }
+  } catch (e) {
+    console.warn('Error fetching routes from API:', e);
+  }
+
+  debugLog(`✗ Could not find route containing ELR "${normElr}"`);
+  return null;
 }
 
 async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
@@ -1447,12 +1545,35 @@ function initializeApp() {
 }
 
 // Load route when page loads
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const routeCode = urlParams.get('routeCode');
+  let routeCode = urlParams.get('routeCode');
+  const elrParam = urlParams.get('elr');
+
+  // If ELR parameter is present, use it to find the route
+  if (elrParam && !routeCode) {
+    debugLog(`DOMContentLoaded: ELR parameter detected: "${elrParam}"`);
+    routeCode = await findRouteCodeByElr(elrParam);
+    if (routeCode) {
+      debugLog(`✓ DOMContentLoaded: Found route code "${routeCode}" for ELR "${elrParam}"`);
+      // Clear viewport state when switching to a new route via ELR
+      viewportState.lastCenterYards = null;
+      viewportState.lastVisibleCenterYards = null;
+      viewportState.lastScrollTopPx = null;
+      viewportState.lastScrollLeftPx = null;
+      // Signal that route loading has been handled (prevents ui.js from overriding)
+      window._routeLoadingHandled = true;
+    } else {
+      console.warn(`✗ Could not find a route containing ELR "${elrParam}"`);
+    }
+  }
+
   if (routeCode) {
+    debugLog(`Loading route: ${routeCode}`);
+    window._routeLoadingHandled = true;
     loadRoute(routeCode);
   } else {
+    debugLog(`No route code specified, loading default: ${DEFAULT_ROUTE_CODE}`);
     loadRoute();
   }
 });

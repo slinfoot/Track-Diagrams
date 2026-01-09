@@ -1272,110 +1272,135 @@ const TrackRenderer = (function() {
 
         if (structure.type !== 'tunnel' && structure.type !== 'overbridge') return;
 
-      // Collect points for From and To lines
-      const fromPoints = [];
-      const toPoints = [];
+        // Find top-most and bottom-most tracks for each side
+        let topTrackLoc = null;
+        let bottomTrackLoc = null;
+        let minGridY = Infinity;
+        let maxGridY = -Infinity;
 
-      structure.trackLocation.forEach(loc => {
-        const midYard = (loc.from + loc.to) / 2;
-        const gridY = getYAtJunction(loc.tid, midYard, loc.elr);
+        structure.trackLocation.forEach(loc => {
+          const midYard = (loc.from + loc.to) / 2;
+          const gridY = getYAtJunction(loc.tid, midYard, loc.elr);
+          if (gridY !== null) {
+            if (gridY < minGridY) {
+              minGridY = gridY;
+              topTrackLoc = loc;
+            }
+            if (gridY > maxGridY) {
+              maxGridY = gridY;
+              bottomTrackLoc = loc;
+            }
+          }
+        });
 
-        if (gridY !== null) {
-          const screenY = getY(gridY, true);
-          fromPoints.push({ x: getX(loc.from), y: screenY });
-          toPoints.push({ x: getX(loc.to), y: screenY });
-        }
-      });
-
-      if (fromPoints.length === 0) return;
-
-      // Helper to draw the portal line
-      function drawPortalLine(points, isFrom) {
-        // Find top-most and bottom-most points based on Y
-        points.sort((a, b) => a.y - b.y);
-
-        const topPoint = points[0];
-        const bottomPoint = points[points.length - 1];
+        if (!topTrackLoc || !bottomTrackLoc) return;
 
         const extension = config.horizontalGridSpacing * 0.25;
-
-        // Calculate angle of the line to handle skew
-        const dx = bottomPoint.x - topPoint.x;
-        const dy = bottomPoint.y - topPoint.y;
-        const length = Math.sqrt(dx * dx + dy * dy);
-
-        let startX, startY, endX, endY;
-        let angle;
-
-        if (length === 0) {
-          // Single track structure, vertical line
-          startX = topPoint.x;
-          startY = topPoint.y - extension;
-          endX = bottomPoint.x;
-          endY = bottomPoint.y + extension;
-          angle = Math.PI / 2;
-        } else {
-          // Extend vector
-          const ux = dx / length;
-          const uy = dy / length;
-
-          startX = topPoint.x - ux * extension;
-          startY = topPoint.y - uy * extension;
-          endX = bottomPoint.x + ux * extension;
-          endY = bottomPoint.y + uy * extension;
-          angle = Math.atan2(dy, dx);
-        }
-
-        drawLine(startX, startY, endX, endY, 2, 'blue');
-
-        // Flares
         const flareLen = extension;
-        const flareAngleDelta = Math.PI / 4;
-        const topBaseAngle = angle + Math.PI;
-        const bottomBaseAngle = angle;
 
-        let topFlareAngle, bottomFlareAngle;
+        // Draw portal line perpendicular to track at a specific yard position
+        const drawPortalAtYard = (loc, yard, overrideGridY) => {
+          let gridY = getYAtJunction(loc.tid, yard, loc.elr);
+          // Fallback: use known gridY if specific point lookup fails (common at track ends)
+          if (gridY === null && overrideGridY !== undefined) {
+            gridY = overrideGridY;
+          }
+          if (gridY === null) return null;
 
-        if (isFrom) {
-          // Left side
-          topFlareAngle = topBaseAngle - flareAngleDelta;
-          bottomFlareAngle = bottomBaseAngle + flareAngleDelta;
-        } else {
-          // Right side
-          topFlareAngle = topBaseAngle + flareAngleDelta;
-          bottomFlareAngle = bottomBaseAngle - flareAngleDelta;
-        }
+          const x = getX(yard);
+          const y = getY(gridY, true);
 
-        drawLine(startX, startY, startX + Math.cos(topFlareAngle) * flareLen, startY + Math.sin(topFlareAngle) * flareLen, 2, 'blue');
-        drawLine(endX, endY, endX + Math.cos(bottomFlareAngle) * flareLen, endY + Math.sin(bottomFlareAngle) * flareLen, 2, 'blue');
+          // Calculate track angle at this position by sampling nearby points
+          const delta = 10; // yards to look ahead/behind
+          const gridYBefore = getYAtJunction(loc.tid, yard - delta, loc.elr);
+          const gridYAfter = getYAtJunction(loc.tid, yard + delta, loc.elr);
 
-        return { start: { x: startX, y: startY }, end: { x: endX, y: endY } };
-      }
+          let trackAngle = 0; // Default horizontal
+          if (gridYBefore !== null && gridYAfter !== null) {
+            const xBefore = getX(yard - delta);
+            const yBefore = getY(gridYBefore, true);
+            const xAfter = getX(yard + delta);
+            const yAfter = getY(gridYAfter, true);
+            trackAngle = Math.atan2(yAfter - yBefore, xAfter - xBefore);
+          } else if (gridYBefore !== null) {
+            // End of track: look back?
+            const xBefore = getX(yard - delta);
+            const yBefore = getY(gridYBefore, true);
+            trackAngle = Math.atan2(y - yBefore, x - xBefore); 
+          } else if (gridYAfter !== null) {
+            // Start of track: look forward?
+            const xAfter = getX(yard + delta);
+            const yAfter = getY(gridYAfter, true);
+            trackAngle = Math.atan2(yAfter - y, xAfter - x);
+          }
 
-      const fromPortal = drawPortalLine(fromPoints, true);
-      const toPortal = drawPortalLine(toPoints, false);
+          // Perpendicular angle to track
+          const perpAngle = trackAngle + Math.PI / 2;
 
-      if (fromPortal && toPortal) {
+          // Portal line extends perpendicular to track
+          const startX = x + Math.cos(perpAngle) * extension;
+          const startY = y + Math.sin(perpAngle) * extension;
+          const endX = x - Math.cos(perpAngle) * extension;
+          const endY = y - Math.sin(perpAngle) * extension;
+
+          return { x, y, startX, startY, endX, endY, perpAngle, trackAngle };
+        };
+
+        const topFrom = drawPortalAtYard(topTrackLoc, topTrackLoc.from, minGridY);
+        const topTo = drawPortalAtYard(topTrackLoc, topTrackLoc.to, minGridY);
+        const bottomFrom = drawPortalAtYard(bottomTrackLoc, bottomTrackLoc.from, maxGridY);
+        const bottomTo = drawPortalAtYard(bottomTrackLoc, bottomTrackLoc.to, maxGridY);
+
+        if (!topFrom || !topTo || !bottomFrom || !bottomTo) return;
+
+        // Determine corners
+        // Top track uses 'end' coords (visually top/up), Bottom track uses 'start' coords (visually bottom/down)
+        const tl = { x: topFrom.endX, y: topFrom.endY };
+        const bl = { x: bottomFrom.startX, y: bottomFrom.startY };
+        const tr = { x: topTo.endX, y: topTo.endY };
+        const br = { x: bottomTo.startX, y: bottomTo.startY };
+
+        // Draw portal lines (perpendicular to track)
+        drawLine(tl.x, tl.y, bl.x, bl.y, 2, 'blue');
+        drawLine(tr.x, tr.y, br.x, br.y, 2, 'blue');
+
+        // Draw flares
+        // TL (Top-Left): Point Up-Left (Track Angle + 225 deg)
+        const tlAngle = topFrom.trackAngle + (5 * Math.PI / 4);
+        drawLine(tl.x, tl.y, tl.x + Math.cos(tlAngle) * flareLen, tl.y + Math.sin(tlAngle) * flareLen, 2, 'blue');
+
+        // BL (Bottom-Left): Point Down-Left (Track Angle + 135 deg)
+        const blAngle = bottomFrom.trackAngle + (3 * Math.PI / 4);
+        drawLine(bl.x, bl.y, bl.x + Math.cos(blAngle) * flareLen, bl.y + Math.sin(blAngle) * flareLen, 2, 'blue');
+
+        // TR (Top-Right): Point Up-Right (Track Angle - 45 deg)
+        const trAngle = topTo.trackAngle - (Math.PI / 4);
+        drawLine(tr.x, tr.y, tr.x + Math.cos(trAngle) * flareLen, tr.y + Math.sin(trAngle) * flareLen, 2, 'blue');
+
+        // BR (Bottom-Right): Point Down-Right (Track Angle + 45 deg)
+        const brAngle = bottomTo.trackAngle + (Math.PI / 4);
+        drawLine(br.x, br.y, br.x + Math.cos(brAngle) * flareLen, br.y + Math.sin(brAngle) * flareLen, 2, 'blue');
+
+        // Draw connecting lines parallel to tracks (dashed) which surround the tracks
         ctx.setLineDash([5, 5]);
-        drawLine(fromPortal.start.x, fromPortal.start.y, toPortal.start.x, toPortal.start.y, 1, 'rgba(0,0,255,0.5)');
-        drawLine(fromPortal.end.x, fromPortal.end.y, toPortal.end.x, toPortal.end.y, 1, 'rgba(0,0,255,0.5)');
+        drawLine(tl.x, tl.y, tr.x, tr.y, 1, 'rgba(0,0,255,0.5)');
+        drawLine(bl.x, bl.y, br.x, br.y, 1, 'rgba(0,0,255,0.5)');
         ctx.setLineDash([]);
-      }
 
-      // Draw Label
-      const centerX = (fromPortal.start.x + fromPortal.end.x + toPortal.start.x + toPortal.end.x) / 4;
-      const centerY = (fromPortal.start.y + fromPortal.end.y + toPortal.start.y + toPortal.end.y) / 4;
+        // Draw Label
+        const centerX = (topFrom.x + topTo.x + bottomFrom.x + bottomTo.x) / 4;
+        const centerY = (topFrom.y + topTo.y + bottomFrom.y + bottomTo.y) / 4;
 
-      ctx.fillStyle = 'blue';
-      ctx.font = '12px Arial';
-      ctx.textAlign = 'center';
+        ctx.fillStyle = 'blue';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
 
-      if (structure.structureNo) {
-        ctx.fillText(structure.name, centerX, centerY - 7);
-        ctx.fillText(structure.structureNo, centerX, centerY + 7);
-      } else {
-        ctx.fillText(structure.name, centerX, centerY);
-      }
+        if (structure.structureNo) {
+          ctx.fillText(structure.name, centerX, centerY - 7);
+          ctx.fillText(structure.structureNo, centerX, centerY + 7);
+        } else {
+          ctx.fillText(structure.name, centerX, centerY);
+        }
       });
     });
   }

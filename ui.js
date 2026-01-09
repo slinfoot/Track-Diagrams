@@ -608,6 +608,12 @@ window.addEventListener('diagram:routeLoaded', () => {
 });
 
 window.addEventListener('DOMContentLoaded', async () => {
+  // Don't load route if script.js already handled it
+  if (window._routeLoadingHandled) {
+    console.log('Route loading already handled by script.js');
+    return;
+  }
+  
   // Check if there's an overlay in the URL that requires auto-loading a route
   try {
     const url = new URL(window.location.href);
@@ -2161,19 +2167,20 @@ function renderStructuresTable(filterText = '') {
   }).join('');
 
   // Row selection and double-click centering
-  structuresTableBody.querySelectorAll('tr').forEach((row, i) => {
+  structuresTableBody.querySelectorAll('tr').forEach((row) => {
     row.addEventListener('click', (e) => {
       if (e.target && e.target.classList && e.target.classList.contains('btn-structure-delete')) {
         return;
       }
       const idx = parseInt(row.dataset.idx);
       selectedStructure = sortedStructures[idx];
+      // find index in original array
+      const routeList = route?.structures || [];
       selectedStructureId = selectedStructure._id;
-      renderStructuresTable(filterText);
       updateStructureActionButtons();
+      renderStructuresTable(filterText);
     });
     
-    // Double-click to center
     row.addEventListener('dblclick', (e) => {
       if (e.target && e.target.classList && e.target.classList.contains('btn-structure-delete')) {
         return;
@@ -2498,6 +2505,7 @@ function renderSwitchesTable(filterText = '') {
       try {
         const routeObj = window.TrackDiagramApp?.getRoute();
         if (!routeObj) return;
+        
         const arr = routeObj.switchesAndCrossings || [];
         const delIndex = arr.findIndex(x => x._id ? String(x._id) === String(sc._id) : (x.sc_Name === sc.sc_Name));
         if (delIndex === -1) {
@@ -3103,56 +3111,6 @@ async function saveSectionsToApi(routeId, payload) {
     throw new Error(`HTTP ${resp.status} - ${txt}`);
   }
   return await resp.json();
-}
-
-// Section Event Listeners
-if (sectionFilter) {
-  sectionFilter.addEventListener('input', () => {
-    renderSectionsTable(sectionFilter.value);
-  });
-}
-
-if (addSectionBtn) {
-  addSectionBtn.addEventListener('click', addNewSection);
-}
-
-if (editSelectedSectionBtn) {
-  editSelectedSectionBtn.addEventListener('click', editSelectedSection);
-  updateSectionActionButtons();
-}
-
-if (sectionModalCloseBtn) {
-  sectionModalCloseBtn.addEventListener('click', hideSectionModal);
-}
-
-if (sectionModalCancelBtn) {
-  sectionModalCancelBtn.addEventListener('click', hideSectionModal);
-}
-
-if (sectionEditForm) {
-  sectionEditForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (isSavingSection) return;
-    isSavingSection = true;
-    if (sectionModalSaveBtn) sectionModalSaveBtn.disabled = true;
-    try {
-      await saveSectionFromForm();
-    } catch (err) {
-      alert('Error saving section: ' + err.message);
-    } finally {
-      isSavingSection = false;
-      if (sectionModalSaveBtn) sectionModalSaveBtn.disabled = false;
-    }
-  });
-}
-
-if (sectionEditModal) {
-    makeModalDraggable(sectionEditModal);
-    sectionEditModal.addEventListener('click', (e) => {
-        if (e.target === sectionEditModal || e.target.classList.contains('modal-overlay')) {
-            hideSectionModal();
-        }
-    });
 }
 
 /* ROUTE METADATA LOGIC */
