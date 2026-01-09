@@ -24,7 +24,7 @@ const DEFAULT_GRID_SPACING = 50;
 const DEFAULT_SCROLL_SIZE_MILES = 10;
 
 // Default initial centering (historically York area). Used when no prior viewport state exists.
-const DEFAULT_INITIAL_TARGET_YARDS = 120000;
+const DEFAULT_INITIAL_TARGET_YARDS = 331760;
 
 // Layout/label defaults
 const WINDOW_EDGE_MARGIN_RATIO = 0.2;
