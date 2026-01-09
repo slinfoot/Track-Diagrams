@@ -25383,6 +25383,14 @@ const routes = [
                 "toYardageMainRoute": 510560,
                 "toYardageAltRoute": 804,
                 "_id": "695d269eb144b16af8770ab1"
+            },
+            {
+                "elr": "PMJ",
+                "fromYardageMainRoute": 134672,
+                "fromYardageAltRoute": 38833,
+                "toYardageMainRoute": 143901,
+                "toYardageAltRoute": 29606,
+                "_id": "69616adc8e94ce4020deee60"
             }
         ],
         "switchesAndCrossings": [

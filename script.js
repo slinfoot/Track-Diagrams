@@ -18,13 +18,13 @@ const RULER_TICK_MEDIUM_YARDS = 440;
 const RULER_TICK_MINOR_YARDS = 110;
 const RULER_TICK_MICRO_YARDS = 22;
 
-const DEFAULT_ROUTE_CODE = 'HDB'
+const DEFAULT_ROUTE_CODE = 'ECML'
 const DEFAULT_YARDS_PER_PIXEL = 1;
 const DEFAULT_GRID_SPACING = 50;
 const DEFAULT_SCROLL_SIZE_MILES = 10;
 
 // Default initial centering (historically York area). Used when no prior viewport state exists.
-const DEFAULT_INITIAL_TARGET_YARDS = 30000;
+const DEFAULT_INITIAL_TARGET_YARDS = 120000;
 
 // Layout/label defaults
 const WINDOW_EDGE_MARGIN_RATIO = 0.2;
@@ -381,10 +381,10 @@ function dispatchRouteLoaded() {
   window.dispatchEvent(new CustomEvent('diagram:routeLoaded', { detail: { route } }));
 }
 
-async function findRouteCodeByElr(elrCode) {
+async function findRouteCodeByElr(elrCode, searchYards = null) {
   if (!elrCode) return null;
   
-  debugLog(`findRouteCodeByElr: Looking for ELR "${elrCode}"`);
+  debugLog(`findRouteCodeByElr: Looking for ELR "${elrCode}"${searchYards !== null ? ` at yards ${searchYards}` : ''}`);
   
   // Normalize the ELR - handle case where TrackDomain might not be fully loaded
   let normElr = null;
@@ -424,8 +424,49 @@ async function findRouteCodeByElr(elrCode) {
           }
           
           if (sectionElrNorm === normElr) {
-            debugLog(`✓ Found ELR "${normElr}" in local route "${r.code}"`);
-            return r.code;
+            // If specific yards are requested, verify they fall within this section
+            if (searchYards !== null) {
+              const offset = Number(section.offset) || 0;
+              const routeYards = searchYards + offset;
+              // Check if the calculated route yardage is within the section bounds
+              if (routeYards >= section.from && routeYards <= section.to) {
+                debugLog(`✓ Found ELR "${normElr}" at yards ${searchYards} (route: ${routeYards}) in local route "${r.code}"`);
+                return r.code;
+              }
+            } else {
+              debugLog(`✓ Found ELR "${normElr}" in local route "${r.code}"`);
+              return r.code;
+            }
+          }
+        }
+      }
+
+      // Check altRouteYardageMap
+      if (Array.isArray(r.altRouteYardageMap)) {
+        for (const mapItem of r.altRouteYardageMap) {
+          let mapElrNorm = null;
+          try {
+            if (typeof TrackDomain !== 'undefined' && typeof TrackDomain.normalizeElr === 'function') {
+              mapElrNorm = TrackDomain.normalizeElr(mapItem.elr);
+            } else {
+              mapElrNorm = String(mapItem.elr).trim().toUpperCase();
+            }
+          } catch (e) {
+            continue;
+          }
+
+          if (mapElrNorm === normElr) {
+            if (searchYards !== null) {
+              const minAlt = Math.min(mapItem.fromYardageAltRoute, mapItem.toYardageAltRoute);
+              const maxAlt = Math.max(mapItem.fromYardageAltRoute, mapItem.toYardageAltRoute);
+              if (searchYards >= minAlt && searchYards <= maxAlt) {
+                 debugLog(`✓ Found ELR "${normElr}" at yards ${searchYards} in local route "${r.code}" (altRouteYardageMap)`);
+                 return r.code;
+              }
+            } else {
+              debugLog(`✓ Found ELR "${normElr}" in local route "${r.code}" (altRouteYardageMap)`);
+              return r.code;
+            }
           }
         }
       }
@@ -460,10 +501,49 @@ async function findRouteCodeByElr(elrCode) {
                 }
                 
                 if (sectionElrNorm === normElr) {
-                  debugLog(`✓ Found ELR "${normElr}" in API route "${r.code}"`);
-                  return r.code;
+                  if (searchYards !== null) {
+                    const offset = Number(section.offset) || 0;
+                    const routeYards = searchYards + offset;
+                    if (routeYards >= section.from && routeYards <= section.to) {
+                      debugLog(`✓ Found ELR "${normElr}" at yards ${searchYards} (route: ${routeYards}) in API route "${r.code}"`);
+                      return r.code;
+                    }
+                  } else {
+                    debugLog(`✓ Found ELR "${normElr}" in API route "${r.code}"`);
+                    return r.code;
+                  }
                 }
               }
+            }
+
+            // Check altRouteYardageMap
+            if (Array.isArray(r.altRouteYardageMap)) {
+               for (const mapItem of r.altRouteYardageMap) {
+                 let mapElrNorm = null;
+                 try {
+                   if (typeof TrackDomain !== 'undefined' && typeof TrackDomain.normalizeElr === 'function') {
+                     mapElrNorm = TrackDomain.normalizeElr(mapItem.elr);
+                   } else {
+                     mapElrNorm = String(mapItem.elr).trim().toUpperCase();
+                   }
+                 } catch (e) {
+                   continue;
+                 }
+       
+                 if (mapElrNorm === normElr) {
+                   if (searchYards !== null) {
+                     const minAlt = Math.min(mapItem.fromYardageAltRoute, mapItem.toYardageAltRoute);
+                     const maxAlt = Math.max(mapItem.fromYardageAltRoute, mapItem.toYardageAltRoute);
+                     if (searchYards >= minAlt && searchYards <= maxAlt) {
+                        debugLog(`✓ Found ELR "${normElr}" at yards ${searchYards} in API route "${r.code}" (altRouteYardageMap)`);
+                        return r.code;
+                     }
+                   } else {
+                     debugLog(`✓ Found ELR "${normElr}" in API route "${r.code}" (altRouteYardageMap)`);
+                     return r.code;
+                   }
+                 }
+               }
             }
           }
         }
@@ -480,6 +560,7 @@ async function findRouteCodeByElr(elrCode) {
 }
 
 async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
+  let labelManager = null;
   // If this is a reload of the currently-viewed route (e.g. after saving a track/station/structure),
   // capture the current viewport so we can restore it after the data refresh.
   const requestedCode = (routeCode ?? '').toString().trim();
@@ -1079,7 +1160,8 @@ function initializeApp() {
       getX,
       getY,
       getVisibleSpanYardsForTrack,
-      getTrackGridYAtYards
+      getTrackGridYAtYards,
+      labelManager
     });
   }
 
@@ -1150,7 +1232,8 @@ function initializeApp() {
       collectConnectionLabelCandidates,
       buildConnectionLabelsWithMetrics,
       dedupeNearbyLabels,
-      resolveLabelOverlapsVertically
+      resolveLabelOverlapsVertically,
+      labelManager
     });
   }
 
@@ -1167,7 +1250,8 @@ function initializeApp() {
       segmentOverlapsRange,
       getYAtJunction,
       getX,
-      getY
+      getY,
+      labelManager
     });
   }
 
@@ -1188,7 +1272,8 @@ function initializeApp() {
       segmentOverlapsRange,
       clipSegmentToRange,
       drawLine,
-      normalizeElr
+      normalizeElr,
+      labelManager
     });
   }
 
@@ -1478,13 +1563,26 @@ function initializeApp() {
   function drawAll() {
     junctionYCache.clear();
     textWidthCache.clear();
+    
+    if (TrackRenderer.createLabelCollisionManager) {
+      labelManager = TrackRenderer.createLabelCollisionManager();
+    }
+
     drawRuler();
     drawHorizontalGridLines();
+    
+    // Priority 1: Tracks (TIDs) & Stations
     drawTracks();
-    drawConnections();
-    drawBuffers();
     drawStations();
+    
+    // Priority 2: Connections (S&C)
+    drawConnections();
+    
+    drawBuffers();
+    
+    // Priority 3: Structures
     drawStructures();
+    
     drawOverlays();
     drawSideDiagram();
   }
@@ -1549,11 +1647,23 @@ window.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   let routeCode = urlParams.get('routeCode');
   const elrParam = urlParams.get('elr');
+  const mileParam = urlParams.get('mileFrom');
+  const yardParam = urlParams.get('yardFrom');
+
+  // Calculate search yards if provided
+  let searchYards = null;
+  if (mileParam !== null && yardParam !== null) {
+      const miles = parseFloat(mileParam);
+      const yards = parseFloat(yardParam);
+      if (!isNaN(miles) && !isNaN(yards)) {
+          searchYards = (miles * 1760) + yards;
+      }
+  }
 
   // If ELR parameter is present, use it to find the route
   if (elrParam && !routeCode) {
-    debugLog(`DOMContentLoaded: ELR parameter detected: "${elrParam}"`);
-    routeCode = await findRouteCodeByElr(elrParam);
+    debugLog(`DOMContentLoaded: ELR parameter detected: "${elrParam}"${searchYards !== null ? ` (at ${searchYards} yards)` : ''}`);
+    routeCode = await findRouteCodeByElr(elrParam, searchYards);
     if (routeCode) {
       debugLog(`✓ DOMContentLoaded: Found route code "${routeCode}" for ELR "${elrParam}"`);
       // Clear viewport state when switching to a new route via ELR
@@ -1565,6 +1675,17 @@ window.addEventListener('DOMContentLoaded', async () => {
       window._routeLoadingHandled = true;
     } else {
       console.warn(`✗ Could not find a route containing ELR "${elrParam}"`);
+      alert("Location not found");
+      
+      // Clear overlay params from URL to prevent loadRoute from trying (and failing) 
+      // to center on the missing location, ensuring we revert to default route & center.
+      if (window.history && window.history.replaceState) {
+          const url = new URL(window.location.href);
+          const params = url.searchParams;
+          ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'].forEach(p => params.delete(p));
+          url.search = params.toString();
+          window.history.replaceState(null, '', url.toString());
+      }
     }
   }
 

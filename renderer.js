@@ -2,6 +2,75 @@
 // Namespaces for rendering different layers of the track diagram
 
 const TrackRenderer = (function() {
+
+  class LabelCollisionManager {
+    constructor() {
+      this.obstacles = [];
+    }
+
+    addFixed(x, y, w, h) {
+      this.obstacles.push({ x, y, w, h, fixed: true });
+    }
+
+    /**
+     * Tries to find a free vertical spot for a label.
+     * @param {number} x Left
+     * @param {number} y Top (desired)
+     * @param {number} w Width
+     * @param {number} h Height
+     * @param {number} visibleTopMin Limit
+     * @param {number} visibleBottomMax Limit
+     * @returns {number} The resolved Y position (top)
+     */
+    registerMovable(x, y, w, h, visibleTopMin, visibleBottomMax) {
+      // Try intended position first
+      if (!this.checkCollision(x, y, w, h)) {
+        this.obstacles.push({ x, y, w, h, fixed: false });
+        return y;
+      }
+
+      const step = 4;
+      const maxDist = 400; // Increased search range
+      
+      // Alternate up/down
+      for (let d = step; d <= maxDist; d += step) {
+        // Try up
+        let tryY = y - d;
+        // Check bounds logic? Or just let it go reasonably far? 
+        // User said "move vertically". 
+        // Assuming visibleTopMin/Max are essentially the screen or logical bounds.
+        // Usually we don't want to draw off-grid too much, but for clarity it's fine.
+        if (!this.checkCollision(x, tryY, w, h)) {
+             this.obstacles.push({ x, y: tryY, w, h, fixed: false });
+             return tryY;
+        }
+        // Try down
+        tryY = y + d;
+        if (!this.checkCollision(x, tryY, w, h)) {
+             this.obstacles.push({ x, y: tryY, w, h, fixed: false });
+             return tryY;
+        }
+      }
+
+      // If failed, just place it overlapping (best effort)
+      this.obstacles.push({ x, y, w, h, fixed: false });
+      return y;
+    }
+
+    checkCollision(x, y, w, h) {
+      const padding = 4; // Increased padding
+      for (const obs of this.obstacles) {
+        // AABB test
+        if (x < obs.x + obs.w + padding &&
+            x + w + padding > obs.x &&
+            y < obs.y + obs.h + padding &&
+            y + h + padding > obs.y) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
   function drawStationsLayer({
     ctx,
     route,
@@ -13,7 +82,8 @@ const TrackRenderer = (function() {
     segmentOverlapsRange,
     getYAtJunction,
     getX,
-    getY
+    getY,
+    labelManager
   }) {
     if (!route?.stations?.length) return;
 
@@ -54,6 +124,11 @@ const TrackRenderer = (function() {
         ctx.fillStyle = 'blue';
         ctx.textAlign = 'center';
         ctx.fillText(station.name, stationX, 15);
+        if (labelManager) {
+          const m = ctx.measureText(station.name);
+          // Add margin to fixed obstacles too
+          labelManager.addFixed(stationX - m.width / 2 - 2, 15 - 8 - 2, m.width + 4, 16 + 4);
+        }
 
         // Draw each platform
         station.platforms.forEach(platform => {
@@ -92,7 +167,14 @@ const TrackRenderer = (function() {
           // Label the platform with platform number
           ctx.font = '10px Arial';
           ctx.fillStyle = 'white';
-          ctx.fillText(`P${platform.platformNo}`, platformStartX + (platformEndX - platformStartX) / 2, platformYPos + (config.horizontalGridSpacing / 6));
+          const pText = `P${platform.platformNo}`;
+          const pX = platformStartX + (platformEndX - platformStartX) / 2;
+          const pY = platformYPos + (config.horizontalGridSpacing / 6);
+          ctx.fillText(pText, pX, pY);
+          if (labelManager) {
+            const m = ctx.measureText(pText);
+            labelManager.addFixed(pX - m.width / 2 - 2, pY - 5 - 2, m.width + 4, 10 + 4);
+          }
         });
       });
     });
@@ -649,7 +731,8 @@ const TrackRenderer = (function() {
     getX,
     getY,
     getVisibleSpanYardsForTrack,
-    getTrackGridYAtYards
+    getTrackGridYAtYards,
+    labelManager
   }) {
     withCanvasState(() => {
       const { leftYards: visibleLeftLimitYards, rightYards: visibleRightLimitYards } = getVisibleBounds();
@@ -695,11 +778,18 @@ const TrackRenderer = (function() {
             ctx.font = '12px Arial';
             ctx.fillStyle = 'black';
             ctx.textBaseline = 'middle';
+            let txt;
             if (track.altRoute) {
               ctx.fillStyle = 'gray';
-              ctx.fillText(`${track.altRoute.elr} ${track.tid}`, midX, midYPos);
+              txt = `${track.altRoute.elr} ${track.tid}`;
             } else {
-              ctx.fillText(`${track.tid}`, midX, midYPos);
+              txt = `${track.tid}`;
+            }
+            ctx.fillText(txt, midX, midYPos);
+
+            if (labelManager) {
+              const m = ctx.measureText(txt);
+              labelManager.addFixed(midX - m.width / 2 - 2, midYPos - 6 - 2, m.width + 4, 12 + 4);
             }
           }
         }
@@ -714,7 +804,8 @@ const TrackRenderer = (function() {
     collectConnectionLabelCandidates,
     buildConnectionLabelsWithMetrics,
     dedupeNearbyLabels,
-    resolveLabelOverlapsVertically
+    resolveLabelOverlapsVertically,
+    labelManager
   }) {
     withCanvasState(() => {
       const { leftYards: visibleLeftLimitYards, rightYards: visibleRightLimitYards } = getVisibleBounds();
@@ -726,8 +817,24 @@ const TrackRenderer = (function() {
       const labels = buildConnectionLabelsWithMetrics(candidates, fontSize);
   
       const uniqueLabels = dedupeNearbyLabels(labels, 5);
-      resolveLabelOverlapsVertically(uniqueLabels);
-  
+      
+      if (labelManager) {
+        ctx.font = `${fontSize}px Arial`; // Ensure font is set for measurement
+        uniqueLabels.forEach(label => {
+          const m = ctx.measureText(label.text);
+          const w = m.width + 10; // Extra horizontal padding
+          const h = fontSize + 4; // Extra vertical padding
+          // label is centered
+          const topLeftX = label.x - w / 2;
+          const topLeftY = label.y - h / 2;
+          
+          const newY = labelManager.registerMovable(topLeftX, topLeftY, w, h, 0, 10000);
+          label.y = newY + h / 2;
+        });
+      } else {
+        resolveLabelOverlapsVertically(uniqueLabels);
+      }
+
       // Draw labels
       ctx.font = `${fontSize}px Arial`;
       ctx.fillStyle = 'black';
@@ -748,7 +855,8 @@ const TrackRenderer = (function() {
     resolveTrackY,
     getX,
     getY,
-    drawLine
+    drawLine,
+    labelManager
   }) {
     withCanvasState(() => {
       const { leftYards: visibleLeftLimitYards, rightYards: visibleRightLimitYards } = getVisibleBounds();
@@ -840,7 +948,8 @@ const TrackRenderer = (function() {
     segmentOverlapsRange,
     clipSegmentToRange,
     drawLine,
-    normalizeElr
+    normalizeElr,
+    labelManager
   }) {
     if (!route.structures) return;
 
@@ -1027,12 +1136,35 @@ const TrackRenderer = (function() {
         ctx.fillStyle = 'blue';
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
+
+        let labelY = midY;
+        if (labelManager) {
+           let w = 0;
+           let h = 0;
+           if (structure.structureNo) {
+              const m1 = ctx.measureText(structure.name);
+              const m2 = ctx.measureText(structure.structureNo);
+              w = Math.max(m1.width, m2.width);
+              h = 28;
+           } else {
+              const m = ctx.measureText(structure.name);
+              w = m.width;
+              h = 14;
+           }
+           
+           w += 10;
+           h += 4;
+           
+           const currentTop = midY - h/2;
+           const newTop = labelManager.registerMovable(midX - w/2, currentTop, w, h, 0, 10000);
+           labelY = newTop + h/2;
+        }
         
         if (structure.structureNo) {
-          ctx.fillText(structure.name, midX, midY - 7);
-          ctx.fillText(structure.structureNo, midX, midY + 7);
+          ctx.fillText(structure.name, midX, labelY - 7);
+          ctx.fillText(structure.structureNo, midX, labelY + 7);
         } else {
-          ctx.fillText(structure.name, midX, midY);
+          ctx.fillText(structure.name, midX, labelY);
         }
 
           return;
@@ -1259,12 +1391,35 @@ const TrackRenderer = (function() {
           ctx.fillStyle = 'black';
           ctx.font = '12px Arial';
           ctx.textAlign = 'center';
+
+          let labelY = midY;
+          if (labelManager) {
+             let w = 0;
+             let h = 0;
+             if (structure.structureNo) {
+                const m1 = ctx.measureText(structure.name);
+                const m2 = ctx.measureText(structure.structureNo);
+                w = Math.max(m1.width, m2.width);
+                h = 28;
+             } else {
+                const m = ctx.measureText(structure.name);
+                w = m.width;
+                h = 14;
+             }
+             
+             w += 10;
+             h += 4;
+             
+             const currentTop = midY - h/2;
+             const newTop = labelManager.registerMovable(midX - w/2, currentTop, w, h, 0, 10000);
+             labelY = newTop + h/2;
+          }
           
           if (structure.structureNo) {
-            ctx.fillText(structure.name, midX, midY - 7);
-            ctx.fillText(structure.structureNo, midX, midY + 7);
+            ctx.fillText(structure.name, midX, labelY - 7);
+            ctx.fillText(structure.structureNo, midX, labelY + 7);
           } else {
-            ctx.fillText(structure.name, midX, midY);
+            ctx.fillText(structure.name, midX, labelY);
           }
 
           return;
@@ -1395,11 +1550,35 @@ const TrackRenderer = (function() {
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
 
+        let labelY = centerY;
+        
+        if (labelManager) {
+           let w = 0;
+           let h = 0;
+           if (structure.structureNo) {
+              const m1 = ctx.measureText(structure.name);
+              const m2 = ctx.measureText(structure.structureNo);
+              w = Math.max(m1.width, m2.width);
+              h = 28;
+           } else {
+              const m = ctx.measureText(structure.name);
+              w = m.width;
+              h = 14;
+           }
+           
+           w += 10; // Extra horizontal padding
+           h += 4;  // Extra vertical padding
+           
+           const currentTop = centerY - h/2;
+           const newTop = labelManager.registerMovable(centerX - w/2, currentTop, w, h, 0, 10000);
+           labelY = newTop + h/2;
+        }
+
         if (structure.structureNo) {
-          ctx.fillText(structure.name, centerX, centerY - 7);
-          ctx.fillText(structure.structureNo, centerX, centerY + 7);
+          ctx.fillText(structure.name, centerX, labelY - 7);
+          ctx.fillText(structure.structureNo, centerX, labelY + 7);
         } else {
-          ctx.fillText(structure.name, centerX, centerY);
+          ctx.fillText(structure.name, centerX, labelY);
         }
       });
     });
@@ -1560,7 +1739,12 @@ const TrackRenderer = (function() {
     }
   }
 
+  function createLabelCollisionManager() {
+    return new LabelCollisionManager();
+  }
+
   return {
+    createLabelCollisionManager,
     drawStationsLayer,
     drawRulerLayer,
     drawHorizontalGridLinesLayer,
