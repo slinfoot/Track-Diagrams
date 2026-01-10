@@ -12,11 +12,7 @@ function normalizeElr(elr) {
 }
 
 // Domain constants
-const YARDS_PER_MILE = 1760;
-const RULER_TICK_MAJOR_YARDS = YARDS_PER_MILE;
-const RULER_TICK_MEDIUM_YARDS = 440;
-const RULER_TICK_MINOR_YARDS = 110;
-const RULER_TICK_MICRO_YARDS = 22;
+const { YARDS_PER_MILE, RULER_TICK_MAJOR_YARDS, RULER_TICK_MEDIUM_YARDS, RULER_TICK_MINOR_YARDS, RULER_TICK_MICRO_YARDS } = TrackDomain.CONSTANTS;
 
 const DEFAULT_ROUTE_CODE = 'ECML'
 const DEFAULT_YARDS_PER_PIXEL = 1;
@@ -50,61 +46,11 @@ function buildTracksByTid(nextRoute) {
 
 // Precompute tick positions for a route's sections to avoid per-yard loops during draw
 function computeTicksForRoute(nextRoute) {
-  const cache = {
-    major: [],
-    medium: [],
-    minor: [],
-    micro: [],
-    sections: []
-  };
-
-  if (!nextRoute || !Array.isArray(nextRoute.sections)) return cache;
-
-  for (const s of nextRoute.sections) {
-    const from = Number(s.from);
-    const to = Number(s.to);
-    const offset = Number(s.offset) || 0;
-    if (!Number.isFinite(from) || !Number.isFinite(to)) continue;
-
-    // store section summary
-    cache.sections.push({ from, to, offset, elr: s.elr });
-
-    // helper to generate ticks within this section
-    const gen = (spacing, targetArray, skipIfMajorMultiple = false) => {
-      const firstRel = Math.ceil((from - offset) / spacing) * spacing;
-      const lastRel = Math.floor((to - offset) / spacing) * spacing;
-      for (let rel = firstRel; rel <= lastRel; rel += spacing) {
-        if (skipIfMajorMultiple && (rel % RULER_TICK_MAJOR_YARDS === 0)) continue;
-        const mainY = rel + offset;
-        // relative yards inside ELR for labels
-        const relative = rel;
-        targetArray.push({ mainY, relative, section: s });
-      }
-    };
-
-    gen(RULER_TICK_MAJOR_YARDS, cache.major, false);
-    gen(RULER_TICK_MEDIUM_YARDS, cache.medium, true);
-    gen(RULER_TICK_MINOR_YARDS, cache.minor, false);
-    gen(RULER_TICK_MICRO_YARDS, cache.micro, false);
-  }
-
-  // Sort arrays just in case
-  ['major', 'medium', 'minor', 'micro'].forEach(k => cache[k].sort((a, b) => a.mainY - b.mainY));
-  return cache;
+  return TrackDomain.computeTicksForRoute(nextRoute);
 }
 
 function buildSectionsByElr(nextRoute) {
-  const sectionsByElr = new Map();
-  if (Array.isArray(nextRoute?.sections)) {
-    nextRoute.sections.forEach(section => {
-      const normElr = normalizeElr(section?.elr);
-      if (!normElr) return;
-      if (!sectionsByElr.has(normElr)) {
-        sectionsByElr.set(normElr, section);
-      }
-    });
-  }
-  return sectionsByElr;
+  return TrackDomain.buildSectionsByElr(nextRoute);
 }
 
 function getDiagramDomRefs() {
@@ -120,69 +66,11 @@ function getDiagramDomRefs() {
 }
 
 function consumeUrlOverlayFromLocation() {
-  try {
-    if (typeof window === 'undefined' || !window.location) return null;
-
-    const url = new URL(window.location.href);
-    const params = url.searchParams;
-    const qElr = params.get('elr');
-    const qTid = params.get('tid');
-    const qMileFrom = params.get('mileFrom');
-    const qYardFrom = params.get('yardFrom');
-    const qMileTo = params.get('mileTo');
-    const qYardTo = params.get('yardTo');
-    const qText = params.get('text');
-
-    // No longer require routeCode - we'll auto-discover the route from the ELR
-    if (!(qElr && qTid && qMileFrom !== null && qYardFrom !== null && qMileTo !== null && qYardTo !== null)) {
-      return null;
-    }
-
-    // One-shot: remove overlay params from the URL once consumed, so future route reloads
-    // (e.g. triggered by Save) don't keep forcing a recenter.
-    if (window.history && typeof window.history.replaceState === 'function') {
-      const overlayKeys = ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'];
-      let changed = false;
-      overlayKeys.forEach(key => {
-        if (params.has(key)) {
-          params.delete(key);
-          changed = true;
-        }
-      });
-      if (changed) {
-        url.search = params.toString();
-        window.history.replaceState(null, '', url.toString());
-      }
-    }
-
-    return {
-      group: 'URL Overlay',
-      elr: qElr,
-      tid: parseInt(qTid),
-      mileFrom: parseFloat(qMileFrom),
-      yardFrom: parseFloat(qYardFrom),
-      mileTo: parseFloat(qMileTo),
-      yardTo: parseFloat(qYardTo),
-      text: qText || ''
-    };
-  } catch {
-    return null;
-  }
+  return OverlayManager.consumeUrlOverlayFromLocation();
 }
 
 function addOverlayIfMissing(overlay, isDuplicateFn) {
-  if (typeof overlayData !== 'undefined') {
-    const exists = typeof isDuplicateFn === 'function'
-      ? overlayData.some(isDuplicateFn)
-      : false;
-    if (!exists) {
-      overlayData.push(overlay);
-    }
-    return;
-  }
-
-  // Preserve existing behavior: overwrite window.overlayData when overlayData is undefined.
-  window.overlayData = [overlay];
+  OverlayManager.addOverlayIfMissing(overlay, isDuplicateFn);
 }
 
 function computeInitialTargetYards({ lastCenterYards }, config) {
@@ -351,30 +239,7 @@ function drawOverlaysLayer(params) {
 }
 
 function computeOverlayCenterYards(urlOverlay, computeAbsoluteYardsFn) {
-  if (!urlOverlay || typeof computeAbsoluteYardsFn !== 'function') {
-    return { centerYards: null, startRes: null, endRes: null, usedFallback: false };
-  }
-
-  const startRes = computeAbsoluteYardsFn(urlOverlay.elr, urlOverlay.mileFrom, urlOverlay.yardFrom);
-  const endRes = computeAbsoluteYardsFn(urlOverlay.elr, urlOverlay.mileTo, urlOverlay.yardTo);
-
-  if (startRes?.value !== null && endRes?.value !== null) {
-    return {
-      centerYards: (startRes.value + endRes.value) / 2,
-      startRes,
-      endRes,
-      usedFallback: false
-    };
-  }
-
-  const startYards = (urlOverlay.mileFrom * YARDS_PER_MILE) + urlOverlay.yardFrom;
-  const endYards = (urlOverlay.mileTo * YARDS_PER_MILE) + urlOverlay.yardTo;
-  return {
-    centerYards: (startYards + endYards) / 2,
-    startRes,
-    endRes,
-    usedFallback: true
-  };
+  return OverlayManager.computeOverlayCenterYards(urlOverlay, computeAbsoluteYardsFn);
 }
 
 function dispatchRouteLoaded() {
@@ -742,74 +607,7 @@ function initializeApp() {
   }
 
   function computeAbsoluteYards(elrCode, miles, yards) {
-    if (!route || !Array.isArray(route.sections)) return { value: null, error: 'Route sections unavailable' };
-    const normElr = normalizeElr(elrCode);
-    if (!normElr) return { value: null, error: 'ELR is required' };
-
-    // Ensure inputs are numbers
-    const m = typeof miles === 'string' ? parseFloat(miles) : miles;
-    const y = typeof yards === 'string' ? parseFloat(yards) : yards;
-    const milesVal = Number.isFinite(m) ? m : 0;
-    const yardsVal = Number.isFinite(y) ? y : 0;
-    const altYardage = (milesVal * YARDS_PER_MILE) + yardsVal;
-
-    const section = sectionsByElr.get(normElr);
-    if (section) {
-      // ELR found in main route sections
-      const absoluteYards = altYardage + (section.offset || 0);
-      return { value: absoluteYards, section, relativeYards: altYardage };
-    }
-
-    // ELR not in main route sections, try alt route yardage mapping
-    if (route.altRouteYardageMap && Array.isArray(route.altRouteYardageMap)) {
-      // Find segment(s) for this ELR
-      const segments = route.altRouteYardageMap.filter(seg => normalizeElr(seg.elr) === normElr);
-      if (segments.length > 0) {
-        // Try to map the alt yardage to main route yardage
-        for (const seg of segments) {
-          const segFromAlt = Number(seg.fromYardageAltRoute);
-          const segToAlt = Number(seg.toYardageAltRoute);
-          if (Number.isFinite(segFromAlt) && Number.isFinite(segToAlt) &&
-              altYardage >= Math.min(segFromAlt, segToAlt) && 
-              altYardage <= Math.max(segFromAlt, segToAlt)) {
-            // Within segment range, interpolate using linear formula
-            const mainFrom = Number(seg.fromYardageMainRoute);
-            const mainTo = Number(seg.toYardageMainRoute);
-            if (Number.isFinite(mainFrom) && Number.isFinite(mainTo)) {
-              // Standard linear interpolation: works with forward and reverse directions
-              const fraction = (altYardage - segFromAlt) / (segToAlt - segFromAlt);
-              const mainYards = mainFrom + fraction * (mainTo - mainFrom);
-              return { value: mainYards, relativeYards: altYardage, fromAltRoute: true };
-            }
-          }
-        }
-        // Not within any segment range, try nearest segment for extrapolation
-        let bestSeg = segments[0];
-        let bestDist = Math.abs(altYardage - Number(bestSeg.fromYardageAltRoute));
-        for (let i = 1; i < segments.length; i++) {
-          const segFromAlt = Number(segments[i].fromYardageAltRoute);
-          const dist = Math.abs(altYardage - segFromAlt);
-          if (dist < bestDist) {
-            bestDist = dist;
-            bestSeg = segments[i];
-          }
-        }
-        const segFromAlt = Number(bestSeg.fromYardageAltRoute);
-        const segToAlt = Number(bestSeg.toYardageAltRoute);
-        const mainFrom = Number(bestSeg.fromYardageMainRoute);
-        const mainTo = Number(bestSeg.toYardageMainRoute);
-        if (Number.isFinite(segFromAlt) && Number.isFinite(segToAlt) &&
-            Number.isFinite(mainFrom) && Number.isFinite(mainTo) &&
-            Math.abs(segToAlt - segFromAlt) > 0) {
-          const fraction = (altYardage - segFromAlt) / (segToAlt - segFromAlt);
-          const mainYards = mainFrom + fraction * (mainTo - mainFrom);
-          return { value: mainYards, relativeYards: altYardage, fromAltRoute: true };
-        }
-      }
-    }
-
-    const availableElrs = route.sections.map(s => s.elr).join(', ');
-    return { value: null, error: `ELR ${normElr} not found in sections. Available: ${availableElrs}` };
+    return TrackDomain.computeAbsoluteYards(elrCode, miles, yards, route, sectionsByElr);
   }
 
   function applyLayoutSizing(recenter = false) {
@@ -1361,26 +1159,7 @@ function initializeApp() {
   }
 
   function getMatchingTracksForOverlay(overlay) {
-    // Find all tracks with the matching TID
-    let matchingTracks = tracksByTid.get(overlay.tid) || [];
-
-    // Filter by ELR if specified
-    const overlayElrNorm = normalizeElr(overlay.elr);
-    if (overlayElrNorm) {
-      const isMainRouteELR = sectionsByElr.has(overlayElrNorm);
-      matchingTracks = matchingTracks.filter(track => {
-        const trackAltElrNorm = normalizeElr(track.altRoute?.elr);
-        if (trackAltElrNorm) {
-          // Track is on an alternative route (e.g. MEB)
-          return trackAltElrNorm === overlayElrNorm;
-        }
-        // Track is on the main route (e.g. ECM1..ECM7)
-        // It matches if the requested ELR is also a main route ELR
-        return isMainRouteELR;
-      });
-    }
-
-    return matchingTracks;
+    return OverlayManager.getMatchingTracksForOverlay(overlay, tracksByTid, sectionsByElr);
   }
 
   function computeOverlayStartEndYards(overlay) {
