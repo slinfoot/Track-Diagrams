@@ -22,28 +22,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Sync settings
   UISettings.syncWithApp();
   
-  // Check URL Overlays
-  try {
-    const url = new URL(window.location.href);
-    const overlayElr = url.searchParams.get('elr');
-    
-    if (overlayElr) {
-      console.log('Found overlay ELR:', overlayElr);
-      const routeCode = await UINavigation.findRouteCodeForElr(overlayElr);
-      
-      if (routeCode) {
-        await UINavigation.populateRouteSelector();
-        // Set selector value manually since we are about to load it
-        const selector = document.getElementById('routeSelector');
-        if (selector) selector.value = routeCode;
-        
-        window.TrackDiagramApp?.loadRoute(routeCode);
-        return;
-      }
-    }
-  } catch (err) {
-    console.error('Error auto-loading route:', err);
-  }
+  // URL Overlay handling is performed by script.js to prevent race conditions.
+  // We only need to populate the route selector here.
   
   // Default Load
   UINavigation.populateRouteSelector();
