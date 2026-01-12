@@ -157,6 +157,17 @@ const UIEditor = (function() {
     initGlobalEditListeners();
   }
 
+  function wireFormSubmit(formEl, handler) {
+    if (!formEl || typeof handler !== 'function') return;
+    formEl.addEventListener('submit', (e) => {
+      e.preventDefault();
+      Promise.resolve(handler()).catch(err => {
+        console.error(err);
+        alert(err?.message ? String(err.message) : String(err));
+      });
+    });
+  }
+
   function initTabs() {
     if (editTabButtons.length) {
       editTabButtons.forEach(btn => {
@@ -194,12 +205,24 @@ const UIEditor = (function() {
         // Reset selections
         selectedTrack = null;
         selectedTrackId = null;
+        selectedSection = null;
+        isAddingNewSection = false;
         selectedStation = null;
         selectedStationId = null;
         selectedAltYardage = null;
+        selectedAltYardageIndex = null;
+        selectedStructure = null;
+        selectedStructureIndex = null;
+        isAddingNewStructure = false;
+        selectedSwitch = null;
+        selectedSwitchIndex = null;
+        isAddingNewSwitch = false;
 
         updateTrackActionButtons();
+        updateSectionActionButtons();
         updateStationActionButtons();
+        updateStructureActionButtons();
+        updateSwitchActionButtons();
         updateAltYardageActionButtons();
 
         // Update Meta UI
@@ -261,9 +284,9 @@ const UIEditor = (function() {
     if (editSelectedTrackBtn) {
         editSelectedTrackBtn.addEventListener('click', editSelectedTrack);
     }
-    if (modalSaveBtn) {
-        modalSaveBtn.addEventListener('click', saveTrackFromForm);
-    }
+    // IMPORTANT: handle via form submit to avoid browser navigation aborting fetch.
+    // Buttons are type="submit" so relying on submit makes Enter key work too.
+    wireFormSubmit(trackEditForm, saveTrackFromForm);
     if (modalCancelBtn) modalCancelBtn.addEventListener('click', hideTrackModal);
     if (modalCloseBtn) modalCloseBtn.addEventListener('click', hideTrackModal);
     if (addShapeBtn) addShapeBtn.addEventListener('click', addShapeSegment);
@@ -580,16 +603,29 @@ const UIEditor = (function() {
 
   async function saveTrackToApi(code, track, isNew) {
     const method = isNew ? 'POST' : 'PUT';
-    const url = isNew 
-        ? `${apiUrl}/code/${code}/tracks`
-        : `${apiUrl}/code/${code}/tracks/by-id/${track._id}`;
+    // Ensure code is safe for URL
+    const safeCode = encodeURIComponent(code);
+    
+    let url;
+    if (isNew) {
+        url = `${apiUrl}/code/${safeCode}/tracks`;
+    } else {
+        if (!track._id) throw new Error("Missing track ID for update");
+        url = `${apiUrl}/code/${safeCode}/tracks/by-id/${track._id}`;
+    }
+
+    console.log(`[UIEditor] Saving track... Method: ${method}, URL: ${url}`);
     
     const resp = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(track)
     });
-    if (!resp.ok) throw new Error(await resp.text());
+    if (!resp.ok) {
+        const errText = await resp.text();
+        console.error('[UIEditor] Save failed:', errText);
+        throw new Error(errText || `Server error ${resp.status}`);
+    }
     window.TrackDiagramApp?.loadRoute(code);
   }
 
@@ -599,7 +635,8 @@ const UIEditor = (function() {
     if (!confirm('Delete this track?')) return;
     
     try {
-        await fetch(`${apiUrl}/code/${r.code}/tracks/by-id/${trackId}`, { method: 'DELETE' });
+        const safeCode = encodeURIComponent(r.code);
+        await fetch(`${apiUrl}/code/${safeCode}/tracks/by-id/${trackId}`, { method: 'DELETE' });
         window.TrackDiagramApp?.loadRoute(r.code);
     } catch(err) {
         console.error(err);
@@ -615,8 +652,160 @@ const UIEditor = (function() {
 
   function initStationInputs() {
       if (stationFilter) stationFilter.addEventListener('input', () => renderStationsTable(stationFilter.value));
-      if (editSelectedStationBtn) updateStationActionButtons();
+      if (addStationBtn) addStationBtn.addEventListener('click', addNewStation);
+      if (editSelectedStationBtn) editSelectedStationBtn.addEventListener('click', editSelectedStation);
+      wireFormSubmit(stationEditForm, saveStationFromForm);
+      if (stationModalCancelBtn) stationModalCancelBtn.addEventListener('click', hideStationModal);
+      if (stationModalCloseBtn) stationModalCloseBtn.addEventListener('click', hideStationModal);
+      if (addPlatformBtn) addPlatformBtn.addEventListener('click', addPlatform);
+
+      updateStationActionButtons();
   }
+
+    function addNewStation() {
+      const r = window.TrackDiagramApp?.getRoute();
+      if (!r) return;
+      const newStation = {
+        name: '',
+        at: 0,
+        sideDiagramVisible: true,
+        platforms: []
+      };
+      showStationModal(newStation, true);
+    }
+
+    function editSelectedStation() {
+      if (!selectedStation) return;
+      showStationModal(selectedStation, false);
+    }
+
+    function showStationModal(station, isNew) {
+      if (!stationEditModal) return;
+      isAddingNewStation = isNew;
+      // Clone to avoid mutating the in-memory route before save
+      selectedStation = station ? JSON.parse(JSON.stringify(station)) : { name: '', at: 0, sideDiagramVisible: true, platforms: [] };
+      selectedStationId = selectedStation?._id ?? null;
+      if (stationModalTitle) stationModalTitle.textContent = isNew ? 'Add Station' : 'Edit Station';
+
+      if (formStationName) formStationName.value = selectedStation.name ?? '';
+      if (formStationAt) formStationAt.value = Number.isFinite(Number(selectedStation.at)) ? String(selectedStation.at) : '';
+      if (formStationSideDiagramVisible) formStationSideDiagramVisible.checked = selectedStation.sideDiagramVisible !== false;
+      if (!Array.isArray(selectedStation.platforms)) selectedStation.platforms = [];
+
+      renderPlatformsTable();
+      stationEditModal.hidden = false;
+    }
+
+    function hideStationModal() {
+      if (stationEditModal) stationEditModal.hidden = true;
+      if (stationEditForm) stationEditForm.reset();
+      // do not clear selection; leave selectedStation in table context
+    }
+
+    function renderPlatformsTable() {
+      if (!platformsTableBody || !selectedStation) return;
+      const plats = Array.isArray(selectedStation.platforms) ? selectedStation.platforms : [];
+
+      if (!plats.length) {
+        platformsTableBody.innerHTML = '<tr class="shape-empty-row"><td colspan="7">No platforms. Click "+ Add Platform" to create one.</td></tr>';
+        return;
+      }
+
+      platformsTableBody.innerHTML = plats.map((p, idx) => {
+        const position = (p.position === 'below') ? 'below' : 'above';
+        return `
+        <tr>
+          <td><input type="number" class="platform-input" data-idx="${idx}" data-field="track" value="${p.track ?? ''}" style="width:70px"></td>
+          <td><input type="number" class="platform-input" data-idx="${idx}" data-field="platformNo" value="${p.platformNo ?? ''}" style="width:70px"></td>
+          <td><div class="input-with-calc"><input type="number" class="platform-input" data-idx="${idx}" data-field="from" value="${p.from ?? ''}" style="width:90px"><button type="button" class="btn-calc" title="Calculate from ELR/Mile/Yard">📍</button></div></td>
+          <td><div class="input-with-calc"><input type="number" class="platform-input" data-idx="${idx}" data-field="to" value="${p.to ?? ''}" style="width:90px"><button type="button" class="btn-calc" title="Calculate from ELR/Mile/Yard">📍</button></div></td>
+          <td>
+          <select class="platform-input" data-idx="${idx}" data-field="position">
+            <option value="above" ${position === 'above' ? 'selected' : ''}>above</option>
+            <option value="below" ${position === 'below' ? 'selected' : ''}>below</option>
+          </select>
+          </td>
+          <td><input type="text" class="platform-input" data-idx="${idx}" data-field="elr" value="${p.elr ?? ''}" style="width:70px"></td>
+          <td><button type="button" class="btn-shape-action btn-shape-delete btn-platform-delete" data-idx="${idx}">Delete</button></td>
+        </tr>
+        `;
+      }).join('');
+
+      platformsTableBody.querySelectorAll('.platform-input').forEach(el => {
+        el.addEventListener('input', (e) => {
+          const idx = Number(e.target.dataset.idx);
+          const field = e.target.dataset.field;
+          if (!selectedStation.platforms[idx]) return;
+          let val = e.target.value;
+          if (field === 'position') {
+            selectedStation.platforms[idx][field] = String(val);
+          } else if (field === 'elr') {
+            selectedStation.platforms[idx][field] = String(val);
+          } else {
+            selectedStation.platforms[idx][field] = val === '' ? null : Number(val);
+          }
+        });
+        el.addEventListener('change', (e) => {
+          const idx = Number(e.target.dataset.idx);
+          const field = e.target.dataset.field;
+          if (!selectedStation.platforms[idx]) return;
+          if (field === 'position') selectedStation.platforms[idx][field] = String(e.target.value);
+        });
+      });
+
+      platformsTableBody.querySelectorAll('.btn-platform-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = Number(e.currentTarget.dataset.idx);
+          selectedStation.platforms.splice(idx, 1);
+          renderPlatformsTable();
+        });
+      });
+    }
+
+    function addPlatform() {
+      if (!selectedStation) return;
+      if (!Array.isArray(selectedStation.platforms)) selectedStation.platforms = [];
+      const nextNo = selectedStation.platforms.length ? (Math.max(...selectedStation.platforms.map(p => Number(p.platformNo) || 0)) + 1) : 1;
+      selectedStation.platforms.push({
+        track: 0,
+        platformNo: nextNo,
+        from: 0,
+        to: 0,
+        position: 'above',
+        elr: ''
+      });
+      renderPlatformsTable();
+    }
+
+    async function saveStationFromForm() {
+      const r = window.TrackDiagramApp?.getRoute();
+      if (!r) return;
+      if (!selectedStation) return;
+
+      selectedStation.name = String(formStationName?.value || '').trim();
+      selectedStation.at = Number(formStationAt?.value);
+      selectedStation.sideDiagramVisible = formStationSideDiagramVisible?.checked !== false;
+      if (!Array.isArray(selectedStation.platforms)) selectedStation.platforms = [];
+
+      if (!selectedStation.name) throw new Error('Station name is required');
+      if (!Number.isFinite(selectedStation.at)) throw new Error('Station "At" must be a number');
+
+      const safeCode = encodeURIComponent(r.code);
+      const method = isAddingNewStation ? 'POST' : 'PUT';
+      const url = isAddingNewStation
+        ? `${apiUrl}/code/${safeCode}/stations`
+        : `${apiUrl}/code/${safeCode}/stations/${selectedStation._id}`;
+
+      const resp = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(selectedStation)
+      });
+      if (!resp.ok) throw new Error(await resp.text());
+
+      hideStationModal();
+      window.TrackDiagramApp?.loadRoute(r.code);
+    }
 
   function renderStationsTable(filterName = '') {
       if (!stationsTableBody) return;
@@ -680,8 +869,15 @@ const UIEditor = (function() {
           btn.addEventListener('click', async (e) => {
              e.stopPropagation();
              if (confirm('Delete station?')) {
-                 await fetch(`${apiUrl}/code/${r.code}/stations/${btn.dataset.id}`, { method: 'DELETE' });
-                 window.TrackDiagramApp?.loadRoute(r.code);
+                 try {
+                   const safeCode = encodeURIComponent(r.code);
+                   const resp = await fetch(`${apiUrl}/code/${safeCode}/stations/${btn.dataset.id}`, { method: 'DELETE' });
+                   if (!resp.ok) throw new Error(await resp.text());
+                   window.TrackDiagramApp?.loadRoute(r.code);
+                 } catch (err) {
+                   console.error(err);
+                   alert('Delete failed: ' + (err?.message ? String(err.message) : String(err)));
+                 }
              } 
           });
       });
@@ -697,7 +893,7 @@ const UIEditor = (function() {
     if (sectionFilter) sectionFilter.addEventListener('input', () => renderSectionsTable(sectionFilter.value));
     if (addSectionBtn) addSectionBtn.addEventListener('click', () => showSectionModal(null, true));
     if (editSelectedSectionBtn) editSelectedSectionBtn.addEventListener('click', () => showSectionModal(selectedSection, false));
-    if (sectionModalSaveBtn) sectionModalSaveBtn.addEventListener('click', saveSectionFromForm);
+    wireFormSubmit(sectionEditForm, saveSectionFromForm);
     if (sectionModalCancelBtn) sectionModalCancelBtn.addEventListener('click', hideSectionModal);
     if (sectionModalCloseBtn) sectionModalCloseBtn.addEventListener('click', hideSectionModal);
   }
@@ -756,8 +952,15 @@ const UIEditor = (function() {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
         if (confirm('Delete section?')) {
-          await fetch(`${apiUrl}/code/${r.code}/sections/${btn.dataset.id}`, { method: 'DELETE' });
-          window.TrackDiagramApp?.loadRoute(r.code);
+          try {
+            const safeCode = encodeURIComponent(r.code);
+            const resp = await fetch(`${apiUrl}/code/${safeCode}/sections/${btn.dataset.id}`, { method: 'DELETE' });
+            if (!resp.ok) throw new Error(await resp.text());
+            window.TrackDiagramApp?.loadRoute(r.code);
+          } catch (err) {
+            console.error(err);
+            alert('Delete failed: ' + (err?.message ? String(err.message) : String(err)));
+          }
         }
       });
     });
@@ -798,9 +1001,10 @@ const UIEditor = (function() {
     };
 
     const method = isAddingNewSection ? 'POST' : 'PUT';
+    const safeCode = encodeURIComponent(r.code);
     const url = isAddingNewSection
-      ? `${apiUrl}/code/${r.code}/sections`
-      : `${apiUrl}/code/${r.code}/sections/${selectedSection._id}`;
+      ? `${apiUrl}/code/${safeCode}/sections`
+      : `${apiUrl}/code/${safeCode}/sections/${selectedSection._id}`;
 
     try {
       const resp = await fetch(url, {
@@ -822,7 +1026,7 @@ const UIEditor = (function() {
     if (switchFilter) switchFilter.addEventListener('input', () => renderSwitchesTable(switchFilter.value));
     if (addSwitchBtn) addSwitchBtn.addEventListener('click', () => showSwitchModal(null, true));
     if (editSelectedSwitchBtn) editSelectedSwitchBtn.addEventListener('click', () => showSwitchModal(selectedSwitch, false));
-    if (scModalSaveBtn) scModalSaveBtn.addEventListener('click', saveSwitchFromForm);
+    wireFormSubmit(scEditForm, saveSwitchFromForm);
     if (scModalCancelBtn) scModalCancelBtn.addEventListener('click', hideSwitchModal);
     if (scModalCloseBtn) scModalCloseBtn.addEventListener('click', hideSwitchModal);
   }
@@ -873,8 +1077,15 @@ const UIEditor = (function() {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
         if (confirm('Delete switch?')) {
-          await fetch(`${apiUrl}/code/${r.code}/switches/${btn.dataset.id}`, { method: 'DELETE' });
-          window.TrackDiagramApp?.loadRoute(r.code);
+          try {
+            const safeCode = encodeURIComponent(r.code);
+            const resp = await fetch(`${apiUrl}/code/${safeCode}/switches/${btn.dataset.id}`, { method: 'DELETE' });
+            if (!resp.ok) throw new Error(await resp.text());
+            window.TrackDiagramApp?.loadRoute(r.code);
+          } catch (err) {
+            console.error(err);
+            alert('Delete failed: ' + (err?.message ? String(err.message) : String(err)));
+          }
         }
       });
     });
@@ -911,9 +1122,10 @@ const UIEditor = (function() {
     };
 
     const method = isAddingNewSwitch ? 'POST' : 'PUT';
+    const safeCode = encodeURIComponent(r.code);
     const url = isAddingNewSwitch
-      ? `${apiUrl}/code/${r.code}/switches`
-      : `${apiUrl}/code/${r.code}/switches/${selectedSwitch._id}`; // Check endpoints
+      ? `${apiUrl}/code/${safeCode}/switches`
+      : `${apiUrl}/code/${safeCode}/switches/${selectedSwitch._id}`;
 
     try {
       const resp = await fetch(url, {
@@ -935,7 +1147,7 @@ const UIEditor = (function() {
     if (structureFilter) structureFilter.addEventListener('input', () => renderStructuresTable(structureFilter.value));
     if (addStructureBtn) addStructureBtn.addEventListener('click', () => showStructureModal(null, true));
     if (editSelectedStructureBtn) editSelectedStructureBtn.addEventListener('click', () => showStructureModal(selectedStructure, false));
-    if (structureModalSaveBtn) structureModalSaveBtn.addEventListener('click', saveStructureFromForm);
+    wireFormSubmit(structureEditForm, saveStructureFromForm);
     if (structureModalCancelBtn) structureModalCancelBtn.addEventListener('click', hideStructureModal);
     if (structureModalCloseBtn) structureModalCloseBtn.addEventListener('click', hideStructureModal);
     if (addStructureTrackBtn) addStructureTrackBtn.addEventListener('click', addStructureTrackLoc);
@@ -1001,8 +1213,15 @@ const UIEditor = (function() {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
         if (confirm('Delete structure?')) {
-          await fetch(`${apiUrl}/code/${r.code}/structures/${btn.dataset.id}`, { method: 'DELETE' });
-          window.TrackDiagramApp?.loadRoute(r.code);
+          try {
+            const safeCode = encodeURIComponent(r.code);
+            const resp = await fetch(`${apiUrl}/code/${safeCode}/structures/${btn.dataset.id}`, { method: 'DELETE' });
+            if (!resp.ok) throw new Error(await resp.text());
+            window.TrackDiagramApp?.loadRoute(r.code);
+          } catch (err) {
+            console.error(err);
+            alert('Delete failed: ' + (err?.message ? String(err.message) : String(err)));
+          }
         }
       });
     });
@@ -1046,8 +1265,18 @@ const UIEditor = (function() {
       <tr>
         <td><input type="text" class="st-loc-input" data-idx="${idx}" data-field="elr" value="${tl.elr || ''}" style="width:60px"></td>
         <td><input type="number" class="st-loc-input" data-idx="${idx}" data-field="tid" value="${tl.tid}"></td>
-        <td><input type="number" class="st-loc-input" data-idx="${idx}" data-field="from" value="${tl.from}"></td>
-        <td><input type="number" class="st-loc-input" data-idx="${idx}" data-field="to" value="${tl.to}"></td>
+        <td>
+          <div class="input-with-calc">
+            <input type="number" class="st-loc-input" data-idx="${idx}" data-field="from" value="${tl.from}">
+            <button type="button" class="btn-calc" title="Calculate from ELR/Mile/Yard">📍</button>
+          </div>
+        </td>
+        <td>
+          <div class="input-with-calc">
+            <input type="number" class="st-loc-input" data-idx="${idx}" data-field="to" value="${tl.to}">
+            <button type="button" class="btn-calc" title="Calculate from ELR/Mile/Yard">📍</button>
+          </div>
+        </td>
         <td><button type="button" class="btn-shape-action btn-shape-delete" data-idx="${idx}">Del</button></td>
       </tr>
     `).join('');
@@ -1088,9 +1317,10 @@ const UIEditor = (function() {
       // trackLocation updated in place
 
       const method = isAddingNewStructure ? 'POST' : 'PUT';
+      const safeCode = encodeURIComponent(r.code);
       const url = isAddingNewStructure 
-        ? `${apiUrl}/code/${r.code}/structures`
-        : `${apiUrl}/code/${r.code}/structures/${selectedStructure._id}`;
+        ? `${apiUrl}/code/${safeCode}/structures`
+        : `${apiUrl}/code/${safeCode}/structures/${selectedStructure._id}`;
 
       try {
         const resp = await fetch(url, {
@@ -1112,7 +1342,7 @@ const UIEditor = (function() {
     if (altElrFilter) altElrFilter.addEventListener('input', () => renderAltYardageTable(altElrFilter.value));
     if (addAltYardageBtn) addAltYardageBtn.addEventListener('click', () => showAltYardageModal(null, true));
     if (editSelectedAltYardageBtn) editSelectedAltYardageBtn.addEventListener('click', () => showAltYardageModal(selectedAltYardage, false));
-    if (altYardageModalSaveBtn) altYardageModalSaveBtn.addEventListener('click', saveAltYardageFromForm);
+    wireFormSubmit(altYardageEditForm, saveAltYardageFromForm);
     if (altYardageModalCancelBtn) altYardageModalCancelBtn.addEventListener('click', hideAltYardageModal);
     if (altYardageModalCloseBtn) altYardageModalCloseBtn.addEventListener('click', hideAltYardageModal);
   }
@@ -1220,11 +1450,12 @@ const UIEditor = (function() {
   }
 
   async function saveAltYardageMapToApi(id, map) {
-      await fetch(`${apiUrl}/${id}`, {
+      const resp = await fetch(`${apiUrl}/${id}`, {
           method: 'PATCH',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({altRouteYardageMap: map})
       });
+      if (!resp.ok) throw new Error(await resp.text());
   }
 
   // --- Utilities ---

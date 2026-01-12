@@ -10,6 +10,7 @@ const UINavigation = (function() {
   const routeSelector = document.getElementById('routeSelector');
   const editDiagramBtn = document.getElementById('editDiagramBtn');
   const editPanel = document.getElementById('editPanel');
+  const addNewRouteBtn = document.getElementById('addNewRouteBtn');
   const closeEditPanelBtn = document.getElementById('closeEditPanelBtn');
   const elrInput = document.getElementById('elrInput');
   const mileInput = document.getElementById('mileInput');
@@ -25,6 +26,91 @@ const UINavigation = (function() {
     initRouteSelector();
     initNavigationControls();
     initEditPanelToggle();
+    initNewRouteButton();
+  }
+
+  function normalizeRouteCode(raw) {
+    const code = String(raw || '').trim().toUpperCase();
+    // Allow A-Z, 0-9, underscore, dash (common safe code formats)
+    if (!code) return null;
+    if (!/^[A-Z0-9_-]+$/.test(code)) return null;
+    return code;
+  }
+
+  async function initNewRouteButton() {
+    if (!addNewRouteBtn) return;
+
+    addNewRouteBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      // If we’re running without a server (local `routes` fallback), we can’t create.
+      if (!apiUrl || typeof apiUrl !== 'string') {
+        window.alert('Cannot create a new route: API URL is not configured.');
+        return;
+      }
+
+      const rawCode = window.prompt('Enter new Route Code (e.g. ECM5):');
+      if (rawCode === null) return; // cancelled
+      const code = normalizeRouteCode(rawCode);
+      if (!code) {
+        window.alert('Invalid route code. Use only A-Z, 0-9, _ or - (no spaces).');
+        return;
+      }
+
+      const rawName = window.prompt('Enter new Route Name:');
+      if (rawName === null) return; // cancelled
+      const name = String(rawName || '').trim();
+      if (!name) {
+        window.alert('Route name is required.');
+        return;
+      }
+
+      // Optional: seed length from existing input if present.
+      const defaultLength = 10000;
+      const lengthFromInput = Number(document.getElementById('editRouteLength')?.value);
+      const length_yards = Number.isFinite(lengthFromInput) && lengthFromInput > 0 ? Math.round(lengthFromInput) : defaultLength;
+
+      addNewRouteBtn.disabled = true;
+      try {
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            name,
+            length_yards,
+            sections: [],
+            tracks: [],
+            stations: [],
+            structures: [],
+            altRouteYardageMap: [],
+            switchesAndCrossings: []
+          })
+        });
+
+        if (!res.ok) {
+          let details = '';
+          try {
+            const text = await res.text();
+            details = text ? `\n\n${text}` : '';
+          } catch (err) { /* ignore */ }
+          window.alert(`Failed to create route (HTTP ${res.status}).${details}`);
+          return;
+        }
+
+        const created = await res.json().catch(() => null);
+        const createdCode = created?.code ? String(created.code).toUpperCase() : code;
+
+        await populateRouteSelector();
+        if (routeSelector) routeSelector.value = createdCode;
+        window.TrackDiagramApp?.loadRoute?.(createdCode);
+      } catch (err) {
+        console.error('Error creating route:', err);
+        window.alert(`Error creating route: ${err?.message || err}`);
+      } finally {
+        addNewRouteBtn.disabled = false;
+      }
+    });
   }
 
   function initSidebar() {

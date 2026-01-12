@@ -1,5 +1,5 @@
 const PROD_API = 'https://track-diagrams-server.onrender.com/api/routes';
-const DEV_API = 'http://localhost:3000/api/routes';
+const DEV_API = 'http://127.0.0.1:3000/api/routes';
 
 let selectedApi = PROD_API;
 
