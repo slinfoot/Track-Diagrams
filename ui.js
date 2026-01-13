@@ -42,6 +42,57 @@ const calcOkBtn = document.getElementById('calcOkBtn');
 
 let activeCalcInput = null;
 
+let isSyncingCalcFields = false;
+
+function formatNumberForInput(value) {
+  if (!Number.isFinite(value)) return '';
+  // Prefer integers when we can; otherwise keep a few decimals.
+  const roundedInt = Math.round(value);
+  if (Math.abs(value - roundedInt) < 1e-9) return String(roundedInt);
+
+  const fixed = value.toFixed(3);
+  // Trim trailing zeros and trailing dot.
+  return fixed.replace(/\.?(0+)$/, (m) => (m.startsWith('.') ? '' : '')).replace(/\.$/, '');
+}
+
+function syncCalcYardsFromChains() {
+  if (!calcChains || !calcYards) return;
+  if (isSyncingCalcFields) return;
+  isSyncingCalcFields = true;
+  try {
+    const rawChains = String(calcChains.value ?? '').trim();
+    if (rawChains === '') {
+      calcYards.value = '';
+      return;
+    }
+    const chainsVal = Number(rawChains);
+    if (!Number.isFinite(chainsVal)) return;
+    const yardsVal = chainsVal * 22;
+    calcYards.value = formatNumberForInput(yardsVal);
+  } finally {
+    isSyncingCalcFields = false;
+  }
+}
+
+function syncCalcChainsFromYards() {
+  if (!calcChains || !calcYards) return;
+  if (isSyncingCalcFields) return;
+  isSyncingCalcFields = true;
+  try {
+    const rawYards = String(calcYards.value ?? '').trim();
+    if (rawYards === '') {
+      calcChains.value = '';
+      return;
+    }
+    const yardsVal = Number(rawYards);
+    if (!Number.isFinite(yardsVal)) return;
+    const chainsVal = yardsVal / 22;
+    calcChains.value = formatNumberForInput(chainsVal);
+  } finally {
+    isSyncingCalcFields = false;
+  }
+}
+
 window.showYardsCalc = function(targetInput) {
   if (!yardsCalcModal) return;
   if (!targetInput) return;
@@ -64,13 +115,40 @@ window.showYardsCalc = function(targetInput) {
 if (calcModalCloseBtn) calcModalCloseBtn.addEventListener('click', () => yardsCalcModal.hidden = true);
 if (calcCancelBtn) calcCancelBtn.addEventListener('click', () => yardsCalcModal.hidden = true);
 
+if (calcChains) calcChains.addEventListener('input', syncCalcYardsFromChains);
+if (calcYards) calcYards.addEventListener('input', syncCalcChainsFromYards);
+
 function applyCalcToActiveInput() {
   if (!activeCalcInput) return;
   const miles = Number(calcMiles?.value || 0);
   const yards = Number(calcYards?.value || 0);
-  const chains = Number(calcChains?.value || 0);
-  // 1 mile = 1760 yards, 1 chain = 22 yards
-  const totalYards = (miles * 1760) + yards + (chains * 22);
+  const elr = (calcElr?.value ?? '').toString().trim();
+
+  // NOTE: Chains is a helper UI only; conversion uses Miles + Yards.
+  const relativeYards = (Number.isFinite(yards) ? yards : 0);
+
+  let totalYards = null;
+
+  // If ELR is provided and we have a loaded route + domain, use the same mapping
+  // as the rest of the app (respects section offsets and alt-route yardage maps).
+  if (elr && typeof TrackDomain !== 'undefined' && typeof TrackDomain.computeAbsoluteYards === 'function') {
+    const route = window.TrackDiagramApp?.getRoute?.();
+    const sectionsByElr = typeof TrackDomain.buildSectionsByElr === 'function' ? TrackDomain.buildSectionsByElr(route) : new Map();
+    const res = TrackDomain.computeAbsoluteYards(elr, miles, relativeYards, route, sectionsByElr);
+    if (res && res.value !== null && res.value !== undefined && Number.isFinite(Number(res.value))) {
+      totalYards = Number(res.value);
+    } else if (res?.error) {
+      window.alert(res.error);
+      totalYards = null;
+    }
+  }
+
+  // Fallback: treat inputs as main-route miles/yards/chains.
+  if (totalYards === null) {
+    const m = Number.isFinite(miles) ? miles : 0;
+    totalYards = (m * 1760) + relativeYards;
+  }
+
   activeCalcInput.value = String(Math.round(totalYards));
   activeCalcInput.dispatchEvent(new Event('input', { bubbles: true }));
   activeCalcInput.dispatchEvent(new Event('change', { bubbles: true }));
