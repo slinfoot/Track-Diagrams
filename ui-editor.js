@@ -924,10 +924,9 @@ const UIEditor = (function() {
       // Find real index in main array for selection
       const realIdx = r.sections.indexOf(s);
       
-      const pFrom = yardsToMilesParts(s.from);
-      const pTo = yardsToMilesParts(s.to);
-      const fromStr = pFrom.miles !== '-' ? `${pFrom.miles}M ${pFrom.yards}Y` : '-';
-      const toStr = pTo.miles !== '-' ? `${pTo.miles}M ${pTo.yards}Y` : '-';
+      // Display total yards, not miles/yards format
+      const fromStr = Number.isFinite(s.from) ? String(Math.round(s.from)) : '-';
+      const toStr = Number.isFinite(s.to) ? String(Math.round(s.to)) : '-';
 
       return `<tr data-idx="${realIdx}" class="section-row">
         <td>${s.elr}</td>
