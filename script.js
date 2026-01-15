@@ -20,7 +20,7 @@ const DEFAULT_GRID_SPACING = 50;
 const DEFAULT_SCROLL_SIZE_MILES = 10;
 
 // Default initial centering (historically York area). Used when no prior viewport state exists.
-const DEFAULT_INITIAL_TARGET_YARDS = 331760;
+const DEFAULT_INITIAL_TARGET_YARDS = 1100;
 
 // Layout/label defaults
 const WINDOW_EDGE_MARGIN_RATIO = 0.2;
@@ -78,16 +78,22 @@ function computeInitialTargetYards({ lastCenterYards }, config) {
   return DEFAULT_INITIAL_TARGET_YARDS || (config.scrollSizeYards / 2);
 }
 
-function createDefaultConfig(nextRoute) {
-  let computedLength = nextRoute.length_yards || 10000;
-  if (Array.isArray(nextRoute.sections)) {
-    for (const s of nextRoute.sections) {
-       const end = Number(s.to);
-       if (!isNaN(end) && end > computedLength) {
-           computedLength = end;
-       }
+// Calculate the route's total length in yards from its sections
+function calculateRouteLength(routeData) {
+  let maxYards = 0;
+  if (Array.isArray(routeData.sections)) {
+    for (const section of routeData.sections) {
+      const endYards = Number(section.to);
+      if (!isNaN(endYards) && endYards > maxYards) {
+        maxYards = endYards;
+      }
     }
   }
+  return maxYards > 0 ? maxYards : 10000; // fallback to 10000 if no sections
+}
+
+function createDefaultConfig(nextRoute) {
+  let computedLength = calculateRouteLength(nextRoute);
 
   return {
     totalYards: computedLength,
@@ -97,7 +103,6 @@ function createDefaultConfig(nextRoute) {
     scrollSizeYards: DEFAULT_SCROLL_SIZE_MILES * YARDS_PER_MILE,
     showFromYards: 0,
     showToYards: DEFAULT_SCROLL_SIZE_MILES * YARDS_PER_MILE,
-    showArrayOverlays: true,
     showUrlOverlays: true,
     showAltRulers: true
   };
@@ -447,6 +452,8 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
     }
 
     route = await response.json();
+    // Calculate and set length_yards based on sections to ensure consistency
+    route.length_yards = calculateRouteLength(route);
     debugLog('Route loaded from API:', route);
     dispatchRouteLoaded();
       // compute tick cache for this route
@@ -460,6 +467,8 @@ async function loadRoute(routeCode = DEFAULT_ROUTE_CODE) {
       const fallbackRoute = routes.find(r => r.code === routeCode);
       if (fallbackRoute) {
         route = fallbackRoute;
+        // Calculate and set length_yards based on sections to ensure consistency
+        route.length_yards = calculateRouteLength(route);
         console.warn('Loaded route from local data.js as fallback');
         dispatchRouteLoaded();
           // compute tick cache for this route (fallback path)
@@ -1118,7 +1127,7 @@ function initializeApp() {
     applyLayoutSizing(true);
   }
 
-  function setWindowSizeMiles(miles) {
+  function setScrollSizeMiles(miles) {
     if (!Number.isFinite(miles) || miles <= 0) return;
     config.scrollSizeYards = miles * YARDS_PER_MILE;
     updateVisibleWindow(currentCenterYards);
@@ -1136,11 +1145,6 @@ function initializeApp() {
     centerOnYards(value);
   }
 
-  function setShowArrayOverlays(enabled) {
-    config.showArrayOverlays = !!enabled;
-    drawAll();
-  }
-
   function setShowUrlOverlays(enabled) {
     config.showUrlOverlays = !!enabled;
     drawAll();
@@ -1152,10 +1156,7 @@ function initializeApp() {
   }
 
   function shouldDrawOverlay(overlay) {
-    if (overlay.group === 'URL Overlay') {
-      return !!config.showUrlOverlays;
-    }
-    return !!config.showArrayOverlays;
+    return !!config.showUrlOverlays;
   }
 
   function getMatchingTracksForOverlay(overlay) {
@@ -1370,10 +1371,9 @@ function initializeApp() {
   appAPI = {
     setYardsPerPixel,
     setGridSpacing,
-    setWindowSizeMiles,
+    setScrollSizeMiles,
     centerByELR,
     centerOnYards,
-    setShowArrayOverlays,
     setShowUrlOverlays,
     setShowAltRulers
   };
@@ -1483,10 +1483,9 @@ window.TrackDiagramApp = {
   loadRoute,
   setYardsPerPixel: (v, preserveCenter = true) => appAPI?.setYardsPerPixel(v, preserveCenter),
   setGridSpacing: (v) => appAPI?.setGridSpacing(v),
-  setWindowSizeMiles: (miles) => appAPI?.setWindowSizeMiles(miles),
+  setScrollSizeMiles: (miles) => appAPI?.setScrollSizeMiles(miles),
   centerByELR: (elr, miles, yards) => appAPI?.centerByELR(elr, miles, yards),
   centerOnYards: (yards, updateWindow = true) => appAPI?.centerOnYards(yards, updateWindow),
-  setShowArrayOverlays: (v) => appAPI?.setShowArrayOverlays(v),
   setShowUrlOverlays: (v) => appAPI?.setShowUrlOverlays(v),
   setShowAltRulers: (v) => appAPI?.setShowAltRulers(v),
   getRoute: () => route,

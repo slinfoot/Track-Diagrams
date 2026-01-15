@@ -5,8 +5,7 @@ const UISettings = (function() {
   // Elements
   const yardsPerPixelInput = document.getElementById('yardsPerPixelInput');
   const gridSpacingInput = document.getElementById('gridSpacingInput');
-  const windowSizeInput = document.getElementById('windowSizeInput');
-  const showArrayOverlays = document.getElementById('showArrayOverlays');
+  const scrollSizeInput = document.getElementById('scrollSizeInput');
   const showUrlOverlays = document.getElementById('showUrlOverlays');
   const showAltElrRulers = document.getElementById('showAltElrRulers');
 
@@ -29,18 +28,12 @@ const UISettings = (function() {
       });
     }
 
-    if (windowSizeInput) {
-      windowSizeInput.addEventListener('input', () => {
-        const v = parseFloat(windowSizeInput.value);
+    if (scrollSizeInput) {
+      scrollSizeInput.addEventListener('input', () => {
+        const v = parseFloat(scrollSizeInput.value);
         if (Number.isFinite(v) && v > 0) {
-          window.TrackDiagramApp?.setWindowSizeMiles(v);
+          window.TrackDiagramApp?.setScrollSizeMiles(v);
         }
-      });
-    }
-
-    if (showArrayOverlays) {
-      showArrayOverlays.addEventListener('change', () => {
-        window.TrackDiagramApp?.setShowArrayOverlays(showArrayOverlays.checked);
       });
     }
 
@@ -61,7 +54,6 @@ const UISettings = (function() {
     // Force UI checkbox state to app (useful on load)
     try {
       if (showAltElrRulers) window.TrackDiagramApp?.setShowAltRulers(showAltElrRulers.checked);
-      if (showArrayOverlays) window.TrackDiagramApp?.setShowArrayOverlays(showArrayOverlays.checked);
       if (showUrlOverlays) window.TrackDiagramApp?.setShowUrlOverlays(showUrlOverlays.checked);
     } catch (e) {
       console.warn('Failed to sync UI toggles with TrackDiagramApp:', e);
