@@ -29,6 +29,7 @@ const DEFAULT_LABEL_OVERLAP_PADDING_PX = 2;
 
 let route = null;
 let appAPI = null;
+let sectionsByElr = null;
 
 // Cache for precomputed tick positions per-route (rebuilt on route load)
 let ticksCache = null;
@@ -491,7 +492,7 @@ function initializeApp() {
   // Pre-index common lookups to reduce repeated full scans during rendering.
   // Note: These indexes are rebuilt on every route load (initializeApp call).
   const tracksByTid = buildTracksByTid(route);
-  const sectionsByElr = buildSectionsByElr(route);
+  sectionsByElr = buildSectionsByElr(route);
 
   // Configuration for logical distances (mutable so UI changes can tweak values)
   const config = createDefaultConfig(route);
@@ -1489,6 +1490,7 @@ window.TrackDiagramApp = {
   setShowUrlOverlays: (v) => appAPI?.setShowUrlOverlays(v),
   setShowAltRulers: (v) => appAPI?.setShowAltRulers(v),
   getRoute: () => route,
+  getSectionsByElr: () => sectionsByElr,
   getCenterYards: () => {
     if (Number.isFinite(viewportState?.lastCenterYards)) return viewportState.lastCenterYards;
     if (typeof config?.showFromYards === 'number' && typeof config?.showToYards === 'number') {

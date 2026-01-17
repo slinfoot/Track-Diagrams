@@ -25194,6 +25194,82 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "Plessey Viaduct",
+                "type": "viaduct",
+                "structureNo": "ECM7-62",
+                "trackLocation": [
+                    {
+                        "from": 494424,
+                        "to": 494556,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 494424,
+                        "to": 494556,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Briery Hill",
+                "type": "underbridge",
+                "structureNo": "ECM7-63",
+                "trackLocation": [
+                    {
+                        "from": 494930,
+                        "to": 494945,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 494930,
+                        "to": 494945,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Netherton Park",
+                "type": "underbridge",
+                "structureNo": "ECM7-64",
+                "trackLocation": [
+                    {
+                        "from": 496074,
+                        "to": 496090,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 496074,
+                        "to": 496090,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "West of Netherton Wood",
+                "type": "underbridge",
+                "structureNo": "ECM7-65",
+                "trackLocation": [
+                    {
+                        "from": 497108,
+                        "to": 497120,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 497108,
+                        "to": 497120,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
             }
         ],
         "altRouteYardageMap": [
@@ -27597,9 +27673,94 @@ const routes = [
                         "elr": ""
                     }
                 ]
+            },
+            {
+                "name": "Station Road",
+                "type": "overbridge",
+                "structureNo": "HDB-60",
+                "trackLocation": [
+                    {
+                        "from": 34056,
+                        "to": 34066,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 34056,
+                        "to": 34066,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Stevenage Road",
+                "type": "overbridge",
+                "structureNo": "HDB-69",
+                "trackLocation": [
+                    {
+                        "from": 40348,
+                        "to": 40358,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 40370,
+                        "to": 40380,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Tintern Close",
+                "type": "underbridge",
+                "structureNo": "HDB-68",
+                "trackLocation": [
+                    {
+                        "from": 39160,
+                        "to": 39170,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 39160,
+                        "to": 39170,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
+            },
+            {
+                "name": "Cardiff Close",
+                "type": "underbridge",
+                "structureNo": "HDB-67",
+                "trackLocation": [
+                    {
+                        "from": 38852,
+                        "to": 38862,
+                        "tid": 2100,
+                        "elr": ""
+                    },
+                    {
+                        "from": 38862,
+                        "to": 38872,
+                        "tid": 1100,
+                        "elr": ""
+                    }
+                ]
             }
         ],
-        "altRouteYardageMap": [],
+        "altRouteYardageMap": [
+            {
+                "elr": "ECM1",
+                "fromYardageMainRoute": 41625,
+                "fromYardageAltRoute": 47015,
+                "toYardageMainRoute": 43139,
+                "toYardageAltRoute": 48525,
+                "_id": "6968fcd9cd0aa6f108621ec7"
+            }
+        ],
         "switchesAndCrossings": [
             {
                 "sc_Name": "2332A",
@@ -27636,7 +27797,7 @@ const routes = [
     {
         "name": "Cambridge Diversion",
         "code": "SBR",
-        "length_yards": 30360,
+        "length_yards": 10000,
         "sections": [
             {
                 "from": 0,

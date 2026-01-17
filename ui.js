@@ -98,18 +98,60 @@ window.showYardsCalc = function(targetInput) {
   if (!targetInput) return;
   activeCalcInput = targetInput;
   const currentYards = Number(targetInput.value);
+  const centerYards = window.TrackDiagramApp?.getCenterYards?.();
+  // Populate based on the *current viewport center* (per UX request).
+  // Only fall back to the target input value if we can't determine a center.
+  const seedMainYards = Number.isFinite(centerYards)
+    ? centerYards
+    : (Number.isFinite(currentYards) ? currentYards : null);
   if (calcElr) calcElr.value = '';
   if (calcMiles) calcMiles.value = '';
   if (calcYards) calcYards.value = '';
   if (calcChains) calcChains.value = '';
 
-  if (Number.isFinite(currentYards)) {
-      const miles = Math.floor(currentYards / 1760);
-      const yards = Math.round(currentYards % 1760);
+  // Prefer showing ELR/mile/yard relative to a section (uses section.offset).
+  // If the target input already has a value, use that; otherwise use the viewport center.
+  const route = window.TrackDiagramApp?.getRoute?.();
+  if (Number.isFinite(seedMainYards) && route && typeof TrackDomain !== 'undefined' && typeof TrackDomain.getElrAndRelativeYardsForMainYards === 'function') {
+    const res = TrackDomain.getElrAndRelativeYardsForMainYards(route, seedMainYards);
+    const elr = res?.elr;
+    const rel = res?.relativeYards;
+
+    if (calcElr && elr && elr !== '-') calcElr.value = String(elr);
+
+    if (Number.isFinite(rel)) {
+      const miles = Math.floor(rel / 1760);
+      const yards = Math.round(rel % 1760);
       if (calcMiles) calcMiles.value = miles;
       if (calcYards) calcYards.value = yards;
+    } else {
+      // Fallback: show absolute route miles/yards.
+      const miles = Math.floor(seedMainYards / 1760);
+      const yards = Math.round(seedMainYards % 1760);
+      if (calcMiles) calcMiles.value = miles;
+      if (calcYards) calcYards.value = yards;
+    }
+  } else if (Number.isFinite(seedMainYards)) {
+    // Minimal fallback: absolute route miles/yards.
+    const miles = Math.floor(seedMainYards / 1760);
+    const yards = Math.round(seedMainYards % 1760);
+    if (calcMiles) calcMiles.value = miles;
+    if (calcYards) calcYards.value = yards;
   }
   yardsCalcModal.hidden = false;
+
+  // UX: focus ELR field immediately for quick typing.
+  // Use a timeout to ensure focus happens after the modal becomes visible.
+  if (calcElr) {
+    setTimeout(() => {
+      try {
+        calcElr.focus();
+        calcElr.select?.();
+      } catch (e) {
+        // ignore
+      }
+    }, 0);
+  }
 };
 
 if (calcModalCloseBtn) calcModalCloseBtn.addEventListener('click', () => yardsCalcModal.hidden = true);
@@ -124,29 +166,26 @@ function applyCalcToActiveInput() {
   const yards = Number(calcYards?.value || 0);
   const elr = (calcElr?.value ?? '').toString().trim();
 
-  // NOTE: Chains is a helper UI only; conversion uses Miles + Yards.
-  const relativeYards = (Number.isFinite(yards) ? yards : 0);
-
   let totalYards = null;
 
   // If ELR is provided and we have a loaded route + domain, use the same mapping
   // as the rest of the app (respects section offsets and alt-route yardage maps).
   if (elr && typeof TrackDomain !== 'undefined' && typeof TrackDomain.computeAbsoluteYards === 'function') {
     const route = window.TrackDiagramApp?.getRoute?.();
-    const sectionsByElr = typeof TrackDomain.buildSectionsByElr === 'function' ? TrackDomain.buildSectionsByElr(route) : new Map();
-    const res = TrackDomain.computeAbsoluteYards(elr, miles, relativeYards, route, sectionsByElr);
+    const sectionsByElr = window.TrackDiagramApp?.getSectionsByElr?.() || new Map();
+    const res = TrackDomain.computeAbsoluteYards(elr, miles, yards, route, sectionsByElr);
     if (res && res.value !== null && res.value !== undefined && Number.isFinite(Number(res.value))) {
       totalYards = Number(res.value);
     } else if (res?.error) {
       window.alert(res.error);
-      totalYards = null;
+      return; // Exit early on error - don't apply incorrect values
     }
   }
 
-  // Fallback: treat inputs as main-route miles/yards/chains.
+  // Fallback: treat inputs as main-route miles/yards/chains (only if no ELR specified).
   if (totalYards === null) {
     const m = Number.isFinite(miles) ? miles : 0;
-    totalYards = (m * 1760) + relativeYards;
+    totalYards = (m * 1760) + yards;
   }
 
   activeCalcInput.value = String(Math.round(totalYards));

@@ -95,6 +95,39 @@ const TrackDomain = (function() {
     const normElr = normalizeElr(elrCode);
     if (!normElr) return { value: null, error: 'ELR is required' };
 
+    // Some datasets store altRouteYardageMap.{from,to}YardageMainRoute as *section-relative* yards
+    // (i.e. the same "miles/yards" yardage that needs section.offset added), while others store
+    // them as *absolute* main-route yards. To be robust, we detect and apply an offset only when
+    // the mapped value doesn't land inside any section range, but does land when an offset is added.
+    function maybeApplySectionOffsetToMainYards(mainYards) {
+      if (!Number.isFinite(mainYards)) return mainYards;
+      if (!route?.sections?.length) return mainYards;
+
+      // If already in the main yardage coordinate system, keep as-is.
+      for (const s of route.sections) {
+        const from = Number(s?.from);
+        const to = Number(s?.to);
+        if (!Number.isFinite(from) || !Number.isFinite(to)) continue;
+        const min = Math.min(from, to);
+        const max = Math.max(from, to);
+        if (mainYards >= min && mainYards <= max) return mainYards;
+      }
+
+      // Otherwise, try treating it as section-relative and adding offsets.
+      for (const s of route.sections) {
+        const from = Number(s?.from);
+        const to = Number(s?.to);
+        if (!Number.isFinite(from) || !Number.isFinite(to)) continue;
+        const offset = Number(s?.offset) || 0;
+        const candidate = mainYards + offset;
+        const min = Math.min(from, to);
+        const max = Math.max(from, to);
+        if (candidate >= min && candidate <= max) return candidate;
+      }
+
+      return mainYards;
+    }
+
     // Ensure inputs are numbers
     const m = typeof miles === 'string' ? parseFloat(miles) : miles;
     const y = typeof yards === 'string' ? parseFloat(yards) : yards;
@@ -127,8 +160,9 @@ const TrackDomain = (function() {
             if (Number.isFinite(mainFrom) && Number.isFinite(mainTo)) {
               // Standard linear interpolation: works with forward and reverse directions
               const fraction = (altYardage - segFromAlt) / (segToAlt - segFromAlt);
-              const mainYards = mainFrom + fraction * (mainTo - mainFrom);
-              return { value: mainYards, relativeYards: altYardage, fromAltRoute: true };
+              const mappedMain = mainFrom + fraction * (mainTo - mainFrom);
+              const mainYards = maybeApplySectionOffsetToMainYards(mappedMain);
+              return { value: mainYards, relativeYards: altYardage, fromAltRoute: true, usedSectionOffset: mainYards !== mappedMain };
             }
           }
         }
@@ -151,8 +185,9 @@ const TrackDomain = (function() {
             Number.isFinite(mainFrom) && Number.isFinite(mainTo) &&
             Math.abs(segToAlt - segFromAlt) > 0) {
           const fraction = (altYardage - segFromAlt) / (segToAlt - segFromAlt);
-          const mainYards = mainFrom + fraction * (mainTo - mainFrom);
-          return { value: mainYards, relativeYards: altYardage, fromAltRoute: true };
+          const mappedMain = mainFrom + fraction * (mainTo - mainFrom);
+          const mainYards = maybeApplySectionOffsetToMainYards(mappedMain);
+          return { value: mainYards, relativeYards: altYardage, fromAltRoute: true, usedSectionOffset: mainYards !== mappedMain };
         }
       }
     }
