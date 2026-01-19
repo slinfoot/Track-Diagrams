@@ -70,6 +70,12 @@ function consumeUrlOverlayFromLocation() {
   return OverlayManager.consumeUrlOverlayFromLocation();
 }
 
+function consumeUrlOverlaysFromLocation() {
+  return OverlayManager.consumeUrlOverlaysFromLocation
+    ? OverlayManager.consumeUrlOverlaysFromLocation()
+    : (consumeUrlOverlayFromLocation() ? [consumeUrlOverlayFromLocation()] : null);
+}
+
 function addOverlayIfMissing(overlay, isDuplicateFn) {
   OverlayManager.addOverlayIfMissing(overlay, isDuplicateFn);
 }
@@ -517,38 +523,61 @@ function initializeApp() {
   // Keep the previous center when reloading the route to avoid "snap back".
   let initialTargetYards = computeInitialTargetYards(viewportState, config);
 
-  const urlOverlay = consumeUrlOverlayFromLocation();
+  const urlOverlays = consumeUrlOverlaysFromLocation();
 
   // URL overlays: if present in the URL, add to overlay data and center the initial view.
-  // Parsing/clearing is done in consumeUrlOverlayFromLocation() so it acts one-shot.
-  if (urlOverlay) {
-    debugLog('URL Params detected:', urlOverlay);
-    debugLog('Created overlay object:', urlOverlay);
+  // Parsing/clearing is done in consumeUrlOverlaysFromLocation() so it acts one-shot.
+  if (Array.isArray(urlOverlays) && urlOverlays.length > 0) {
+    debugLog(`URL Params detected: ${urlOverlays.length} overlay(s)`);
 
-    addOverlayIfMissing(
-      urlOverlay,
-      o => o.group === 'URL Overlay' &&
-        o.tid === urlOverlay.tid &&
-        o.mileFrom === urlOverlay.mileFrom &&
-        o.yardFrom === urlOverlay.yardFrom
-    );
+    urlOverlays.forEach((ov) => {
+      addOverlayIfMissing(
+        ov,
+        o => o.group === 'URL Overlay' &&
+          o.tid === ov.tid &&
+          o.mileFrom === ov.mileFrom &&
+          o.yardFrom === ov.yardFrom
+      );
+    });
 
-    // Calculate center based on ELR offset if available
-    debugLog('Attempting to compute absolute yards for centering...');
+    // Center on the overall span of all overlays.
+    debugLog('Attempting to compute absolute yards for overlay centering...');
     debugLog('Route sections available:', route.sections ? route.sections.length : 'None');
 
-    const { centerYards, startRes, endRes, usedFallback } = computeOverlayCenterYards(urlOverlay, computeAbsoluteYards);
-    debugLog('Compute results:', { start: startRes, end: endRes });
+    let minYards = null;
+    let maxYards = null;
+    let anyFallback = false;
+
+    for (const ov of urlOverlays) {
+      const { startRes, endRes, usedFallback } = computeOverlayCenterYards(ov, computeAbsoluteYards);
+      anyFallback = anyFallback || !!usedFallback;
+
+      const startYards = (startRes?.value !== null && startRes?.value !== undefined)
+        ? startRes.value
+        : (ov.mileFrom * YARDS_PER_MILE) + ov.yardFrom;
+      const endYards = (endRes?.value !== null && endRes?.value !== undefined)
+        ? endRes.value
+        : (ov.mileTo * YARDS_PER_MILE) + ov.yardTo;
+
+      if (Number.isFinite(startYards) && Number.isFinite(endYards)) {
+        const a = Math.min(startYards, endYards);
+        const b = Math.max(startYards, endYards);
+        minYards = (minYards === null) ? a : Math.min(minYards, a);
+        maxYards = (maxYards === null) ? b : Math.max(maxYards, b);
+      }
+    }
+
+    const centerYards = (Number.isFinite(minYards) && Number.isFinite(maxYards))
+      ? (minYards + maxYards) / 2
+      : null;
 
     if (Number.isFinite(centerYards)) {
       viewportState.lastCenterYards = centerYards;
       initialTargetYards = centerYards;
-      if (usedFallback) {
-        console.warn('Could not compute absolute yards for overlay centering', startRes?.error, endRes?.error);
-        debugLog('Fallback centering at:', centerYards);
-      } else {
-        debugLog('Centered on overlay at absolute yards:', centerYards);
+      if (anyFallback) {
+        console.warn('Could not compute absolute yards for one or more overlays; using fallback centering.');
       }
+      debugLog('Centered on overlay span at absolute yards:', centerYards);
     }
   }
 
@@ -1426,9 +1455,34 @@ function initializeApp() {
 window.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   let routeCode = urlParams.get('routeCode');
-  const elrParam = urlParams.get('elr');
-  const mileParam = urlParams.get('mileFrom');
-  const yardParam = urlParams.get('yardFrom');
+
+  // Support route discovery from either single-overlay params or overlaylist.
+  const overlayListRaw = urlParams.get('overlaylist') ?? urlParams.get('overlayList');
+  let overlayListFirst = null;
+  if (overlayListRaw) {
+    try {
+      // URLSearchParams.get() is already decoded, but handle double-encoded too.
+      let parsed = null;
+      try {
+        parsed = JSON.parse(overlayListRaw);
+      } catch {
+        if (/%[0-9A-Fa-f]{2}/.test(overlayListRaw)) {
+          parsed = JSON.parse(decodeURIComponent(overlayListRaw));
+        }
+      }
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0] && typeof parsed[0] === 'object') {
+        overlayListFirst = parsed[0];
+      } else if (parsed && typeof parsed === 'object') {
+        overlayListFirst = parsed;
+      }
+    } catch {
+      overlayListFirst = null;
+    }
+  }
+
+  const elrParam = urlParams.get('elr') ?? overlayListFirst?.elr ?? null;
+  const mileParam = urlParams.get('mileFrom') ?? (overlayListFirst?.mileFrom ?? null);
+  const yardParam = urlParams.get('yardFrom') ?? (overlayListFirst?.yardFrom ?? null);
 
   // Calculate search yards if provided
   let searchYards = null;
@@ -1462,7 +1516,7 @@ window.addEventListener('DOMContentLoaded', async () => {
       if (window.history && window.history.replaceState) {
           const url = new URL(window.location.href);
           const params = url.searchParams;
-          ['elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'].forEach(p => params.delete(p));
+          ['overlaylist', 'overlayList', 'elr', 'tid', 'mileFrom', 'yardFrom', 'mileTo', 'yardTo', 'text'].forEach(p => params.delete(p));
           url.search = params.toString();
           window.history.replaceState(null, '', url.toString());
       }
