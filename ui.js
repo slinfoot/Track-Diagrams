@@ -120,8 +120,15 @@ window.showYardsCalc = function(targetInput) {
     if (calcElr && elr && elr !== '-') calcElr.value = String(elr);
 
     if (Number.isFinite(rel)) {
-      const miles = Math.floor(rel / 1760);
-      const yards = Math.round(rel % 1760);
+      const isNeg = rel < 0;
+      const absRel = Math.abs(rel);
+      const milesAbs = Math.floor(absRel / 1760);
+      let yards = Math.round(absRel % 1760);
+      let miles = isNeg ? -milesAbs : milesAbs;
+      if (yards === 1760) {
+        miles = isNeg ? -(milesAbs + 1) : (milesAbs + 1);
+        yards = 0;
+      }
       if (calcMiles) calcMiles.value = miles;
       if (calcYards) calcYards.value = yards;
     } else {

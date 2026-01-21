@@ -686,7 +686,24 @@ function initializeApp() {
 
   // Convert Yards to Mileage
   function yardsToMiles_text(yards) {
-    return  Math.floor(yards / YARDS_PER_MILE) + "M " + (yards % YARDS_PER_MILE) + "Y";
+    // JS % and Math.floor behave surprisingly for negatives (e.g. -44 -> -1M -44Y).
+    // For display we want a sign on the miles part and a non-negative yards remainder.
+    if (!Number.isFinite(yards)) return '-';
+
+    const isNeg = yards < 0;
+    const absYards = Math.abs(yards);
+
+    let miles = Math.floor(absYards / YARDS_PER_MILE);
+    let remYards = Math.round(absYards % YARDS_PER_MILE);
+
+    // Guard against rounding pushing remainder to a whole mile.
+    if (remYards === YARDS_PER_MILE) {
+      miles += 1;
+      remYards = 0;
+    }
+
+    const milesText = (isNeg ? '-' : '') + String(miles);
+    return `${milesText}M ${remYards}Y`;
     // if (yards % 1760 === 0) {
     //   return (yards / 1760) + "M 0Y";
     // } else {

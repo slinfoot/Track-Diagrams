@@ -1460,7 +1460,20 @@ const UIEditor = (function() {
   // --- Utilities ---
   function yardsToMilesParts(yards) {
       if (!Number.isFinite(yards)) return { miles: '-', yards: '-' };
-      return { miles: Math.floor(yards / 1760), yards: Math.round(yards % 1760) };
+
+      const isNeg = yards < 0;
+      const absYards = Math.abs(yards);
+      const milesAbs = Math.floor(absYards / 1760);
+      let remYards = Math.round(absYards % 1760);
+      let miles = isNeg ? -milesAbs : milesAbs;
+
+      // Guard against rounding pushing remainder to a whole mile.
+      if (remYards === 1760) {
+        miles = isNeg ? -(milesAbs + 1) : (milesAbs + 1);
+        remYards = 0;
+      }
+
+      return { miles, yards: remYards };
   }
 
   return {
