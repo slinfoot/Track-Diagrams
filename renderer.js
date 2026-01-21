@@ -1170,7 +1170,10 @@ const TrackRenderer = (function() {
           return;
         }
 
-        if (structure.type === 'level_crossing') {
+        if (structure.type === 'level_crossing' || structure.type === 'user_worked_crossing') {
+          const isLevelCrossing = structure.type === 'level_crossing';
+          const isUserWorkedCrossing = structure.type === 'user_worked_crossing';
+
           // Find top-most and bottom-most tracks
           let topTrackLoc = null;
           let bottomTrackLoc = null;
@@ -1296,50 +1299,53 @@ const TrackRenderer = (function() {
           const bottomWall = drawWall(bottomTrackLoc, false);
 
           if (topWall && bottomWall) {
-            // Draw filled polygon with solid outline
-            ctx.beginPath();
-            ctx.moveTo(topWall[0].x, topWall[0].y);
-            
-            // Top wall left to right
-            for (let i = 1; i < topWall.length; i++) {
-              ctx.lineTo(topWall[i].x, topWall[i].y);
-            }
-            
-            // Right side
-            ctx.lineTo(bottomWall[bottomWall.length - 1].x, bottomWall[bottomWall.length - 1].y);
-            
-            // Bottom wall right to left
-            for (let i = bottomWall.length - 2; i >= 0; i--) {
-              ctx.lineTo(bottomWall[i].x, bottomWall[i].y);
-            }
-            
-            // Left side
-            ctx.closePath();
-            
-            // Fill with gray
-            ctx.fillStyle = 'rgba(128, 128, 128, 0.5)';
-            ctx.fill();
-            
-            // Solid outline
-            ctx.strokeStyle = 'gray';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([]);
-            ctx.stroke();
-            
-            // Draw dashed centerline from top to bottom
+            // Midpoints for placing symbols
             const centerTopX = (topWall[0].x + topWall[topWall.length - 1].x) / 2;
             const centerTopY = (topWall[0].y + topWall[topWall.length - 1].y) / 2;
             const centerBottomX = (bottomWall[0].x + bottomWall[bottomWall.length - 1].x) / 2;
             const centerBottomY = (bottomWall[0].y + bottomWall[bottomWall.length - 1].y) / 2;
-            
-            ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(centerTopX, centerTopY);
-            ctx.lineTo(centerBottomX, centerBottomY);
-            ctx.stroke();
-            ctx.setLineDash([]);
+
+            if (isLevelCrossing) {
+              // Draw filled road polygon with solid outline
+              ctx.beginPath();
+              ctx.moveTo(topWall[0].x, topWall[0].y);
+              
+              // Top wall left to right
+              for (let i = 1; i < topWall.length; i++) {
+                ctx.lineTo(topWall[i].x, topWall[i].y);
+              }
+              
+              // Right side
+              ctx.lineTo(bottomWall[bottomWall.length - 1].x, bottomWall[bottomWall.length - 1].y);
+              
+              // Bottom wall right to left
+              for (let i = bottomWall.length - 2; i >= 0; i--) {
+                ctx.lineTo(bottomWall[i].x, bottomWall[i].y);
+              }
+              
+              // Left side
+              ctx.closePath();
+              
+              // Fill with gray
+              ctx.fillStyle = 'rgba(128, 128, 128, 0.5)';
+              ctx.fill();
+              
+              // Solid outline
+              ctx.strokeStyle = 'gray';
+              ctx.lineWidth = 2;
+              ctx.setLineDash([]);
+              ctx.stroke();
+              
+              // Draw dashed centerline from top to bottom
+              ctx.setLineDash([5, 5]);
+              ctx.strokeStyle = 'white';
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(centerTopX, centerTopY);
+              ctx.lineTo(centerBottomX, centerBottomY);
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
             
             // Draw red X above and below the crossing
             const xWidth = offset * 0.8;
@@ -1364,6 +1370,42 @@ const TrackRenderer = (function() {
             ctx.moveTo(topCenterX + xWidth, topCenterY - xHeight);
             ctx.lineTo(topCenterX - xWidth, topCenterY + xHeight);
             ctx.stroke();
+
+            if (isUserWorkedCrossing) {
+              // Dotted red bar between the X and the track.
+              // It is perpendicular to the crossing axis and matches the X width.
+              const drawDottedBar = (crossX, crossY, trackX, trackY) => {
+                const vx = trackX - crossX;
+                const vy = trackY - crossY;
+                const vLen = Math.sqrt(vx * vx + vy * vy);
+                if (vLen < 0.001) return;
+
+                const ux = vx / vLen;
+                const uy = vy / vLen;
+
+                // Perpendicular unit vector
+                const px = -uy;
+                const py = ux;
+
+                // Place the dotted bar closer to the X than the track
+                const barDistFromX = xHeight + (xClearance * 0.35) + 4;
+                const d = Math.min(barDistFromX, Math.max(0, vLen - 1));
+                const cx = crossX + ux * d;
+                const cy = crossY + uy * d;
+
+                const halfLen = xWidth; // full width = 2 * xWidth
+                const x1 = cx - px * halfLen;
+                const y1 = cy - py * halfLen;
+                const x2 = cx + px * halfLen;
+                const y2 = cy + py * halfLen;
+
+                ctx.setLineDash([2, 4]);
+                drawLine(x1, y1, x2, y2, 2, 'red');
+                ctx.setLineDash([]);
+              };
+
+              drawDottedBar(topCenterX, topCenterY, centerTopX, centerTopY);
+            }
             
             // Bottom X (below the crossing) - offset outward
             const bottomCenterX = centerBottomX + dirX * (xHeight + xClearance);
@@ -1374,6 +1416,38 @@ const TrackRenderer = (function() {
             ctx.moveTo(bottomCenterX + xWidth, bottomCenterY - xHeight);
             ctx.lineTo(bottomCenterX - xWidth, bottomCenterY + xHeight);
             ctx.stroke();
+
+            if (isUserWorkedCrossing) {
+              const drawDottedBar = (crossX, crossY, trackX, trackY) => {
+                const vx = trackX - crossX;
+                const vy = trackY - crossY;
+                const vLen = Math.sqrt(vx * vx + vy * vy);
+                if (vLen < 0.001) return;
+
+                const ux = vx / vLen;
+                const uy = vy / vLen;
+
+                const px = -uy;
+                const py = ux;
+
+                const barDistFromX = xHeight + (xClearance * 0.35) + 4;
+                const d = Math.min(barDistFromX, Math.max(0, vLen - 1));
+                const cx = crossX + ux * d;
+                const cy = crossY + uy * d;
+
+                const halfLen = xWidth;
+                const x1 = cx - px * halfLen;
+                const y1 = cy - py * halfLen;
+                const x2 = cx + px * halfLen;
+                const y2 = cy + py * halfLen;
+
+                ctx.setLineDash([2, 4]);
+                drawLine(x1, y1, x2, y2, 2, 'red');
+                ctx.setLineDash([]);
+              };
+
+              drawDottedBar(bottomCenterX, bottomCenterY, centerBottomX, centerBottomY);
+            }
           }
 
           // Label
